@@ -1,0 +1,62 @@
+.User-NavBar {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: white;
+}
+
+.Main {
+    background-color: rgba(255, 255, 255, 0.3);
+    height: 93vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+}
+
+.Main h2 {
+    color: rgba(49, 54, 63, 0.3);
+
+    z-index: 1;
+}
+
+.query-input {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.query-input textarea {
+    width: 900px;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: transparent;
+    border-radius: 10px;
+    max-height: 200px;
+    resize: none;
+}
+
+.query-input button {
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    padding: 8px 15px;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.userName {
+    border: transparent;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 12px;
+    margin-left: 15px;
+}
