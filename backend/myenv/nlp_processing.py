@@ -13,12 +13,13 @@ def parse_text(text):
 plantuml_script = """
 @startuml
 actor User
-usecase "Login" as UC1
-usecase "Register" as UC2
-User --> UC1 : Initiates
-User --> UC2 : Initiates
+usecase "Login" as Login
+usecase "Register" as Register
+User --> Login : Initiates
+User --> Register : Initiates
 @enduml
 """
 
 parsed_text = parse_text(plantuml_script)
 print("Parsed Text:", parsed_text)
+
