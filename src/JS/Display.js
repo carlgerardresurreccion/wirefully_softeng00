@@ -1,16 +1,13 @@
 import '../CSS/Dashboard.css';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
-const Display = () => {
-  const location = useLocation();
-  const { responseData } = location.state || { responseData: 'No data received' };
-
-  return (
-    <div className='Main'>
-        <h1>Processed Data</h1>
-    </div>
-  );
+const Display = ({ responseData }) => {
+    return (
+        <div className='Main'>
+            <h1>Processed Data</h1>
+            <p>{responseData || 'No data received'}</p>
+        </div>
+    );
 };
 
 export default Display;

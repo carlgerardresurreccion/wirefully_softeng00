@@ -13,6 +13,7 @@ function Dashboard() {
     const { currentUser } = useAuth();
     const history = useHistory();
     const [currentView, setCurrentView] = React.useState('Dashboard');
+    const [responseData, setResponseData] = useState(null);
 
     const handleViewChange = (view) => {
         setCurrentView(view);
@@ -32,6 +33,8 @@ function Dashboard() {
           const response = await axios.post('http://localhost:3001/process-data', {
             inputData: inputValue,
           });
+          setResponseData(response.data);
+          console.log(response.data);
           handleViewChange('Display');
         } catch (error) {
           console.error('Error sending data to server:', error);
@@ -63,7 +66,7 @@ function Dashboard() {
             </div>
             <div className='Main'>
                 {currentView === 'Display' ? (
-                    <Display onSignUpClick={() => handleViewChange('Display')} />
+                    <Display responseData={responseData} onSignUpClick={() => handleViewChange('Display')} />
                 ) : (
                     <div>
                         <h2>How can I help you today?</h2>
