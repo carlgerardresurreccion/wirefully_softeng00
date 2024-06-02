@@ -1,3 +1,4 @@
+import '../CSS/Dashboard.css';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -6,9 +7,8 @@ const Display = () => {
   const { responseData } = location.state || { responseData: 'No data received' };
 
   return (
-    <div>
-      <h1>Processed Data</h1>
-      <p>{responseData}</p>
+    <div className='Main'>
+        <h1>Processed Data</h1>
     </div>
   );
 };

@@ -15,9 +15,6 @@ function App() {
             <LandingPage />
           </Route>
           <ProtectedRoute exact path="/dashboard" component={Dashboard}/>
-          <Route exact path="/display">
-            <Display />
-          </Route>
         </Routes>
       </div>
     </BrowserRouter>
