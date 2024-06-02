@@ -1,5 +1,6 @@
 const express = require('express');
 const admin = require('firebase-admin');
+const cors = require('cors');
 
 const serviceAccount = require('./wirefully-adminsdk.json');
 
@@ -10,6 +11,7 @@ admin.initializeApp({
 const app = express();
 const port = 8000;
 
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.post('/signup', async (req, res) => {

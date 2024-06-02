@@ -23,7 +23,7 @@ function Dashboard() {
         e.preventDefault();
     
         try {
-          const response = await axios.post('http://localhost:3001/process-data', {
+          const response = await axios.post('http://localhost:3000/process-data', {
             inputData: inputValue,
           });
     
