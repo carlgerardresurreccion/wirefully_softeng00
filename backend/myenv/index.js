@@ -15,22 +15,27 @@ app.use(cors({
 }));
 
 app.post('/process-data', (req, res) => {
-  const inputData = req.body.inputData;
+    console.log("HERE");
+    const inputData = req.body.inputData;
 
-  const pythonProcess = spawn('python', ['backend/myenv/nlp_processing.py', inputData]);
+    const pythonProcess = spawn('python', ['C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/nlp_processing.py', inputData]);
 
-  pythonProcess.stdout.on('data', (data) => {
-    res.send(data.toString());
-  });
+    let responseData = ''; // Variable to store the response data
 
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-    res.status(500).send(data.toString());
-  });
+    // Combine stdout and stderr handling to ensure response is sent only once
+    pythonProcess.stdout.on('data', (data) => {
+        responseData += data.toString(); // Append stdout data to responseData
+    });
 
-  pythonProcess.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
-  });
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+        responseData += data.toString(); // Append stderr data to responseData
+    });
+
+    pythonProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        res.send(responseData); // Send the response once the process is complete
+    });
 });
 
 app.listen(port, () => {
