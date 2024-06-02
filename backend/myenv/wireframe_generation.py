@@ -13,8 +13,14 @@ def generate_layout(use_case):
         layout[f"password"] = {'width': 200, 'height': 30}
         layout[f"email"] = {'width': 200, 'height': 30}
         layout[f"REGISTER"] = {'width': 150, 'height': 40}
-    
-
+    elif use_case == 'Dashboard':
+        layout[f"Chart1"] = {'width': 300, 'height': 100}
+        layout[f"Chart2"] = {'width': 300, 'height': 50}
+        layout[f"Button2"] = {'width': 100, 'height': 40}
+        layout[f"Button3"] = {'width': 100, 'height': 40}
+        layout[f"Button4"] = {'width': 100, 'height': 40}
+        #layout[f"Rectangle1"] = {'width': 200, 'height': 50}
+        
     return layout
 
 def round_corner(radius, fill):
@@ -98,6 +104,33 @@ def draw_navigation_bar(draw, screen_margin, screen_width):
         text_y = screen_margin + (nav_height - text_height) // 2
         draw.text((text_x, text_y), item, fill='black', font=font)
 
+def dashboard_navigation_bar(draw, screen_margin, screen_width):
+    nav_height = 50  # Height of the navigation bar
+    nav_color = "lightgrey"
+    border_color = "black"
+    border_width = 2
+
+    # Draw the navigation bar
+    nav_bar_rectangle = [(screen_margin, screen_margin), (screen_margin + screen_width, screen_margin + nav_height)]
+    draw.rectangle(nav_bar_rectangle, fill=nav_color, outline=border_color, width=border_width)
+
+    # Draw a line under the navigation bar
+    draw.line([(screen_margin, screen_margin + nav_height), (screen_margin + screen_width, screen_margin + nav_height)], fill=border_color, width=border_width)
+
+    # Draw navigation items
+    nav_items = ["ApplicationName", "Home", "Logout"]
+    item_width = screen_width // len(nav_items)
+    font = ImageFont.load_default()
+
+    for i, item in enumerate(nav_items):
+        x = screen_margin + i * item_width
+        text_bbox = draw.textbbox((x, screen_margin), item, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+        text_x = x + (item_width - text_width) // 2
+        text_y = screen_margin + (nav_height - text_height) // 2
+        draw.text((text_x, text_y), item, fill='black', font=font)
+
 def generate_wireframe_image(layout, use_case):
     img_width = 400
     img_height = 600
@@ -112,9 +145,6 @@ def generate_wireframe_image(layout, use_case):
 
     phone_screen = round_rectangle((screen_width, screen_height), border_radius, "white", "black", border_width)
     img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
-
-    # Draw navigation bar inside the phone screen
-    #draw_navigation_bar(draw, screen_margin, screen_width)
 
     nav_height = 50 
     total_elements_height = sum([position['height'] + 20 for position in layout.values()]) - 20
@@ -138,19 +168,34 @@ def generate_wireframe_image(layout, use_case):
             img.paste(element_rect, (x, y), element_rect)
             draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
             draw_navigation_bar(draw, screen_margin, screen_width)
+        elif 'Button' in element:
+            element_rect = round_rectangle((width, height), border_radius, "lightgrey", "black", border_width)
+            img.paste(element_rect, (x, y), element_rect)
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+        elif 'Chart' in element:
+            element_rect = round_rectangle((width, height), border_radius, "lightyellow", "black", border_width)
+            img.paste(element_rect, (x, y), element_rect)
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+        elif 'Rectangle' in element:
+            element_rect = round_rectangle((width, height), border_radius, "lightgrey", "black", border_width)
+            img.paste(element_rect, (x, y), element_rect)
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
         else:
             element_rect = round_rectangle((width, height), border_radius, "lightgrey", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
             draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
 
         start_y += height + 20
+    
+    if use_case == 'Dashboard':
+        dashboard_navigation_bar(draw, screen_margin, screen_width)
 
     img.show()
     img.save(f'{use_case}.png') 
 
 
 for element in wireframe_elements:
-    if element['type'] != 'actor' and element['type'] != 'relationship':  # Exclude actors and relationships
+    if element['name'] != 'actor' and element['name'] != 'relationship':  # Exclude actors and relationships
         layout = generate_layout(element['name'])
         print(f"Layout for {element['name']}: {layout}")
         generate_wireframe_image(layout, element['name'])
