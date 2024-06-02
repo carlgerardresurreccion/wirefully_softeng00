@@ -1,7 +1,7 @@
 import '../CSS/Dashboard.css';
 import React from 'react';
 
-const Display = ({ responseData }) => {
+const Display = ({ responseData, onBackButtonClick }) => {
 
     const handleBackButtonClick = () => {
 
@@ -14,7 +14,7 @@ const Display = ({ responseData }) => {
     return (
         <div className='Display-Main'>
             <div className="Below-NavBar">
-                <button className="backButton" onClick={handleBackButtonClick}>Back</button>
+                <button className="backButton" onClick={onBackButtonClick}>Back</button>
                 <button className="exportButton" onClick={handleExportButtonClick}>Export</button>
             </div>
             <h1>Processed Data</h1>

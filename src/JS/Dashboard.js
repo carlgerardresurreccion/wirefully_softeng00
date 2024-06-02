@@ -50,6 +50,10 @@ function Dashboard() {
         }
     };
 
+    const handleBackButtonClick = () => {
+        setCurrentView('Dashboard');
+    };
+
     return (
         <div>
             <div className="User-NavBar">
@@ -66,7 +70,7 @@ function Dashboard() {
             </div>
             <div>
                 {currentView === 'Display' ? (
-                    <Display responseData={responseData} onSignUpClick={() => handleViewChange('Display')} />
+                    <Display responseData={responseData} onBackButtonClick={handleBackButtonClick} onSignUpClick={() => handleViewChange('Display')} />
                 ) : (
                     <div className='Main'>
                         <h2>How can I help you today?</h2>
