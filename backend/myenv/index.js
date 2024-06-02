@@ -20,21 +20,20 @@ app.post('/process-data', (req, res) => {
 
     const pythonProcess = spawn('python', ['C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/nlp_processing.py', inputData]);
 
-    let responseData = ''; // Variable to store the response data
+    let responseData = '';
 
-    // Combine stdout and stderr handling to ensure response is sent only once
     pythonProcess.stdout.on('data', (data) => {
-        responseData += data.toString(); // Append stdout data to responseData
+        responseData += data.toString(); 
     });
 
     pythonProcess.stderr.on('data', (data) => {
         console.error(`stderr: ${data}`);
-        responseData += data.toString(); // Append stderr data to responseData
+        responseData += data.toString(); 
     });
 
     pythonProcess.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
-        res.send(responseData); // Send the response once the process is complete
+        res.send(responseData);
     });
 });
 

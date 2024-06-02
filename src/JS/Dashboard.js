@@ -64,11 +64,11 @@ function Dashboard() {
                     <button className='userName' onClick={handleLogout}>Log Out</button>
                 </div>
             </div>
-            <div className='Main'>
+            <div>
                 {currentView === 'Display' ? (
                     <Display responseData={responseData} onSignUpClick={() => handleViewChange('Display')} />
                 ) : (
-                    <div>
+                    <div className='Main'>
                         <h2>How can I help you today?</h2>
                         <div className='query-input'>
                             <textarea
