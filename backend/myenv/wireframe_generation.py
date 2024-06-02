@@ -1,10 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
-
-# Example wireframe elements
-wireframe_elements = [
-    {'name': 'Register'},
-    {'name': 'Login'},
-]
+from map_to_wireframe import wireframe_elements
 
 def generate_layout(use_case):
     layout = {}
@@ -18,8 +13,7 @@ def generate_layout(use_case):
         layout[f"password"] = {'width': 200, 'height': 30}
         layout[f"email"] = {'width': 200, 'height': 30}
         layout[f"REGISTER"] = {'width': 150, 'height': 40}
-    else:
-        layout[use_case] = {'width': 200, 'height': 50}
+    
 
     return layout
 
@@ -120,7 +114,7 @@ def generate_wireframe_image(layout, use_case):
     img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
 
     # Draw navigation bar inside the phone screen
-    draw_navigation_bar(draw, screen_margin, screen_width)
+    #draw_navigation_bar(draw, screen_margin, screen_width)
 
     nav_height = 50 
     total_elements_height = sum([position['height'] + 20 for position in layout.values()]) - 20
@@ -138,10 +132,12 @@ def generate_wireframe_image(layout, use_case):
             element_rect = round_rectangle((width, height), border_radius, "lightblue", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
             draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+            draw_navigation_bar(draw, screen_margin, screen_width)
         elif 'LOGIN' in element:  
             element_rect = round_rectangle((width, height), border_radius, "lightgreen", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
             draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+            draw_navigation_bar(draw, screen_margin, screen_width)
         else:
             element_rect = round_rectangle((width, height), border_radius, "lightgrey", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
@@ -154,9 +150,10 @@ def generate_wireframe_image(layout, use_case):
 
 
 for element in wireframe_elements:
-    layout = generate_layout(element['name'])
-    print(f"Layout for {element['name']}: {layout}")
-    generate_wireframe_image(layout, element['name'])
+    if element['type'] != 'actor' and element['type'] != 'relationship':  # Exclude actors and relationships
+        layout = generate_layout(element['name'])
+        print(f"Layout for {element['name']}: {layout}")
+        generate_wireframe_image(layout, element['name'])
 
 
 
