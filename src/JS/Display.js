@@ -17,8 +17,6 @@ const Display = ({ responseData, onBackButtonClick }) => {
                 <button className="backButton" onClick={onBackButtonClick}>Back</button>
                 <button className="exportButton" onClick={handleExportButtonClick}>Export</button>
             </div>
-            <h1>Processed Data</h1>
-            <p>{responseData || 'No data received'}</p>
         </div>
     );
 };
