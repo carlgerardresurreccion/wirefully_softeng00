@@ -4,30 +4,22 @@ from PIL import Image, ImageDraw, ImageFont
 wireframe_elements = [
     {'name': 'Register'},
     {'name': 'Login'},
-    {'name': 'Home'},
-    {'name': 'Profile'},
 ]
 
 def generate_layout(use_case):
     layout = {}
-    x, y = 50, 50
 
     if use_case == 'Login':
-        layout[f"username"] = {'x': x, 'y': y}
-        y += 70
-        layout[f"password"] = {'x': x, 'y': y}
-        y += 70
-        layout[f"LOGIN"] = {'x': x, 'y': y}
+        layout[f"username"] = {'width': 200, 'height': 30}
+        layout[f"password"] = {'width': 200, 'height': 30}
+        layout[f"LOGIN"] = {'width': 150, 'height': 40}
     elif use_case == 'Register':
-        layout[f"username"] = {'x': x, 'y': y}
-        y += 70
-        layout[f"password"] = {'x': x, 'y': y}
-        y += 70
-        layout[f"email"] = {'x': x, 'y': y}
-        y += 70
-        layout[f"REGISTER"] = {'x': x, 'y': y}
+        layout[f"username"] = {'width': 200, 'height': 30}
+        layout[f"password"] = {'width': 200, 'height': 30}
+        layout[f"email"] = {'width': 200, 'height': 30}
+        layout[f"REGISTER"] = {'width': 150, 'height': 40}
     else:
-        layout[use_case] = {'x': x, 'y': y}
+        layout[use_case] = {'width': 200, 'height': 50}
 
     return layout
 
@@ -85,9 +77,36 @@ def draw_text_field(draw, position, width, height, text, border_width=0, **kwarg
     text_y = y + (height - text_height) // 2
     draw.text((text_x, text_y), text, fill='black', font=font)
 
+def draw_navigation_bar(draw, screen_margin, screen_width):
+    nav_height = 50  # Height of the navigation bar
+    nav_color = "lightgrey"
+    border_color = "black"
+    border_width = 2
+
+    # Draw the navigation bar
+    nav_bar_rectangle = [(screen_margin, screen_margin), (screen_margin + screen_width, screen_margin + nav_height)]
+    draw.rectangle(nav_bar_rectangle, fill=nav_color, outline=border_color, width=border_width)
+
+    # Draw a line under the navigation bar
+    draw.line([(screen_margin, screen_margin + nav_height), (screen_margin + screen_width, screen_margin + nav_height)], fill=border_color, width=border_width)
+
+    # Draw navigation items
+    nav_items = ["ApplicationName", "About us"]
+    item_width = screen_width // len(nav_items)
+    font = ImageFont.load_default()
+
+    for i, item in enumerate(nav_items):
+        x = screen_margin + i * item_width
+        text_bbox = draw.textbbox((x, screen_margin), item, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+        text_x = x + (item_width - text_width) // 2
+        text_y = screen_margin + (nav_height - text_height) // 2
+        draw.text((text_x, text_y), item, fill='black', font=font)
+
 def generate_wireframe_image(layout, use_case):
     img_width = 400
-    img_height = 800
+    img_height = 600
     screen_margin = 20
     border_radius = 20
     border_width = 2
@@ -100,30 +119,46 @@ def generate_wireframe_image(layout, use_case):
     phone_screen = round_rectangle((screen_width, screen_height), border_radius, "white", "black", border_width)
     img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
 
+    # Draw navigation bar inside the phone screen
+    draw_navigation_bar(draw, screen_margin, screen_width)
+
+    nav_height = 50 
+    total_elements_height = sum([position['height'] + 20 for position in layout.values()]) - 20
+    start_y = ((screen_height - nav_height - total_elements_height) // 2) + nav_height + screen_margin
+
     for element, position in layout.items():
-        x = position['x'] + screen_margin
-        y = position['y'] + screen_margin
+        width = position['width']
+        height = position['height']
+        x = (screen_width - width) // 2 + screen_margin
+        y = start_y
+
         if 'username' in element or 'password' in element or 'email' in element:  # Check if it's a text field
-            draw_text_field(draw, (x, y), 200, 30, element, border_width=border_width, border_color="black")
-        elif 'REGISTER' in element:  # If it's the 'REGISTER' button
-            element_rect = round_rectangle((200, 50), border_radius, "lightblue", "black", border_width)
+            draw_text_field(draw, (x, y), width, height, element, border_width=border_width, border_color="black")
+        elif 'REGISTER' in element:  
+            element_rect = round_rectangle((width, height), border_radius, "lightblue", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
-            draw.text((x + 100, y + 25), element, fill='black', font=ImageFont.load_default(), anchor='mm')
-        elif 'LOGIN' in element:  # If it's the 'LOGIN' button
-            element_rect = round_rectangle((200, 50), border_radius, "lightgreen", "black", border_width)
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+        elif 'LOGIN' in element:  
+            element_rect = round_rectangle((width, height), border_radius, "lightgreen", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
-            draw.text((x + 100, y + 25), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
         else:
-            element_rect = round_rectangle((200, 50), border_radius, "lightgrey", "black", border_width)
+            element_rect = round_rectangle((width, height), border_radius, "lightgrey", "black", border_width)
             img.paste(element_rect, (x, y), element_rect)
-            draw.text((x + 100, y + 25), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+            draw.text((x + width // 2, y + height // 2), element, fill='black', font=ImageFont.load_default(), anchor='mm')
+
+        start_y += height + 20
 
     img.show()
-    img.save(f'{use_case}.png')  # Save the image for each use case
+    img.save(f'{use_case}.png') 
+
 
 for element in wireframe_elements:
     layout = generate_layout(element['name'])
     print(f"Layout for {element['name']}: {layout}")
     generate_wireframe_image(layout, element['name'])
+
+
+
 
 
