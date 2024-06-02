@@ -1,0 +1,38 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const { spawn } = require('child_process');
+const cors = require('cors');
+
+const app = express();
+const port = 3001;
+
+app.use(bodyParser.json());
+
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["POST, GET", "PUT"],
+    credentials: true,
+}));
+
+app.post('/process-data', (req, res) => {
+  const inputData = req.body.inputData;
+
+  const pythonProcess = spawn('python', ['backend/myenv/nlp_processing.py', inputData]);
+
+  pythonProcess.stdout.on('data', (data) => {
+    res.send(data.toString());
+  });
+
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+    res.status(500).send(data.toString());
+  });
+
+  pythonProcess.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});

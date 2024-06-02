@@ -1,5 +1,6 @@
 import '../CSS/Dashboard.css';
 import logo from '../CSS/1.png';
+import axios from 'axios';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +18,23 @@ function Dashboard() {
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
     }, [inputValue]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        try {
+          const response = await axios.post('http://localhost:3001/process-data', {
+            inputData: inputValue,
+          });
+    
+          history.push({
+            pathname: '/display',
+            state: { responseData: response.data }
+          });
+        } catch (error) {
+          console.error('Error sending data to server:', error);
+        }
+      };
 
     const handleLogout = async () => {
         try {
@@ -50,7 +68,7 @@ function Dashboard() {
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder='Enter use case diagram scripts here...'
                 />
-                <button>Generate</button>
+                <button onClick={handleSubmit}>Generate</button>
             </div>
         </div>
         </div>

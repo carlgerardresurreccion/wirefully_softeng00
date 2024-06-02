@@ -1,3 +1,4 @@
+import sys
 import nltk
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -9,17 +10,8 @@ def parse_text(text):
     tagged_tokens = pos_tag(tokens)
     return tagged_tokens
 
-# Example PlantUML use case diagram script
-plantuml_script = """
-@startuml
-actor User
-usecase "Login" as Login
-usecase "Register" as Register
-User --> Login : Initiates
-User --> Register : Initiates
-@enduml
-"""
-
-parsed_text = parse_text(plantuml_script)
-print("Parsed Text:", parsed_text)
-
+if __name__ == "__main__":
+    plantuml_script = sys.argv[1]
+    
+    parsed_text = parse_text(plantuml_script)
+    print("Parsed Text:", parsed_text)

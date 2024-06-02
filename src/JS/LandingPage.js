@@ -23,6 +23,7 @@ function LandingPage() {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
       console.log(user);
+      handleViewChange('LogIn');
     } catch(error) {
       console.log(error.message);
     }
