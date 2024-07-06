@@ -1,5 +1,7 @@
 import sys
 import nltk
+import re
+
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 from nltk.tokenize import word_tokenize
@@ -10,13 +12,23 @@ def parse_text(text):
     tagged_tokens = pos_tag(tokens)
     return tagged_tokens
 
+def validate_plantuml_script(text):
+    if not text.startswith("@startuml") or not text.endswith("@enduml"):
+        raise ValueError("Error: The text must start with '@startuml' and end with '@enduml'.")
+
 if __name__ == "__main__":
     plantuml_script = sys.argv[1]
+
+    # Validate the PlantUML script
+    try:
+        validate_plantuml_script(plantuml_script)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
     
     parsed_text = parse_text(plantuml_script)
     print("Parsed Text:", parsed_text)
 
-import re
 
 def syntax_analysis(script):
     actor_pattern = r'actor\s+(\w+)'
@@ -90,7 +102,6 @@ def generate_layout(use_case):
         layout[f"Button2"] = {'width': 100, 'height': 40}
         layout[f"Button3"] = {'width': 100, 'height': 40}
         layout[f"Button4"] = {'width': 100, 'height': 40}
-        #layout[f"Rectangle1"] = {'width': 200, 'height': 50}
         
     return layout
 
