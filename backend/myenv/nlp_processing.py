@@ -1,11 +1,12 @@
 import sys
 import nltk
+from nltk.tokenize import word_tokenize
+from nltk import pos_tag
+import json
 import re
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
-from nltk.tokenize import word_tokenize
-from nltk import pos_tag
 
 def parse_text(text):
     tokens = word_tokenize(text)
@@ -14,20 +15,18 @@ def parse_text(text):
 
 def validate_plantuml_script(text):
     if not text.startswith("@startuml") or not text.endswith("@enduml"):
-        raise ValueError("Error: The text must start with '@startuml' and end with '@enduml'.")
+        raise ValueError("The script must start with '@startuml' and end with '@enduml'.")
 
-#if __name__ == "__main__":
-#    plantuml_script = sys.argv[1]
+if __name__ == "__main__":
+    plantuml_script = sys.argv[1]
 
-    # Validate the PlantUML script
-#    try:
-#        validate_plantuml_script(plantuml_script)
-#    except ValueError as e:
-#        print(e)
-#        sys.exit(1)
-    
-#    parsed_text = parse_text(plantuml_script)
-#    print("Parsed Text:", parsed_text)
+    try:
+        validate_plantuml_script(plantuml_script)
+        parsed_text = parse_text(plantuml_script)
+        print(json.dumps({'parsed_text': parsed_text}))
+    except ValueError as e:
+        print(json.dumps(str(e)), file=sys.stderr)
+        sys.exit(1)
 
 
 def syntax_analysis(script):

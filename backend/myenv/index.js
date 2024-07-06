@@ -15,25 +15,26 @@ app.use(cors({
 }));
 
 app.post('/process-data', (req, res) => {
-    console.log("HERE");
     const inputData = req.body.inputData;
 
-    const pythonProcess = spawn('python', ['C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/nlp_processing.py', inputData]);
+    const pythonProcess = spawn('python', ['C:/wirefully_softeng/backend/myenv/nlp_processing.py', inputData]);
 
-    let responseData = '';
-
-    pythonProcess.stdout.on('data', (data) => {
-        responseData += data.toString(); 
-    });
+    let errorMessage = ''; // Separate variable for error message
 
     pythonProcess.stderr.on('data', (data) => {
         console.error(`stderr: ${data}`);
-        responseData += data.toString(); 
+        errorMessage = data.toString().trim(); // Store error message separately
     });
 
     pythonProcess.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
-        res.send(responseData);
+        if (code !== 0) {
+            // If there's an error, send the errorMessage
+            res.status(500).json({ error: errorMessage });
+        } else {
+            // Otherwise, send a success response
+            res.json({ success: true });
+        }
     });
 });
 
