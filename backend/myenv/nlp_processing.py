@@ -17,18 +17,6 @@ def validate_plantuml_script(text):
     if not text.startswith("@startuml") or not text.endswith("@enduml"):
         raise ValueError("The script must start with '@startuml' and end with '@enduml'.")
 
-if __name__ == "__main__":
-    plantuml_script = sys.argv[1]
-
-    try:
-        validate_plantuml_script(plantuml_script)
-        parsed_text = parse_text(plantuml_script)
-        print(json.dumps({'parsed_text': parsed_text}))
-    except ValueError as e:
-        print(json.dumps(str(e)), file=sys.stderr)
-        sys.exit(1)
-
-
 def syntax_analysis(script):
     actor_pattern = r'actor\s+(\w+)'
     usecase_pattern = r'usecase\s+"(.*?)"\s+as\s+(\w+)'
@@ -46,7 +34,6 @@ print("Actors:", actors)
 print("Use Cases:", usecases)
 print("Relationships:", relationships)
 
-
 def map_to_wireframe_elements(actors, usecases, relationships):
     wireframe_elements = []
 
@@ -57,7 +44,6 @@ def map_to_wireframe_elements(actors, usecases, relationships):
             'component': 'user icon'  # Example UI component
         })
 
-    # Mapping use cases to UI components
     for usecase in usecases:
         wireframe_elements.append({
             'type': 'usecase',
@@ -75,7 +61,15 @@ def map_to_wireframe_elements(actors, usecases, relationships):
             'label': 'Login'
         })
 
-    # Mapping relationships to UI connectors
+    # Check for the "Register" use case
+    register_usecase = next((usecase for usecase in usecases if usecase[1] == 'Register'), None)
+    if register_usecase:
+        wireframe_elements.append({
+            'type': 'register_function',
+            'component': 'register form',  
+            'label': 'Register'
+        })
+
     for relationship in relationships:
         wireframe_elements.append({
             'type': 'relationship',
@@ -169,11 +163,12 @@ def generate_phone_wireframe_template(elements):
     phone_screen = phone_template((screen_width, screen_height), border_radius, "white", "black", border_width)
     img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
 
-    # Draw UI components
     for element in elements:
         if element['type'] == 'login_function':
             draw_login_form(draw, screen_margin, screen_width, screen_height, border_width)
-
+        elif element['type'] == 'register_function':
+            draw_register_form(draw, screen_margin, screen_width, screen_height, border_width)
+    
     img.show()
     img.save('phone_wireframe_template.png')
 
@@ -183,25 +178,28 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
     form_x = (screen_width - form_width) // 2
     form_y = (screen_height - form_height) // 2
 
-    # Draw login form rectangle
     draw.rectangle([screen_margin + form_x, screen_margin + form_y,
                     screen_margin + form_x + form_width, screen_margin + form_y + form_height],
                    outline="black", width=border_width)
 
-    # Draw title text
     title_text = "Log in to your account"
     title_font_size = 16
-    title_font = ImageFont.truetype("arial.ttf", title_font_size)  # Adjust the font path if needed
+    try:
+        title_font = ImageFont.truetype("arial.ttf", title_font_size)
+    except IOError:
+        title_font = ImageFont.load_default()
     title_bbox = draw.textbbox((0, 0), title_text, font=title_font)
     title_width = title_bbox[2] - title_bbox[0]
     title_height = title_bbox[3] - title_bbox[1]
     title_x = screen_margin + form_x + (form_width - title_width) // 2
-    title_y = screen_margin + form_y + 10  # Add padding from top
+    title_y = screen_margin + form_y + 10
     draw.text((title_x, title_y), title_text, fill="black", font=title_font)
 
-    # Draw text fields labels
     label_font_size = 14
-    label_font = ImageFont.truetype("arial.ttf", label_font_size)  # Adjust the font path if needed
+    try:
+        label_font = ImageFont.truetype("arial.ttf", label_font_size)
+    except IOError:
+        label_font = ImageFont.load_default()
     username_label = "Username:"
     password_label = "Password:"
     username_bbox = draw.textbbox((0, 0), username_label, font=label_font)
@@ -209,7 +207,6 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
     draw.text((screen_margin + form_x + 10, title_y + title_height + 30), username_label, fill="black", font=label_font)
     draw.text((screen_margin + form_x + 10, title_y + title_height + 60), password_label, fill="black", font=label_font)
 
-    # Draw text fields rectangles
     field_width = form_width - 20
     field_height = 20
     username_field_y = title_y + title_height + 45
@@ -221,7 +218,6 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
                     screen_margin + form_x + 10 + field_width, password_field_y + field_height],
                    outline="black", width=border_width)
 
-    # Draw login button
     button_width = 80
     button_height = 30
     button_x = (screen_width - button_width) // 2
@@ -231,7 +227,10 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
                    fill="black")
     button_text = "Log In"
     button_font_size = 14
-    button_font = ImageFont.truetype("arial.ttf", button_font_size)  # Adjust the font path if needed
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
     button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
     button_text_width = button_bbox[2] - button_bbox[0]
     button_text_height = button_bbox[3] - button_bbox[1]
@@ -239,11 +238,89 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
     button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
+def draw_register_form(draw, screen_margin, screen_width, screen_height, border_width):
+    form_width = screen_width - 40
+    form_height = 200
+    form_x = (screen_width - form_width) // 2
+    form_y = (screen_height - form_height) // 2
+
+    draw.rectangle([screen_margin + form_x, screen_margin + form_y,
+                    screen_margin + form_x + form_width, screen_margin + form_y + form_height],
+                   outline="black", width=border_width)
+
+    title_text = "Register your account"
+    title_font_size = 16
+    try:
+        title_font = ImageFont.truetype("arial.ttf", title_font_size)
+    except IOError:
+        title_font = ImageFont.load_default()
+    title_bbox = draw.textbbox((0, 0), title_text, font=title_font)
+    title_width = title_bbox[2] - title_bbox[0]
+    title_height = title_bbox[3] - title_bbox[1]
+    title_x = screen_margin + form_x + (form_width - title_width) // 2
+    title_y = screen_margin + form_y + 10
+    draw.text((title_x, title_y), title_text, fill="black", font=title_font)
+
+    label_font_size = 14
+    try:
+        label_font = ImageFont.truetype("arial.ttf", label_font_size)
+    except IOError:
+        label_font = ImageFont.load_default()
+    username_label = "Username:"
+    email_label = "Email:"
+    password_label = "Password:"
+    confirm_password_label = "Confirm Password:"
+    username_bbox = draw.textbbox((0, 0), username_label, font=label_font)
+    email_bbox = draw.textbbox((0, 0), email_label, font=label_font)
+    password_bbox = draw.textbbox((0, 0), password_label, font=label_font)
+    confirm_password_bbox = draw.textbbox((0, 0), confirm_password_label, font=label_font)
+    draw.text((screen_margin + form_x + 10, title_y + title_height + 30), username_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, title_y + title_height + 60), email_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, title_y + title_height + 90), password_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, title_y + title_height + 120), confirm_password_label, fill="black", font=label_font)
+
+    field_width = form_width - 20
+    field_height = 20
+    username_field_y = title_y + title_height + 45
+    email_field_y = title_y + title_height + 75
+    password_field_y = title_y + title_height + 105
+    confirm_password_field_y = title_y + title_height + 135
+    draw.rectangle([screen_margin + form_x + 10, username_field_y,
+                    screen_margin + form_x + 10 + field_width, username_field_y + field_height],
+                   outline="black", width=border_width)
+    draw.rectangle([screen_margin + form_x + 10, email_field_y,
+                    screen_margin + form_x + 10 + field_width, email_field_y + field_height],
+                   outline="black", width=border_width)
+    draw.rectangle([screen_margin + form_x + 10, password_field_y,
+                    screen_margin + form_x + 10 + field_width, password_field_y + field_height],
+                   outline="black", width=border_width)
+    draw.rectangle([screen_margin + form_x + 10, confirm_password_field_y,
+                    screen_margin + form_x + 10 + field_width, confirm_password_field_y + field_height],
+                   outline="black", width=border_width)
+
+    button_width = 80
+    button_height = 30
+    button_x = (screen_width - button_width) // 2
+    button_y = form_y + form_height - button_height - 20
+    draw.rectangle([screen_margin + button_x, screen_margin + button_y,
+                    screen_margin + button_x + button_width, screen_margin + button_y + button_height],
+                   fill="black")
+    button_text = "Register"
+    button_font_size = 14
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
+    button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
+    button_text_width = button_bbox[2] - button_bbox[0]
+    button_text_height = button_bbox[3] - button_bbox[1]
+    button_text_x = screen_margin + button_x + (button_width - button_text_width) // 2
+    button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
+    draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
 if __name__ == "__main__":
     plantuml_script = sys.argv[1]
 
-    # Validate the PlantUML script
     try:
         validate_plantuml_script(plantuml_script)
     except ValueError as e:
@@ -253,15 +330,12 @@ if __name__ == "__main__":
     parsed_text = parse_text(plantuml_script)
     print("Parsed Text:", parsed_text)
 
-    # Perform syntax analysis
     actors, usecases, relationships = syntax_analysis(plantuml_script)
     print("Actors:", actors)
     print("Use Cases:", usecases)
     print("Relationships:", relationships)
 
-    # Map to wireframe elements
     wireframe_elements = map_to_wireframe_elements(actors, usecases, relationships)
     print("Wireframe Elements:", wireframe_elements)
 
-    # Generate wireframe template
     generate_phone_wireframe_template(wireframe_elements)
