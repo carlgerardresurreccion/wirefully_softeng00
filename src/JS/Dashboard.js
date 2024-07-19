@@ -35,23 +35,23 @@ function Dashboard() {
                 inputData: inputValue,
             });
             if (response.data.error) {
-                setErrorMessage(response.data.error); // Set error message received from backend
+                setErrorMessage(response.data.error);
                 handleViewChange('Dashboard');
             } else {
-                setResponseData(response.data.parsed_text);
+                setResponseData(response.data);  // Correctly set responseData with the entire response.data object
                 handleViewChange('Display');
             }
             console.log(response.data);
         } catch (error) {
             if (error.response && error.response.data && error.response.data.error) {
-                setErrorMessage(error.response.data.error); // Set error message from backend
+                setErrorMessage(error.response.data.error);
             } else {
                 setErrorMessage('An error occurred. Please try again.');
             }
             handleViewChange('Dashboard');
             console.error('Error sending data to server:', error);
         }
-    };
+    };    
 
     const handleLogout = async () => {
         try {
@@ -82,7 +82,7 @@ function Dashboard() {
             </div>
             <div>
                 {currentView === 'Display' ? (
-                    <Display responseData={responseData} onBackButtonClick={handleBackButtonClick} onSignUpClick={() => handleViewChange('Display')} />
+                    <Display responseData={responseData} onBackButtonClick={handleBackButtonClick} />
                 ) : (
                     <div className='Main'>
                         <h2>How can I help you today?</h2>
@@ -104,6 +104,7 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
 
 
 

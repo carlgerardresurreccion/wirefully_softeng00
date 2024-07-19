@@ -16,6 +16,18 @@ def parse_text(text):
 def validate_plantuml_script(text):
     if not text.startswith("@startuml") or not text.endswith("@enduml"):
         raise ValueError("The script must start with '@startuml' and end with '@enduml'.")
+    
+if __name__ == "__main__":
+    plantuml_script = sys.argv[1]
+
+    try:
+        validate_plantuml_script(plantuml_script)
+        parsed_text = parse_text(plantuml_script)
+        print(json.dumps({'parsed_text': parsed_text}))
+    except ValueError as e:
+        print(json.dumps(str(e)), file=sys.stderr)
+        sys.exit(1)
+
 
 def syntax_analysis(script):
     actor_pattern = r'actor\s+(\w+)'
@@ -44,42 +56,32 @@ def map_to_wireframe_elements(actors, usecases, relationships):
             'component': 'user icon'  # Example UI component
         })
 
+    distinct_usecases = []
     for usecase in usecases:
-        wireframe_elements.append({
+        usecase_elements = []
+        usecase_elements.append({
             'type': 'usecase',
             'name': usecase[1],
             'component': 'button',  # Example UI component
             'label': usecase[0]
         })
 
-    # Check for the "Login" use case
-    login_usecase = next((usecase for usecase in usecases if usecase[1] == 'Login'), None)
-    if login_usecase:
-        wireframe_elements.append({
-            'type': 'login_function',
-            'component': 'login form',  # Example UI component for login
-            'label': 'Login'
-        })
+        if usecase[1] == 'Login':
+            usecase_elements.append({
+                'type': 'login_function',
+                'component': 'login form',  # Example UI component for login
+                'label': 'Login'
+            })
+        elif usecase[1] == 'Register':
+            usecase_elements.append({
+                'type': 'register_function',
+                'component': 'register form',  
+                'label': 'Register'
+            })
 
-    # Check for the "Register" use case
-    register_usecase = next((usecase for usecase in usecases if usecase[1] == 'Register'), None)
-    if register_usecase:
-        wireframe_elements.append({
-            'type': 'register_function',
-            'component': 'register form',  
-            'label': 'Register'
-        })
+        distinct_usecases.append(usecase_elements)
 
-    for relationship in relationships:
-        wireframe_elements.append({
-            'type': 'relationship',
-            'from': relationship[0],
-            'to': relationship[1],
-            'label': relationship[2],
-            'component': 'line'  # Example UI component for relationships
-        })
-
-    return wireframe_elements
+    return distinct_usecases
 
 wireframe_elements = map_to_wireframe_elements(actors, usecases, relationships)
 print("Wireframe Elements:", wireframe_elements)
@@ -148,7 +150,9 @@ def phone_template(size, radius, fill, border_color, border_width):
 
     return rectangle
 
-def generate_phone_wireframe_template(elements):
+from PIL import Image, ImageDraw
+
+def generate_phone_wireframe_template(elements, image_path):
     img_width = 400
     img_height = 800
     screen_margin = 20
@@ -164,13 +168,16 @@ def generate_phone_wireframe_template(elements):
     img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
 
     for element in elements:
-        if element['type'] == 'login_function':
-            draw_login_form(draw, screen_margin, screen_width, screen_height, border_width)
-        elif element['type'] == 'register_function':
-            draw_register_form(draw, screen_margin, screen_width, screen_height, border_width)
+        if isinstance(element, dict) and 'type' in element:
+            if element['type'] == 'login_function':
+                draw_login_form(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'register_function':
+                draw_register_form(draw, screen_margin, screen_width, screen_height, border_width)
     
-    img.show()
-    img.save('phone_wireframe_template.png')
+    image_path = os.path.normpath(image_path)
+    img.save(image_path)
+    print(f"Image saved at: {image_path}")
+    return image_path
 
 def draw_login_form(draw, screen_margin, screen_width, screen_height, border_width):
     form_width = screen_width - 40
@@ -318,9 +325,21 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
-if __name__ == "__main__":
-    plantuml_script = sys.argv[1]
+import os 
+import sys
 
+import os
+import sys
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python nlp_processing.py <plantuml_script>")
+        sys.exit(1)
+    
+    plantuml_script = sys.argv[1]
+    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
+    
+    # Validate the PlantUML script
     try:
         validate_plantuml_script(plantuml_script)
     except ValueError as e:
@@ -330,12 +349,31 @@ if __name__ == "__main__":
     parsed_text = parse_text(plantuml_script)
     print("Parsed Text:", parsed_text)
 
+    # Perform syntax analysis
     actors, usecases, relationships = syntax_analysis(plantuml_script)
     print("Actors:", actors)
     print("Use Cases:", usecases)
     print("Relationships:", relationships)
 
-    wireframe_elements = map_to_wireframe_elements(actors, usecases, relationships)
-    print("Wireframe Elements:", wireframe_elements)
+    # Map to wireframe elements
+    wireframe_elements_list = map_to_wireframe_elements(actors, usecases, relationships)
+    print("Wireframe Elements:", wireframe_elements_list)
 
-    generate_phone_wireframe_template(wireframe_elements)
+    # Generate wireframe templates and save the images
+    image_paths = []
+    for idx, elements in enumerate(wireframe_elements_list):
+        image_filename = f'phone_wireframe_template_{idx + 1}.png'
+        image_path = os.path.join(output_dir, image_filename)
+        generated_image_path = generate_phone_wireframe_template(elements, image_path)
+        image_paths.append(generated_image_path)
+    
+    # Print and return the image paths
+    print("Image Paths:", image_paths)
+    relative_image_paths = [os.path.relpath(path, output_dir) for path in image_paths]
+    print("Relative Image Paths:", relative_image_paths)
+
+    return image_paths, relative_image_paths
+
+if __name__ == "__main__":
+    main()
+

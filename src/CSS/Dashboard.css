@@ -134,3 +134,30 @@
     color: red;
     margin-top: 10px;
 }
+
+.image-style {
+    width: 250px;  /* Set a fixed width for the images */
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+}
+
+.Display-Main {
+    padding: 20px;
+}
+
+.Below-NavBar {
+    margin-bottom: 20px;
+}
+
+.Image-Container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center the images horizontally */
+}
+
+.image-wrapper {
+    margin: 10px; /* Adjust margin for better spacing */
+}
