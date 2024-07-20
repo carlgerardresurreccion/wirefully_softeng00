@@ -23,8 +23,11 @@ app.use('/generated_images', express.static(generatedImagesPath));
 app.post('/process-data', (req, res) => {
     const inputData = req.body.inputData;
 
-    const pythonProcess = spawn('python', ['C:/wirefully_softeng/backend/myenv/main.py', inputData]);
+    //const pythonProcess = spawn('python', ['C:\Users\Alyssa Vivien\NodeJSProjects\wirefully_softeng\backend\myenv\main.py', inputData]);
 
+    const pythonScriptPath = path.join(__dirname, 'main.py');
+    const pythonProcess = spawn('python', [pythonScriptPath, inputData]);
+    
     let stdoutData = '';
     let stderrData = '';
 

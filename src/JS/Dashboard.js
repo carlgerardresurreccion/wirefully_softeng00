@@ -67,7 +67,7 @@ function Dashboard() {
     };
 
     return (
-        <div>
+        <div className='Whole-Page'>
             <div className="User-NavBar">
                 <div className="NavBar-left">
                     <img src={logo} className="App-logo" alt="logo" />
@@ -80,11 +80,11 @@ function Dashboard() {
                     <button className='userName' onClick={handleLogout}>Log Out</button>
                 </div>
             </div>
-            <div>
+            <div className='Main'>
                 {currentView === 'Display' ? (
                     <Display responseData={responseData} onBackButtonClick={handleBackButtonClick} />
                 ) : (
-                    <div className='Main'>
+                    <div>
                         <h2>How can I help you today?</h2>
                         <div className='query-input'>
                             <textarea

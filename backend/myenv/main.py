@@ -337,7 +337,7 @@ def main():
         sys.exit(1)
     
     plantuml_script = sys.argv[1]
-    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
+    output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
     
     # Validate the PlantUML script
     try:

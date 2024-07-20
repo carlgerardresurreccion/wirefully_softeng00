@@ -1,3 +1,9 @@
+.Whole-Page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .User-NavBar {
     height: 50px;
     display: flex;
@@ -7,17 +13,23 @@
     padding-left: 30px;
     padding-right: 30px;
     background-color: white;
+    position: fixed;  
+    top: 0;           
+    left: 0;          
+    right: 0;         
+    z-index: 1000;
 }
 
 .Main {
+    margin-top: 50px;
+    background-attachment: fixed;
     background-color: rgba(255, 255, 255, 0.3);
-    height: 93vh;
+    flex: 1;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     position: relative;
 }
 
@@ -64,13 +76,15 @@
 
 /*DISPLAY*/
 .Display-Main {
-    height: 93vh;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
+    background-attachment: fixed;
 }
 
 .Below-NavBar {
+    width: 95%;
     margin-top: 20px;
     margin-left: 35px;
     margin-right: 35px;
@@ -78,6 +92,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    position: fixed;
+    z-index: 1000;
+
+    height: 50px;
 }
 
 .backButton,
@@ -122,7 +141,6 @@
 
 .image-container {
     text-align: center;
-    margin-top: 20px;
 }
 
 .image-container img {
@@ -136,7 +154,7 @@
 }
 
 .image-style {
-    width: 250px;  /* Set a fixed width for the images */
+    width: 230px;
     height: auto;
     border: 2px solid #ccc;
     border-radius: 8px;
@@ -144,20 +162,16 @@
     margin: 10px;
 }
 
-.Display-Main {
-    padding: 20px;
-}
-
-.Below-NavBar {
-    margin-bottom: 20px;
-}
-
 .Image-Container {
+    height: 85vh;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Center the images horizontally */
+    justify-content: center; 
+    
+    overflow-y: auto;
+    margin-top: 60px;
 }
 
 .image-wrapper {
-    margin: 10px; /* Adjust margin for better spacing */
+    margin: 10px;
 }
