@@ -28,7 +28,6 @@ if __name__ == "__main__":
         print(json.dumps(str(e)), file=sys.stderr)
         sys.exit(1)
 
-
 def syntax_analysis(script):
     actor_pattern = r'actor\s+(\w+)'
     usecase_pattern = r'usecase\s+"(.*?)"\s+as\s+(\w+)'
@@ -101,7 +100,6 @@ def phone_template(size, radius, fill, border_color, border_width):
     rectangle = Image.new('RGBA', (width, height), (255, 255, 255, 0))
     corner = round_corner(radius, fill)
     
-    # Paste corners
     rectangle.paste(corner, (0, 0))
     rectangle.paste(corner.rotate(90), (0, height - radius))
     rectangle.paste(corner.rotate(180), (width - radius, height - radius))
@@ -109,39 +107,31 @@ def phone_template(size, radius, fill, border_color, border_width):
     
     draw = ImageDraw.Draw(rectangle)
     
-    # edges
     draw.rectangle([radius, 0, width - radius, border_width], fill=border_color)  # Top edge
     draw.rectangle([radius, height - border_width, width - radius, height], fill=border_color)  # Bottom edge
     draw.rectangle([0, radius, border_width, height - radius], fill=border_color)  # Left edge
     draw.rectangle([width - border_width, radius, width, height - radius], fill=border_color)  # Right edge
     
-    # arcs for rounded corners
     draw.arc([(0, 0), (radius * 2, radius * 2)], 180, 270, fill=border_color, width=border_width)
     draw.arc([(width - radius * 2, 0), (width, radius * 2)], 270, 360, fill=border_color, width=border_width)
     draw.arc([(0, height - radius * 2), (radius * 2, height)], 90, 180, fill=border_color, width=border_width)
     draw.arc([(width - radius * 2, height - radius * 2), (width, height)], 0, 90, fill=border_color, width=border_width)
     
-    # screen area centered horizontally and with equal spaces above and below
     screen_margin = 20
-    screen_width = width - 5 * screen_margin
     screen_height = height - 100 - 2 * screen_margin
     
-    # Calculate equal spaces above and below the screen area
     total_vertical_space = height - 100 - screen_height
     top_space = total_vertical_space // 2
-    bottom_space = total_vertical_space - top_space
     
     screen = [screen_margin, top_space + screen_margin, width - screen_margin, top_space + screen_margin + screen_height]
     draw.rectangle(screen, outline=border_color, width=border_width)
     
-    # top speaker
     speaker_width = 50
     speaker_height = 10
     speaker = [(width - speaker_width) // 2, screen[1] // 2 - speaker_height // 2,
                (width + speaker_width) // 2, screen[1] // 2 + speaker_height // 2]
     draw.rectangle(speaker, fill=border_color)
     
-    # home button moved higher
     button_radius = 30
     button_center = (width // 2, height - screen_margin - button_radius - 10)  # Moved up by 10 units
     draw.ellipse([(button_center[0] - button_radius, button_center[1] - button_radius),
@@ -181,13 +171,9 @@ def generate_phone_wireframe_template(elements, image_path):
 
 def draw_login_form(draw, screen_margin, screen_width, screen_height, border_width):
     form_width = screen_width - 40
-    form_height = 200
+    form_height = 250
     form_x = (screen_width - form_width) // 2
     form_y = (screen_height - form_height) // 2
-
-    draw.rectangle([screen_margin + form_x, screen_margin + form_y,
-                    screen_margin + form_x + form_width, screen_margin + form_y + form_height],
-                   outline="black", width=border_width)
 
     title_text = "Log in to your account"
     title_font_size = 16
@@ -209,18 +195,29 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
         label_font = ImageFont.load_default()
     username_label = "Username:"
     password_label = "Password:"
-    username_bbox = draw.textbbox((0, 0), username_label, font=label_font)
-    password_bbox = draw.textbbox((0, 0), password_label, font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 30), username_label, fill="black", font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 60), password_label, fill="black", font=label_font)
+    # Add space between title and username label
+    space_after_title = 40
+    username_label_y = title_y + title_height + space_after_title
+    draw.text((screen_margin + form_x + 10, username_label_y), username_label, fill="black", font=label_font)
+    
+    # Add space between username label and password label
+    space_after_username_label = 50
+    password_label_y = username_label_y + space_after_username_label
+    draw.text((screen_margin + form_x + 10, password_label_y), password_label, fill="black", font=label_font)
 
     field_width = form_width - 20
     field_height = 20
-    username_field_y = title_y + title_height + 45
-    password_field_y = title_y + title_height + 75
+    
+    # Add space between username label and username field
+    space_after_username_label = 20
+    username_field_y = username_label_y + space_after_username_label
     draw.rectangle([screen_margin + form_x + 10, username_field_y,
                     screen_margin + form_x + 10 + field_width, username_field_y + field_height],
                    outline="black", width=border_width)
+    
+    # Add space between password label and password field
+    space_after_password_label = 20
+    password_field_y = password_label_y + space_after_password_label
     draw.rectangle([screen_margin + form_x + 10, password_field_y,
                     screen_margin + form_x + 10 + field_width, password_field_y + field_height],
                    outline="black", width=border_width)
@@ -247,13 +244,9 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
 
 def draw_register_form(draw, screen_margin, screen_width, screen_height, border_width):
     form_width = screen_width - 40
-    form_height = 200
+    form_height = 300
     form_x = (screen_width - form_width) // 2
     form_y = (screen_height - form_height) // 2
-
-    draw.rectangle([screen_margin + form_x, screen_margin + form_y,
-                    screen_margin + form_x + form_width, screen_margin + form_y + form_height],
-                   outline="black", width=border_width)
 
     title_text = "Register your account"
     title_font_size = 16
@@ -277,21 +270,29 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     email_label = "Email:"
     password_label = "Password:"
     confirm_password_label = "Confirm Password:"
-    username_bbox = draw.textbbox((0, 0), username_label, font=label_font)
-    email_bbox = draw.textbbox((0, 0), email_label, font=label_font)
-    password_bbox = draw.textbbox((0, 0), password_label, font=label_font)
-    confirm_password_bbox = draw.textbbox((0, 0), confirm_password_label, font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 30), username_label, fill="black", font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 60), email_label, fill="black", font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 90), password_label, fill="black", font=label_font)
-    draw.text((screen_margin + form_x + 10, title_y + title_height + 120), confirm_password_label, fill="black", font=label_font)
+    # Add spaces between labels and fields
+    space_after_title = 40
+    space_between_labels = 50
+    space_between_label_and_field = 20
+
+    username_label_y = title_y + title_height + space_after_title
+    email_label_y = username_label_y + space_between_labels
+    password_label_y = email_label_y + space_between_labels
+    confirm_password_label_y = password_label_y + space_between_labels
+
+    draw.text((screen_margin + form_x + 10, username_label_y), username_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, email_label_y), email_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, password_label_y), password_label, fill="black", font=label_font)
+    draw.text((screen_margin + form_x + 10, confirm_password_label_y), confirm_password_label, fill="black", font=label_font)
 
     field_width = form_width - 20
     field_height = 20
-    username_field_y = title_y + title_height + 45
-    email_field_y = title_y + title_height + 75
-    password_field_y = title_y + title_height + 105
-    confirm_password_field_y = title_y + title_height + 135
+
+    username_field_y = username_label_y + space_between_label_and_field
+    email_field_y = email_label_y + space_between_label_and_field
+    password_field_y = password_label_y + space_between_label_and_field
+    confirm_password_field_y = confirm_password_label_y + space_between_label_and_field
+
     draw.rectangle([screen_margin + form_x + 10, username_field_y,
                     screen_margin + form_x + 10 + field_width, username_field_y + field_height],
                    outline="black", width=border_width)
@@ -308,7 +309,7 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     button_width = 80
     button_height = 30
     button_x = (screen_width - button_width) // 2
-    button_y = form_y + form_height - button_height - 20
+    button_y = confirm_password_field_y + field_height + 20  # Ensure button is below the last field
     draw.rectangle([screen_margin + button_x, screen_margin + button_y,
                     screen_margin + button_x + button_width, screen_margin + button_y + button_height],
                    fill="black")
@@ -339,7 +340,6 @@ def main():
     plantuml_script = sys.argv[1]
     output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
     
-    # Validate the PlantUML script
     try:
         validate_plantuml_script(plantuml_script)
     except ValueError as e:
@@ -349,17 +349,14 @@ def main():
     parsed_text = parse_text(plantuml_script)
     print("Parsed Text:", parsed_text)
 
-    # Perform syntax analysis
     actors, usecases, relationships = syntax_analysis(plantuml_script)
     print("Actors:", actors)
     print("Use Cases:", usecases)
     print("Relationships:", relationships)
 
-    # Map to wireframe elements
     wireframe_elements_list = map_to_wireframe_elements(actors, usecases, relationships)
     print("Wireframe Elements:", wireframe_elements_list)
 
-    # Generate wireframe templates and save the images
     image_paths = []
     for idx, elements in enumerate(wireframe_elements_list):
         image_filename = f'phone_wireframe_template_{idx + 1}.png'
@@ -367,7 +364,6 @@ def main():
         generated_image_path = generate_phone_wireframe_template(elements, image_path)
         image_paths.append(generated_image_path)
     
-    # Print and return the image paths
     print("Image Paths:", image_paths)
     relative_image_paths = [os.path.relpath(path, output_dir) for path in image_paths]
     print("Relative Image Paths:", relative_image_paths)
