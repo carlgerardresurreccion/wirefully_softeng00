@@ -23,7 +23,7 @@ app.use('/generated_images', express.static(generatedImagesPath));
 app.post('/process-data', (req, res) => {
     const inputData = req.body.inputData;
 
-    const pythonProcess = spawn('python', ['C:/wirefully_softeng/backend/myenv/nlp_processing.py', inputData]);
+    const pythonProcess = spawn('python', ['C:/wirefully_softeng/backend/myenv/main.py', inputData]);
 
     let stdoutData = '';
     let stderrData = '';
