@@ -41,9 +41,6 @@ def syntax_analysis(script):
 
 plantuml_script = sys.argv[1]
 actors, usecases, relationships = syntax_analysis(plantuml_script)
-print("Actors:", actors)
-print("Use Cases:", usecases)
-print("Relationships:", relationships)
 
 def map_to_wireframe_elements(actors, usecases, relationships):
     wireframe_elements = []
@@ -52,7 +49,7 @@ def map_to_wireframe_elements(actors, usecases, relationships):
         wireframe_elements.append({
             'type': 'actor',
             'name': actor,
-            'component': 'user icon'  # Example UI component
+            'component': 'user icon' 
         })
 
     distinct_usecases = []
@@ -61,14 +58,14 @@ def map_to_wireframe_elements(actors, usecases, relationships):
         usecase_elements.append({
             'type': 'usecase',
             'name': usecase[1],
-            'component': 'button',  # Example UI component
+            'component': 'button',  
             'label': usecase[0]
         })
 
         if usecase[1] == 'Login':
             usecase_elements.append({
                 'type': 'login_function',
-                'component': 'login form',  # Example UI component for login
+                'component': 'login form',
                 'label': 'Login'
             })
         elif usecase[1] == 'Register':
@@ -77,13 +74,18 @@ def map_to_wireframe_elements(actors, usecases, relationships):
                 'component': 'register form',  
                 'label': 'Register'
             })
+        elif usecase[1] == 'Dashboard':
+            usecase_elements.append({
+                'type': 'dashboard_function',
+                'component': 'dashboard',
+                'label': 'Dashboard'
+            })
 
         distinct_usecases.append(usecase_elements)
 
     return distinct_usecases
 
 wireframe_elements = map_to_wireframe_elements(actors, usecases, relationships)
-print("Wireframe Elements:", wireframe_elements)
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -95,7 +97,6 @@ def round_corner(radius, fill):
     return corner
 
 def phone_template(size, radius, fill, border_color, border_width):
-    """Draw a rounded rectangle with a border to look like a phone wireframe."""
     width, height = size
     rectangle = Image.new('RGBA', (width, height), (255, 255, 255, 0))
     corner = round_corner(radius, fill)
@@ -154,8 +155,13 @@ def generate_phone_wireframe_template(elements, image_path):
     img = Image.new('RGB', (img_width, img_height), 'white')
     draw = ImageDraw.Draw(img)
 
-    phone_screen = phone_template((screen_width, screen_height), border_radius, "white", "black", border_width)
-    img.paste(phone_screen, (screen_margin, screen_margin), phone_screen)
+    phone_screen = phone_template((img_width, img_height), border_radius, "white", "black", border_width)
+    img.paste(phone_screen, (0, 0), phone_screen)
+
+    internal_screen_x = screen_margin + 10
+    internal_screen_y = screen_margin + 70  
+    internal_screen_width = img_width - 2 * (screen_margin + 10)
+    internal_screen_height = img_height - 2 * screen_margin - 150 
 
     for element in elements:
         if isinstance(element, dict) and 'type' in element:
@@ -163,6 +169,8 @@ def generate_phone_wireframe_template(elements, image_path):
                 draw_login_form(draw, screen_margin, screen_width, screen_height, border_width)
             elif element['type'] == 'register_function':
                 draw_register_form(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'dashboard_function':
+                draw_dashboard(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
     
     image_path = os.path.normpath(image_path)
     img.save(image_path)
@@ -270,7 +278,7 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     email_label = "Email:"
     password_label = "Password:"
     confirm_password_label = "Confirm Password:"
-    # Add spaces between labels and fields
+
     space_after_title = 40
     space_between_labels = 50
     space_between_label_and_field = 20
@@ -325,6 +333,58 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     button_text_x = screen_margin + button_x + (button_width - button_text_width) // 2
     button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
+
+def draw_dashboard(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    vertical_offset = -30
+
+    # Draw the logo
+    logo_radius = 20
+    logo_x = screen_x + logo_radius + 10
+    logo_y = screen_y + logo_radius + 10 + vertical_offset
+    draw.ellipse([logo_x - logo_radius, logo_y - logo_radius, logo_x + logo_radius, logo_y + logo_radius],
+                 outline="black", width=border_width)
+
+    # Draw the app name
+    app_name_text = "App Name"
+    app_name_font_size = 14
+    try:
+        app_name_font = ImageFont.truetype("arial.ttf", app_name_font_size)
+    except IOError:
+        app_name_font = ImageFont.load_default()
+    app_name_bbox = draw.textbbox((0, 0), app_name_text, font=app_name_font)
+    app_name_width = app_name_bbox[2] - app_name_bbox[0]
+    app_name_height = app_name_bbox[3] - app_name_bbox[1]
+    app_name_x = screen_x + screen_width - app_name_width - 10
+    app_name_y = logo_y - app_name_height // 2
+    draw.text((app_name_x, app_name_y), app_name_text, fill="black", font=app_name_font)
+
+    # Draw the welcome message
+    welcome_text = "Welcome back!"
+    welcome_font_size = 24
+    try:
+        welcome_font = ImageFont.truetype("arial.ttf", welcome_font_size)
+    except IOError:
+        welcome_font = ImageFont.load_default()
+    welcome_bbox = draw.textbbox((0, 0), welcome_text, font=welcome_font)
+    welcome_width = welcome_bbox[2] - welcome_bbox[0]
+    welcome_x = screen_x + (screen_width - welcome_width) // 2
+    welcome_y = logo_y + logo_radius + 20
+    draw.text((welcome_x, welcome_y), welcome_text, fill="black", font=welcome_font)
+
+    # Draw the navbar
+    navbar_height = 50
+    navbar_y = screen_y + screen_height - navbar_height
+    draw.rectangle([screen_x, navbar_y, screen_x + screen_width, screen_y + screen_height], outline="black", width=border_width)
+
+    navbar_items = ["Home", "Notifications", "Settings"]
+    num_items = len(navbar_items)
+    item_width = screen_width // num_items
+
+    for i, item in enumerate(navbar_items):
+        item_x = screen_x + i * item_width
+        item_y = navbar_y + (navbar_height - app_name_font_size) // 2
+        item_text_width = draw.textbbox((0, 0), item, font=app_name_font)[2] - draw.textbbox((0, 0), item, font=app_name_font)[0]
+        draw.text((item_x + (item_width - item_text_width) // 2, item_y), item, fill="black", font=app_name_font)
 
 import os 
 import sys
