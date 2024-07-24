@@ -1,5 +1,6 @@
 import '../CSS/Dashboard.css';
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Display = ({ responseData, onBackButtonClick }) => {
     const [imageSrcs, setImageSrcs] = useState([]);
@@ -9,24 +10,34 @@ const Display = ({ responseData, onBackButtonClick }) => {
         if (responseData && responseData.success && responseData.imagePaths.length > 0) {
             const imageUrls = responseData.imagePaths.map(path => `http://localhost:3001/${path}`);
             setImageSrcs(imageUrls);
-            console.log("Image URLs:", imageUrls); // Log image URLs for debugging
         } else {
-            setErrorLoading(true); // Handle error cases if needed
+            setErrorLoading(true);
         }
     }, [responseData]);
-
-    console.log('Received responseData:', responseData); // Log responseData for debugging
 
     const handleBackButtonClick = () => {
         onBackButtonClick();
     };
 
-    const handleExportButtonClick = () => {
-        // Handle export logic
-    };
+    const handleExportButtonClick = async () => {
+        if (responseData && responseData.imagePaths) {
+            try {
+                const response = await axios.get('http://localhost:3001/export-images', {
+                    params: { images: responseData.imagePaths },
+                    responseType: 'blob', // Important
+                });
 
-    const handleImageError = () => {
-        setErrorLoading(true);
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'generated_images.zip');
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            } catch (error) {
+                console.error('Error exporting images:', error);
+            }
+        }
     };
 
     return (
@@ -42,7 +53,7 @@ const Display = ({ responseData, onBackButtonClick }) => {
                     <>
                         {imageSrcs.map((src, index) => (
                             <div key={index} className="image-wrapper">
-                                <img src={src} alt={`Generated Wireframe ${index + 1}`} className="image-style" onError={handleImageError} />
+                                <img src={src} alt={`Generated Wireframe ${index + 1}`} className="image-style" />
                             </div>
                         ))}
                     </>
@@ -53,6 +64,8 @@ const Display = ({ responseData, onBackButtonClick }) => {
 };
 
 export default Display;
+
+
 
 
 

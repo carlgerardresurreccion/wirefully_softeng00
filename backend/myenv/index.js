@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
 const cors = require('cors');
 const path = require('path');
+const zip = require('express-zip');
 
 const app = express();
 const port = 3001;
@@ -16,15 +17,11 @@ app.use(cors({
     credentials: true,
 }));
 
-// Serve static files
 const generatedImagesPath = path.join(__dirname, 'generated_images');
 app.use('/generated_images', express.static(generatedImagesPath));
 
 app.post('/process-data', (req, res) => {
     const inputData = req.body.inputData;
-
-    //const pythonProcess = spawn('python', ['C:\Users\Alyssa Vivien\NodeJSProjects\wirefully_softeng\backend\myenv\main.py', inputData]);
-
     const pythonScriptPath = path.join(__dirname, 'main.py');
     const pythonProcess = spawn('python', [pythonScriptPath, inputData]);
     
@@ -40,9 +37,7 @@ app.post('/process-data', (req, res) => {
     });
 
     pythonProcess.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
         if (code !== 0) {
-            console.error(`stderr: ${stderrData}`);
             res.status(500).json({ error: stderrData });
         } else {
             try {
@@ -60,13 +55,33 @@ app.post('/process-data', (req, res) => {
                     }
                 });
 
-                console.log('Image Paths:', imagePaths);
-                console.log('Relative Image Paths:', relativeImagePaths);
                 res.json({ success: true, imagePaths: relativeImagePaths });
             } catch (error) {
-                console.error('Error parsing Python output:', error);
                 res.status(500).json({ error: 'Error parsing Python output' });
             }
+        }
+    });
+});
+
+app.get('/export-images', (req, res) => {
+    const images = req.query.images;
+    if (!images) {
+        return res.status(400).json({ error: 'No images provided' });
+    }
+
+    console.log('Images to export:', images); // Debug log
+
+    const imagePaths = images.map(img => ({
+        path: path.join(generatedImagesPath, path.basename(img)),
+        name: path.basename(img),
+    }));
+
+    res.zip(imagePaths, 'generated_images.zip', (err) => {
+        if (err) {
+            console.error('Error creating zip:', err);
+            res.status(500).json({ error: 'Error creating zip' });
+        } else {
+            console.log('Zip file created and sent');
         }
     });
 });
@@ -74,6 +89,8 @@ app.post('/process-data', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
 
 
 
