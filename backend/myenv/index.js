@@ -1,8 +1,8 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
 const cors = require('cors');
-const path = require('path');
 const zip = require('express-zip');
 
 const app = express();
@@ -24,7 +24,7 @@ app.post('/process-data', (req, res) => {
     const inputData = req.body.inputData;
     const pythonScriptPath = path.join(__dirname, 'main.py');
     const pythonProcess = spawn('python', [pythonScriptPath, inputData]);
-    
+
     let stdoutData = '';
     let stderrData = '';
 
@@ -33,7 +33,7 @@ app.post('/process-data', (req, res) => {
     });
 
     pythonProcess.stderr.on('data', (data) => {
-        stderrData += data.toString();
+        stderrData = data.toString();
     });
 
     pythonProcess.on('close', (code) => {
@@ -44,18 +44,26 @@ app.post('/process-data', (req, res) => {
                 const outputLines = stdoutData.trim().split('\n');
                 let imagePaths = [];
                 let relativeImagePaths = [];
+                let actorData = {};
 
                 outputLines.forEach(line => {
                     if (line.startsWith('Image saved at: ')) {
                         const imagePath = line.replace('Image saved at: ', '').trim();
                         imagePaths.push(imagePath);
 
-                        const relativePath = path.relative(generatedImagesPath, imagePath).replace(/\\/g, '/');
-                        relativeImagePaths.push(`generated_images/${relativePath}`);
+                        const relativePath = path.relative(__dirname, imagePath).replace(/\\/g, '/');
+                        relativeImagePaths.push(`generated_images/${path.basename(relativePath)}`);
+                    } else if (line.startsWith('Actor:')) {
+                        const [actor, imagePath] = line.replace('Actor:', '').trim().split(',');
+                        if (!actorData[actor]) {
+                            actorData[actor] = [];
+                        }
+                        const relativePath = path.relative(__dirname, imagePath).replace(/\\/g, '/');
+                        actorData[actor].push(`generated_images/${path.basename(relativePath)}`);
                     }
                 });
 
-                res.json({ success: true, imagePaths: relativeImagePaths });
+                res.json({ success: true, actorData, imagePaths: relativeImagePaths });
             } catch (error) {
                 res.status(500).json({ error: 'Error parsing Python output' });
             }
@@ -89,6 +97,9 @@ app.get('/export-images', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
+
 
 
 

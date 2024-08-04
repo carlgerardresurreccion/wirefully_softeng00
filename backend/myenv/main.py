@@ -609,11 +609,11 @@ import sys
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python nlp_processing.py <plantuml_script>")
+        print("Usage: python main.py <plantuml_script>")
         sys.exit(1)
     
     plantuml_script = sys.argv[1]
-    output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
+    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
     
     try:
         validate_plantuml_script(plantuml_script)
@@ -638,6 +638,10 @@ def main():
         image_path = os.path.join(output_dir, image_filename)
         generated_image_path = generate_phone_wireframe_template(elements, image_path)
         image_paths.append(generated_image_path)
+
+        # Print actor and image path information
+        for actor in actors:
+            print(f"Actor: {actor}, {generated_image_path}")
     
     print("Image Paths:", image_paths)
     relative_image_paths = [os.path.relpath(path, output_dir) for path in image_paths]
@@ -647,4 +651,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

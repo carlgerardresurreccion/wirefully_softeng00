@@ -3,13 +3,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Display = ({ responseData, onBackButtonClick }) => {
-    const [imageSrcs, setImageSrcs] = useState([]);
+    const [actorImageSrcs, setActorImageSrcs] = useState({});
     const [errorLoading, setErrorLoading] = useState(false);
 
     useEffect(() => {
-        if (responseData && responseData.success && responseData.imagePaths.length > 0) {
-            const imageUrls = responseData.imagePaths.map(path => `http://localhost:3001/${path}`);
-            setImageSrcs(imageUrls);
+        if (responseData && responseData.success && responseData.actorData) {
+            const actorImageUrls = {};
+            for (const actor in responseData.actorData) {
+                actorImageUrls[actor] = responseData.actorData[actor].map(imagePath => {
+                    console.log(`http://localhost:3001/${imagePath}`);
+                    return `http://localhost:3001/${imagePath}`;
+                });
+            }
+            setActorImageSrcs(actorImageUrls);
         } else {
             setErrorLoading(true);
         }
@@ -51,9 +57,14 @@ const Display = ({ responseData, onBackButtonClick }) => {
                     <p>Error loading images.</p>
                 ) : (
                     <>
-                        {imageSrcs.map((src, index) => (
-                            <div key={index} className="image-wrapper">
-                                <img src={src} alt={`Generated Wireframe ${index + 1}`} className="image-style" />
+                        {Object.keys(actorImageSrcs).map((actor, index) => (
+                            <div key={index} className="actor-section">
+                                <h3 className='actor'>Actor: {actor}</h3>
+                                {actorImageSrcs[actor].map((src, imgIndex) => (
+                                    <div key={imgIndex} className="image-wrapper">
+                                        <img src={src} alt={`Generated Wireframe ${actor} ${imgIndex + 1}`} className="image-style" />
+                                    </div>
+                                ))}
                             </div>
                         ))}
                     </>
@@ -64,6 +75,9 @@ const Display = ({ responseData, onBackButtonClick }) => {
 };
 
 export default Display;
+
+
+
 
 
 

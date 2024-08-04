@@ -173,5 +173,10 @@
 }
 
 .image-wrapper {
-    margin: 10px;
+    margin: 50px;
+}
+
+.actor {
+    justify-content: center;
+    text-align: center;
 }
