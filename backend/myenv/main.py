@@ -696,6 +696,76 @@ def draw_admin_payment(draw, screen_x, screen_y, screen_width, screen_height, bo
     button_text_y = button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
+def draw_admin_login(draw, screen_margin, screen_width, screen_height, border_width):
+    form_width = screen_width - 40
+    form_height = 250
+    form_x = (screen_width - form_width) // 2
+    form_y = (screen_height - form_height) // 2
+
+    title_text = "Admin Log In"
+    title_font_size = 16
+    try:
+        title_font = ImageFont.truetype("arial.ttf", title_font_size)
+    except IOError:
+        title_font = ImageFont.load_default()
+    title_bbox = draw.textbbox((0, 0), title_text, font=title_font)
+    title_width = title_bbox[2] - title_bbox[0]
+    title_height = title_bbox[3] - title_bbox[1]
+    title_x = screen_margin + form_x + (form_width - title_width) // 2
+    title_y = screen_margin + form_y + 10
+    draw.text((title_x, title_y), title_text, fill="black", font=title_font)
+
+    label_font_size = 14
+    try:
+        label_font = ImageFont.truetype("arial.ttf", label_font_size)
+    except IOError:
+        label_font = ImageFont.load_default()
+    username_label = "Username:"
+    password_label = "Password:"
+
+    space_after_title = 40
+    username_label_y = title_y + title_height + space_after_title
+    draw.text((screen_margin + form_x + 10, username_label_y), username_label, fill="black", font=label_font)
+    
+    space_after_username_label = 50
+    password_label_y = username_label_y + space_after_username_label
+    draw.text((screen_margin + form_x + 10, password_label_y), password_label, fill="black", font=label_font)
+
+    field_width = form_width - 20
+    field_height = 20
+    
+    space_after_username_label = 20
+    username_field_y = username_label_y + space_after_username_label
+    draw.rectangle([screen_margin + form_x + 10, username_field_y,
+                    screen_margin + form_x + 10 + field_width, username_field_y + field_height],
+                   outline="black", width=border_width)
+    
+    space_after_password_label = 20
+    password_field_y = password_label_y + space_after_password_label
+    draw.rectangle([screen_margin + form_x + 10, password_field_y,
+                    screen_margin + form_x + 10 + field_width, password_field_y + field_height],
+                   outline="black", width=border_width)
+
+    button_width = 80
+    button_height = 30
+    button_x = (screen_width - button_width) // 2
+    button_y = form_y + form_height - button_height - 20
+    draw.rectangle([screen_margin + button_x, screen_margin + button_y,
+                    screen_margin + button_x + button_width, screen_margin + button_y + button_height],
+                   fill="black")
+    button_text = "Log In"
+    button_font_size = 14
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
+    button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
+    button_text_width = button_bbox[2] - button_bbox[0]
+    button_text_height = button_bbox[3] - button_bbox[1]
+    button_text_x = screen_margin + button_x + (button_width - button_text_width) // 2
+    button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
+    draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
+
 import os
 import sys
 
