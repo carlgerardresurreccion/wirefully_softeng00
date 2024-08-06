@@ -8,6 +8,14 @@ import re
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
+class Actor:
+    def __init__(self, name):
+        self.name = name
+        self.use_cases = []
+
+    def add_use_case(self, use_case):
+        self.use_cases.append(use_case)
+
 def parse_text(text):
     tokens = word_tokenize(text)
     tagged_tokens = pos_tag(tokens)
@@ -42,60 +50,113 @@ def syntax_analysis(script):
 plantuml_script = sys.argv[1]
 actors, usecases, relationships = syntax_analysis(plantuml_script)
 
+# def map_to_wireframe_elements(actors, usecases, relationships):
+#     wireframe_elements = []
+
+#     for actor in actors:
+#         wireframe_elements.append({
+#             'type': 'actor',
+#             'name': actor,
+#             'component': 'user icon' 
+#         })
+
+#     distinct_usecases = []
+#     for usecase in usecases:
+#         usecase_elements = []
+#         usecase_elements.append({
+#             'type': 'usecase',
+#             'name': usecase[1],
+#             'component': 'button',  
+#             'label': usecase[0]
+#         })
+
+#         if usecase[1] == 'Login':
+#             usecase_elements.append({
+#                 'type': 'login_function',
+#                 'component': 'login form',
+#                 'label': 'Login'
+#             })
+#         elif usecase[1] == 'Register':
+#             usecase_elements.append({
+#                 'type': 'register_function',
+#                 'component': 'register form',  
+#                 'label': 'Register'
+#             })
+#         elif usecase[1] == 'Dashboard':
+#             usecase_elements.append({
+#                 'type': 'dashboard_function',
+#                 'component': 'dashboard',
+#                 'label': 'Dashboard'
+#             })
+#         elif usecase[1] == 'Checkout':
+#             usecase_elements.append({
+#                 'type': 'checkout_function',
+#                 'component': 'checkout',
+#                 'label': 'Checkout'
+#             })
+#         elif usecase[1] == 'Payment':
+#             usecase_elements.append({
+#                 'type': 'payment_function',
+#                 'component': 'payment',
+#                 'label': 'Payment'
+#             })
+
+#         distinct_usecases.append(usecase_elements)
+
+#     return distinct_usecases
+
 def map_to_wireframe_elements(actors, usecases, relationships):
-    wireframe_elements = []
-
-    for actor in actors:
-        wireframe_elements.append({
-            'type': 'actor',
-            'name': actor,
-            'component': 'user icon' 
-        })
-
-    distinct_usecases = []
+    actor_objects = {actor: Actor(actor) for actor in actors}
+    
     for usecase in usecases:
-        usecase_elements = []
+        usecase_name, usecase_alias = usecase[0], usecase[1]
+        for relationship in relationships:
+            if relationship[1] == usecase_alias:
+                actor_objects[relationship[0]].add_use_case((usecase_name, usecase_alias))
+    
+    return actor_objects
+
+def create_use_case_elements(use_case):
+    use_case_name, use_case_alias = use_case
+    usecase_elements = [{
+        'type': 'usecase',
+        'name': use_case_alias,
+        'component': 'button',  
+        'label': use_case_name
+    }]
+
+    if use_case_alias == 'Login':
         usecase_elements.append({
-            'type': 'usecase',
-            'name': usecase[1],
-            'component': 'button',  
-            'label': usecase[0]
+            'type': 'login_function',
+            'component': 'login form',
+            'label': 'Login'
+        })
+    elif use_case_alias == 'Register':
+        usecase_elements.append({
+            'type': 'register_function',
+            'component': 'register form',  
+            'label': 'Register'
+        })
+    elif use_case_alias == 'Dashboard':
+        usecase_elements.append({
+            'type': 'dashboard_function',
+            'component': 'dashboard',
+            'label': 'Dashboard'
+        })
+    elif use_case_alias == 'Checkout':
+        usecase_elements.append({
+            'type': 'checkout_function',
+            'component': 'checkout',
+            'label': 'Checkout'
+        })
+    elif use_case_alias == 'Payment':
+        usecase_elements.append({
+            'type': 'payment_function',
+            'component': 'payment',
+            'label': 'Payment'
         })
 
-        if usecase[1] == 'Login':
-            usecase_elements.append({
-                'type': 'login_function',
-                'component': 'login form',
-                'label': 'Login'
-            })
-        elif usecase[1] == 'Register':
-            usecase_elements.append({
-                'type': 'register_function',
-                'component': 'register form',  
-                'label': 'Register'
-            })
-        elif usecase[1] == 'Dashboard':
-            usecase_elements.append({
-                'type': 'dashboard_function',
-                'component': 'dashboard',
-                'label': 'Dashboard'
-            })
-        elif usecase[1] == 'Checkout':
-            usecase_elements.append({
-                'type': 'checkout_function',
-                'component': 'checkout',
-                'label': 'Checkout'
-            })
-        elif usecase[1] == 'Payment':
-            usecase_elements.append({
-                'type': 'payment_function',
-                'component': 'payment',
-                'label': 'Payment'
-            })
-
-        distinct_usecases.append(usecase_elements)
-
-    return distinct_usecases
+    return usecase_elements
 
 wireframe_elements = map_to_wireframe_elements(actors, usecases, relationships)
 
@@ -601,9 +662,6 @@ def draw_payment(draw, screen_x, screen_y, screen_width, screen_height, border_w
     button_text_y = button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
-import os 
-import sys
-
 import os
 import sys
 
@@ -614,6 +672,9 @@ def main():
     
     plantuml_script = sys.argv[1]
     output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     
     try:
         validate_plantuml_script(plantuml_script)
@@ -629,19 +690,27 @@ def main():
     print("Use Cases:", usecases)
     print("Relationships:", relationships)
 
-    wireframe_elements_list = map_to_wireframe_elements(actors, usecases, relationships)
-    print("Wireframe Elements:", wireframe_elements_list)
+    actor_objects = map_to_wireframe_elements(actors, usecases, relationships)
+    print("Actor Objects:", actor_objects)
 
     image_paths = []
-    for idx, elements in enumerate(wireframe_elements_list):
-        image_filename = f'phone_wireframe_template_{idx + 1}.png'
-        image_path = os.path.join(output_dir, image_filename)
-        generated_image_path = generate_phone_wireframe_template(elements, image_path)
-        image_paths.append(generated_image_path)
 
-        # Print actor and image path information
-        for actor in actors:
-            print(f"Actor: {actor}, {generated_image_path}")
+    for actor_name, actor_obj in actor_objects.items():
+        for idx, use_case in enumerate(actor_obj.use_cases):
+            usecase_elements = create_use_case_elements(use_case)
+            
+            image_filename = f'{actor_name}_usecase_{idx + 1}.png'
+            image_path = os.path.join(output_dir, image_filename)
+            
+            generated_image_path = generate_phone_wireframe_template(usecase_elements, image_path)
+            if not os.path.exists(generated_image_path):
+                print(f"Error: Image {generated_image_path} was not created.")
+                continue
+
+            image_paths.append(generated_image_path)
+
+            print(f"Image saved at: {generated_image_path}")
+            print(f"Actor: {actor_name}, {generated_image_path}")
     
     print("Image Paths:", image_paths)
     relative_image_paths = [os.path.relpath(path, output_dir) for path in image_paths]
@@ -651,5 +720,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
 
 

@@ -54,7 +54,9 @@ app.post('/process-data', (req, res) => {
                         const relativePath = path.relative(__dirname, imagePath).replace(/\\/g, '/');
                         relativeImagePaths.push(`generated_images/${path.basename(relativePath)}`);
                     } else if (line.startsWith('Actor:')) {
-                        const [actor, imagePath] = line.replace('Actor:', '').trim().split(',');
+                        const parts = line.replace('Actor:', '').trim().split(',');
+                        const actor = parts[0].trim();
+                        const imagePath = parts[1].trim();
                         if (!actorData[actor]) {
                             actorData[actor] = [];
                         }
@@ -97,6 +99,8 @@ app.get('/export-images', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
 
 
 
