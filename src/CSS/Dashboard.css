@@ -35,6 +35,7 @@
 
 .Main h2 {
     color: rgba(49, 54, 63, 0.3);
+    text-align: center;
 
     z-index: 1;
 }
