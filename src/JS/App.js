@@ -2,7 +2,6 @@ import '../CSS/App.css';
 import { BrowserRouter as Routes, Route } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import Dashboard from './Dashboard';
-import Display from './Display';
 import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import ProtectedRoute from './ProtectedRoute';
 

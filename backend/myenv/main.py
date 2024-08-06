@@ -50,61 +50,6 @@ def syntax_analysis(script):
 plantuml_script = sys.argv[1]
 actors, usecases, relationships = syntax_analysis(plantuml_script)
 
-# def map_to_wireframe_elements(actors, usecases, relationships):
-#     wireframe_elements = []
-
-#     for actor in actors:
-#         wireframe_elements.append({
-#             'type': 'actor',
-#             'name': actor,
-#             'component': 'user icon' 
-#         })
-
-#     distinct_usecases = []
-#     for usecase in usecases:
-#         usecase_elements = []
-#         usecase_elements.append({
-#             'type': 'usecase',
-#             'name': usecase[1],
-#             'component': 'button',  
-#             'label': usecase[0]
-#         })
-
-#         if usecase[1] == 'Login':
-#             usecase_elements.append({
-#                 'type': 'login_function',
-#                 'component': 'login form',
-#                 'label': 'Login'
-#             })
-#         elif usecase[1] == 'Register':
-#             usecase_elements.append({
-#                 'type': 'register_function',
-#                 'component': 'register form',  
-#                 'label': 'Register'
-#             })
-#         elif usecase[1] == 'Dashboard':
-#             usecase_elements.append({
-#                 'type': 'dashboard_function',
-#                 'component': 'dashboard',
-#                 'label': 'Dashboard'
-#             })
-#         elif usecase[1] == 'Checkout':
-#             usecase_elements.append({
-#                 'type': 'checkout_function',
-#                 'component': 'checkout',
-#                 'label': 'Checkout'
-#             })
-#         elif usecase[1] == 'Payment':
-#             usecase_elements.append({
-#                 'type': 'payment_function',
-#                 'component': 'payment',
-#                 'label': 'Payment'
-#             })
-
-#         distinct_usecases.append(usecase_elements)
-
-#     return distinct_usecases
-
 def map_to_wireframe_elements(actors, usecases, relationships):
     actor_objects = {actor: Actor(actor) for actor in actors}
     
@@ -247,7 +192,7 @@ def generate_phone_wireframe_template(elements, image_path):
             elif element['type'] == 'checkout_function':
                 draw_checkout(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
             elif element['type'] == 'payment_function':
-                draw_payment(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
+                draw_admin_payment(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
     
     image_path = os.path.normpath(image_path)
     img.save(image_path)
@@ -280,12 +225,11 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
         label_font = ImageFont.load_default()
     username_label = "Username:"
     password_label = "Password:"
-    # Add space between title and username label
+
     space_after_title = 40
     username_label_y = title_y + title_height + space_after_title
     draw.text((screen_margin + form_x + 10, username_label_y), username_label, fill="black", font=label_font)
     
-    # Add space between username label and password label
     space_after_username_label = 50
     password_label_y = username_label_y + space_after_username_label
     draw.text((screen_margin + form_x + 10, password_label_y), password_label, fill="black", font=label_font)
@@ -293,14 +237,12 @@ def draw_login_form(draw, screen_margin, screen_width, screen_height, border_wid
     field_width = form_width - 20
     field_height = 20
     
-    # Add space between username label and username field
     space_after_username_label = 20
     username_field_y = username_label_y + space_after_username_label
     draw.rectangle([screen_margin + form_x + 10, username_field_y,
                     screen_margin + form_x + 10 + field_width, username_field_y + field_height],
                    outline="black", width=border_width)
     
-    # Add space between password label and password field
     space_after_password_label = 20
     password_field_y = password_label_y + space_after_password_label
     draw.rectangle([screen_margin + form_x + 10, password_field_y,
@@ -394,7 +336,7 @@ def draw_register_form(draw, screen_margin, screen_width, screen_height, border_
     button_width = 80
     button_height = 30
     button_x = (screen_width - button_width) // 2
-    button_y = confirm_password_field_y + field_height + 20  # Ensure button is below the last field
+    button_y = confirm_password_field_y + field_height + 20 
     draw.rectangle([screen_margin + button_x, screen_margin + button_y,
                     screen_margin + button_x + button_width, screen_margin + button_y + button_height],
                    fill="black")
@@ -503,7 +445,7 @@ def draw_checkout(draw, screen_x, screen_y, screen_width, screen_height, border_
         address_font = ImageFont.truetype("arial.ttf", address_font_size)
     except IOError:
         address_font = ImageFont.load_default()
-    address_y = header_y + header_height + 30  # Add space below the header
+    address_y = header_y + header_height + 30  
     contact_y = address_y + 30
     draw.text((screen_x + 10, address_y), address_text, fill="black", font=address_font)
     draw.text((screen_x + 10, contact_y), contact_text, fill="black", font=address_font)
@@ -662,6 +604,98 @@ def draw_payment(draw, screen_x, screen_y, screen_width, screen_height, border_w
     button_text_y = button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
+def draw_admin_payment(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    vertical_offset = -30
+
+    logo_radius = 20
+    logo_x = screen_x + logo_radius + 10
+    logo_y = screen_y + logo_radius + 10 + vertical_offset
+    draw.ellipse([logo_x - logo_radius, logo_y - logo_radius, logo_x + logo_radius, logo_y + logo_radius],
+                 outline="black", width=border_width)
+
+    app_name_text = "Admin"
+    app_name_font_size = 14
+    try:
+        app_name_font = ImageFont.truetype("arial.ttf", app_name_font_size)
+    except IOError:
+        app_name_font = ImageFont.load_default()
+    app_name_bbox = draw.textbbox((0, 0), app_name_text, font=app_name_font)
+    app_name_width = app_name_bbox[2] - app_name_bbox[0]
+    app_name_height = app_name_bbox[3] - app_name_bbox[1]
+    app_name_x = screen_x + screen_width - app_name_width - 10
+    app_name_y = logo_y - app_name_height // 2
+    draw.text((app_name_x, app_name_y), app_name_text, fill="black", font=app_name_font)
+
+    vertical_offset += 50
+
+    header_text = "Payment Management"
+    header_font_size = 24
+    try:
+        header_font = ImageFont.truetype("arial.ttf", header_font_size)
+    except IOError:
+        header_font = ImageFont.load_default()
+    header_bbox = draw.textbbox((0, 0), header_text, font=header_font)
+    header_width = header_bbox[2] - header_bbox[0]
+    header_height = header_bbox[3] - header_bbox[1]
+    header_x = screen_x + (screen_width - header_width) // 2
+    header_y = screen_y + 10 + vertical_offset
+    draw.text((header_x, header_y), header_text, fill="black", font=header_font)
+
+    details_font_size = 18
+    try:
+        details_font = ImageFont.truetype("arial.ttf", details_font_size)
+    except IOError:
+        details_font = ImageFont.load_default()
+
+    details_y = header_y + header_height + 30
+    details = [
+        f"Order ID: 123456",
+        f"Customer: John Doe",
+        f"Adress: 1234 Example St.",
+        f"Contact: *123456789",
+        f"Total Quantity: 7",
+        f"Total Price: $70.00",
+        f"Shipping Fee: $8.00",
+        f"Payment Status: Incomplete"
+    ]
+    for i, detail in enumerate(details):
+        draw.text((screen_x + 10, details_y + i * 30), detail, fill="black", font=details_font)
+
+    payment_status_text = "Payment Status"
+    payment_status_font_size = 20
+    try:
+        payment_status_font = ImageFont.truetype("arial.ttf", payment_status_font_size)
+    except IOError:
+        payment_status_font = ImageFont.load_default()
+    payment_status_y = details_y + len(details) * 30 + 30
+    draw.text((screen_x + 10, payment_status_y), payment_status_text, fill="black", font=payment_status_font)
+
+    dropdown_y = payment_status_y + 30
+    dropdown_width = screen_width - 20
+    dropdown_height = 30
+    draw.rectangle([screen_x + 10, dropdown_y, screen_x + 10 + dropdown_width, dropdown_y + dropdown_height],
+                   outline="black", width=border_width)
+    draw.text((screen_x + 20, dropdown_y + 5), "Select payment status...", fill="black", font=details_font)
+
+    button_width = 150
+    button_height = 40
+    button_x = screen_x + (screen_width - button_width) // 2
+    button_y = screen_y + screen_height - button_height - 20
+    draw.rectangle([button_x, button_y, button_x + button_width, button_y + button_height], fill="black")
+
+    button_text = "Update Status"
+    button_font_size = 20
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
+    button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
+    button_text_width = button_bbox[2] - button_bbox[0]
+    button_text_height = button_bbox[3] - button_bbox[1]
+    button_text_x = button_x + (button_width - button_text_width) // 2
+    button_text_y = button_y + (button_height - button_text_height) // 2
+    draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
+
 import os
 import sys
 
@@ -671,8 +705,8 @@ def main():
         sys.exit(1)
     
     plantuml_script = sys.argv[1]
-    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
-    
+    output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
@@ -720,8 +754,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
