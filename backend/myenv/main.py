@@ -100,6 +100,18 @@ def create_use_case_elements(use_case):
             'component': 'payment',
             'label': 'Payment'
         })
+    elif use_case_alias == 'AdminPayment':
+        usecase_elements.append({
+            'type': 'admin_payment_function',
+            'component': 'adminpayment',
+            'label': 'AdminPayment'
+        })
+    elif use_case_alias == 'AdminLogin':
+        usecase_elements.append({
+            'type': 'admin_login_function',
+            'component': 'adminlogin',
+            'label': 'AdminLogin'
+        })
 
     return usecase_elements
 
@@ -192,7 +204,11 @@ def generate_phone_wireframe_template(elements, image_path):
             elif element['type'] == 'checkout_function':
                 draw_checkout(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
             elif element['type'] == 'payment_function':
+                draw_payment(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
+            elif element['type'] == 'admin_payment_function':
                 draw_admin_payment(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
+            elif element['type'] == 'admin_login_function':
+                draw_admin_login(draw, screen_margin, screen_width, screen_height, border_width)
     
     image_path = os.path.normpath(image_path)
     img.save(image_path)
@@ -775,7 +791,7 @@ def main():
         sys.exit(1)
     
     plantuml_script = sys.argv[1]
-    output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
+    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
