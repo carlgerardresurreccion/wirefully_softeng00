@@ -112,6 +112,30 @@ def create_use_case_elements(use_case):
             'component': 'adminlogin',
             'label': 'AdminLogin'
         })
+    elif use_case_alias == 'GradeExam':
+        usecase_elements.append({
+            'type': 'grade_exam_function',
+            'component': 'gradeexam',
+            'label': 'GradeExam'
+        })
+    elif use_case_alias == 'CourseScreen':
+        usecase_elements.append({
+            'type': 'course_screen_function',
+            'component': 'coursescreen',
+            'label': 'CourseScreen'
+        })
+    elif use_case_alias == 'CourseInformation':
+        usecase_elements.append({
+            'type': 'course_information_function',
+            'component': 'courseinformation',
+            'label': 'CourseInformation'
+        })
+    elif use_case_alias == 'EnrollInCourse':
+        usecase_elements.append({
+            'type': 'enroll_in_course_function',
+            'component': 'enrollincourse',
+            'label': 'EnrollInCourse'
+        })
 
     return usecase_elements
 
@@ -171,6 +195,7 @@ def phone_template(size, radius, fill, border_color, border_width):
 
     return rectangle
 
+import textwrap
 from PIL import Image, ImageDraw
 
 def generate_phone_wireframe_template(elements, image_path):
@@ -209,6 +234,14 @@ def generate_phone_wireframe_template(elements, image_path):
                 draw_admin_payment(draw, internal_screen_x, internal_screen_y, internal_screen_width, internal_screen_height, border_width)
             elif element['type'] == 'admin_login_function':
                 draw_admin_login(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'grade_exam_function':
+                draw_grade_exam_professor(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'course_screen_function':
+                draw_manage_course(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'course_information_function':
+                draw_access_course_information(draw, screen_margin, screen_width, screen_height, border_width)
+            elif element['type'] == 'enroll_in_course_function':
+                draw_enroll_in_course_student(draw, screen_margin, screen_width, screen_height, border_width)
     
     image_path = os.path.normpath(image_path)
     img.save(image_path)
@@ -782,6 +815,232 @@ def draw_admin_login(draw, screen_margin, screen_width, screen_height, border_wi
     button_text_y = screen_margin + button_y + (button_height - button_text_height) // 2
     draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
 
+def draw_logo_and_app_name(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    vertical_offset = -30
+
+    logo_radius = 20
+    logo_x = screen_x + logo_radius + 10
+    logo_y = screen_y + logo_radius + 10 + vertical_offset
+    draw.ellipse([logo_x - logo_radius, logo_y - logo_radius, logo_x + logo_radius, logo_y + logo_radius],
+                 outline="black", width=border_width)
+
+    app_name_text = "App Name"
+    app_name_font_size = 14
+    try:
+        app_name_font = ImageFont.truetype("arial.ttf", app_name_font_size)
+    except IOError:
+        app_name_font = ImageFont.load_default()
+    app_name_bbox = draw.textbbox((0, 0), app_name_text, font=app_name_font)
+    app_name_width = app_name_bbox[2] - app_name_bbox[0]
+    app_name_height = app_name_bbox[3] - app_name_bbox[1]
+    app_name_x = screen_x + screen_width - app_name_width - 10
+    app_name_y = logo_y - app_name_height // 2
+    draw.text((app_name_x, app_name_y), app_name_text, fill="black", font=app_name_font)
+
+def draw_grade_exam_professor(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    draw_logo_and_app_name(draw, screen_x, screen_y, screen_width, screen_height, border_width)
+
+    vertical_offset = 50
+
+    header_text = "Grade Exam"
+    header_font_size = 24
+    try:
+        header_font = ImageFont.truetype("arial.ttf", header_font_size)
+    except IOError:
+        header_font = ImageFont.load_default()
+    header_bbox = draw.textbbox((0, 0), header_text, font=header_font)
+    header_width = header_bbox[2] - header_bbox[0]
+    header_height = header_bbox[3] - header_bbox[1]
+    header_x = screen_x + (screen_width - header_width) // 2
+    header_y = screen_y + 10 + vertical_offset
+    draw.text((header_x, header_y), header_text, fill="black", font=header_font)
+
+    details_font_size = 18
+    try:
+        details_font = ImageFont.truetype("arial.ttf", details_font_size)
+    except IOError:
+        details_font = ImageFont.load_default()
+
+    details_y = header_y + header_height + 30
+    details = [
+        f"Course: CS101",
+        f"Exam: Midterm",
+        f"Student ID: 123456",
+        f"Student Name: John Doe"
+    ]
+    for i, detail in enumerate(details):
+        draw.text((screen_x + 10, details_y + i * 30), detail, fill="black", font=details_font)
+
+    grade_label = "Grade:"
+    grade_input_width = 250
+    grade_input_x = screen_x + 10
+    grade_input_y = details_y + len(details) * 30 + 20
+    draw.text((grade_input_x, grade_input_y), grade_label, fill="black", font=details_font)
+    draw.rectangle([grade_input_x + 70, grade_input_y - 5, grade_input_x + 70 + grade_input_width, grade_input_y + 25],
+                   outline="black", width=border_width)
+
+    button_width = 150
+    button_height = 40
+    button_x = screen_x + (screen_width - button_width) // 2
+    button_y = screen_y + screen_height - button_height - 20
+    draw.rectangle([button_x, button_y, button_x + button_width, button_y + button_height], fill="black")
+
+    button_text = "Submit Grade"
+    button_font_size = 20
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
+    button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
+    button_text_width = button_bbox[2] - button_bbox[0]
+    button_text_height = button_bbox[3] - button_bbox[1]
+    button_text_x = button_x + (button_width - button_text_width) // 2
+    button_text_y = button_y + (button_height - button_text_height) // 2
+    draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
+
+def draw_manage_course(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    draw_logo_and_app_name(draw, screen_x, screen_y, screen_width, screen_height, border_width)
+
+    vertical_offset = 50
+
+    header_text = "Manage Course"
+    header_font_size = 24
+    try:
+        header_font = ImageFont.truetype("arial.ttf", header_font_size)
+    except IOError:
+        header_font = ImageFont.load_default()
+    header_bbox = draw.textbbox((0, 0), header_text, font=header_font)
+    header_width = header_bbox[2] - header_bbox[0]
+    header_height = header_bbox[3] - header_bbox[1]
+    header_x = screen_x + (screen_width - header_width) // 2
+    header_y = screen_y + 10 + vertical_offset
+    draw.text((header_x, header_y), header_text, fill="black", font=header_font)
+
+    details_font_size = 18
+    try:
+        details_font = ImageFont.truetype("arial.ttf", details_font_size)
+    except IOError:
+        details_font = ImageFont.load_default()
+
+    details_y = header_y + header_height + 30
+    details = [
+        f"Course: CS101",
+        f"Instructor: Prof. Smith"
+    ]
+    for i, detail in enumerate(details):
+        draw.text((screen_x + 10, details_y + i * 30), detail, fill="black", font=details_font)
+
+    options = ["Add Assignment", "Remove Assignment", "Update Course Info"]
+    options_y = details_y + len(details) * 30 + 30
+    for i, option in enumerate(options):
+        draw.rectangle([screen_x + 10, options_y + i * 50, screen_x + screen_width - 10, options_y + i * 50 + 40],
+                       outline="black", width=border_width)
+        draw.text((screen_x + 20, options_y + i * 50 + 10), option, fill="black", font=details_font)
+
+def draw_access_course_information(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    draw_logo_and_app_name(draw, screen_x, screen_y, screen_width, screen_height, border_width)
+
+    vertical_offset = 50
+
+    header_text = "Course Information"
+    header_font_size = 24
+    try:
+        header_font = ImageFont.truetype("arial.ttf", header_font_size)
+    except IOError:
+        header_font = ImageFont.load_default()
+    header_bbox = draw.textbbox((0, 0), header_text, font=header_font)
+    header_width = header_bbox[2] - header_bbox[0]
+    header_height = header_bbox[3] - header_bbox[1]
+    header_x = screen_x + (screen_width - header_width) // 2
+    header_y = screen_y + 10 + vertical_offset
+    draw.text((header_x, header_y), header_text, fill="black", font=header_font)
+
+    info_font_size = 18
+    try:
+        info_font = ImageFont.truetype("arial.ttf", info_font_size)
+    except IOError:
+        info_font = ImageFont.load_default()
+
+    info_y = header_y + header_height + 30
+    details = [
+        f"Course: CS101",
+        f"Instructor: Prof. Smith",
+        f"Schedule: Mon & Wed 10:00 - 11:30 AM",
+        f"Location: Room 203",
+        f"Description: Introduction to Computer Science"
+    ]
+
+    info_y = header_y + header_height + 30
+    line_height = 30
+    max_lines = (screen_height - info_y - 30) // line_height
+
+    wrapped_texts = []
+    for detail in details:
+        wrapped_texts.extend(textwrap.wrap(detail, width=(screen_width - 20) // (info_font_size // 2)))
+
+    truncated_wrapped_texts = wrapped_texts[:max_lines]
+
+    for i, line in enumerate(truncated_wrapped_texts):
+        draw.text((screen_x + 10, info_y + i * line_height), line, fill="black", font=info_font)
+
+    # If there's more information, add ellipsis to indicate continuation
+    if len(wrapped_texts) > max_lines:
+        ellipsis_text = "..."
+        ellipsis_y = info_y + max_lines * line_height
+        draw.text((screen_x + 10, ellipsis_y), ellipsis_text, fill="black", font=info_font)
+
+def draw_enroll_in_course_student(draw, screen_x, screen_y, screen_width, screen_height, border_width):
+    draw_logo_and_app_name(draw, screen_x, screen_y, screen_width, screen_height, border_width)
+
+    vertical_offset = 50
+
+    header_text = "Enroll in Course"
+    header_font_size = 24
+    try:
+        header_font = ImageFont.truetype("arial.ttf", header_font_size)
+    except IOError:
+        header_font = ImageFont.load_default()
+    header_bbox = draw.textbbox((0, 0), header_text, font=header_font)
+    header_width = header_bbox[2] - header_bbox[0]
+    header_height = header_bbox[3] - header_bbox[1]
+    header_x = screen_x + (screen_width - header_width) // 2
+    header_y = screen_y + 10 + vertical_offset
+    draw.text((header_x, header_y), header_text, fill="black", font=header_font)
+
+    info_font_size = 18
+    try:
+        info_font = ImageFont.truetype("arial.ttf", info_font_size)
+    except IOError:
+        info_font = ImageFont.load_default()
+
+    info_y = header_y + header_height + 30
+    enrollment_details = [
+        f"Course: CS101",
+        f"Instructor: Prof. Smith",
+        f"Schedule: Mon & Wed 10:00 - 11:30 AM"
+    ]
+    for i, detail in enumerate(enrollment_details):
+        draw.text((screen_x + 10, info_y + i * 30), detail, fill="black", font=info_font)
+
+    button_width = 150
+    button_height = 40
+    button_x = screen_x + (screen_width - button_width) // 2
+    button_y = info_y + len(enrollment_details) * 30 + 30
+    draw.rectangle([button_x, button_y, button_x + button_width, button_y + button_height], fill="black")
+
+    button_text = "Enroll"
+    button_font_size = 20
+    try:
+        button_font = ImageFont.truetype("arial.ttf", button_font_size)
+    except IOError:
+        button_font = ImageFont.load_default()
+    button_bbox = draw.textbbox((0, 0), button_text, font=button_font)
+    button_text_width = button_bbox[2] - button_bbox[0]
+    button_text_height = button_bbox[3] - button_bbox[1]
+    button_text_x = button_x + (button_width - button_text_width) // 2
+    button_text_y = button_y + (button_height - button_text_height) // 2
+    draw.text((button_text_x, button_text_y), button_text, fill="white", font=button_font)
+
 import os
 import sys
 
@@ -791,7 +1050,7 @@ def main():
         sys.exit(1)
     
     plantuml_script = sys.argv[1]
-    output_dir = 'C:/wirefully_softeng/backend/myenv/generated_images'
+    output_dir = 'C:/Users/Alyssa Vivien/NodeJSProjects/wirefully_softeng/backend/myenv/generated_images'
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
