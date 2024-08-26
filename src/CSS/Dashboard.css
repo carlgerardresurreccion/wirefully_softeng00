@@ -33,38 +33,38 @@
     position: relative;
 }
 
-.Main h2 {
+.h2 {
     color: rgba(49, 54, 63, 0.3);
     text-align: center;
-
+    margin-top: 60px;
     z-index: 1;
 }
 
-.query-input {
-    margin-top: 20px;
+.query-input, .Image-Container {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .query-input textarea {
-    width: 900px;
-    padding: 10px 15px;
+    width: 50%;
+    height: 70%;
     font-size: 14px;
-    border: transparent;
+    padding: 5px;
     border-radius: 10px;
-    max-height: 500px;
-    resize: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+
+    margin-top: 60px;
 }
 
-.query-input button {
-    background-color: black;
-    color: white;
-    border-radius: 10px;
-    padding: 8px 15px;
+.Images {
+    width: 100%;
+    height: 100%;
     font-size: 14px;
-    margin-top: 20px;
-    cursor: pointer;
+    padding: 5px;
 }
 
 .userName {
@@ -77,76 +77,35 @@
 
 /*DISPLAY*/
 .Display-Main {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-top: 70px;
+}
+
+.column1, .column2 {
     height: 100%;
-    width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    background-attachment: fixed;
-}
-
-.Below-NavBar {
-    width: 95%;
-    margin-top: 20px;
-    margin-left: 35px;
-    margin-right: 35px;
-
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
-    position: fixed;
-    z-index: 1000;
-
-    height: 50px;
+    position: relative;
 }
 
-.backButton,
-.exportButton {
-    padding: 8px 16px;
-    font-size: 16px;
+.generateButton, .exportButton {
+    background-color: black;
+    color: white;
     border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
     cursor: pointer;
-    font-size: 12px;
-}
-
-.backButton {
-    background-color:transparent;
-    border-color: 2px solid black;
-}
-
-.backButton:hover {
-    background-color:black;
-    border-color: 2px solid black;
-    color: white;
-}
-
-.exportButton:hover {
-    background-color:transparent;
-    border-color: 2px solid black;
-    color: black;
-}
-
-.exportButton {
-    background-color:black;
-    border-color: 2px solid black;
-    color: white;
-}
-
-.content {
-    width: 100%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-.image-container {
-    text-align: center;
-}
-
-.image-container img {
-    max-width: 100%;
-    height: auto;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
 }
 
 .error-message {
@@ -154,16 +113,25 @@
     margin-top: 10px;
 }
 
-.image-style {
+/*.image-container {
+    text-align: center;
+}*/
+
+/*.image-container img {
+    max-width: 100%;
+    height: auto;
+}*/
+
+/*.image-style {
     width: 230px;
     height: auto;
     border: 2px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 10px;
-}
+}*/
 
-.Image-Container {
+/*.Image-Container {
     height: 85vh;
     display: flex;
     flex-wrap: wrap;
@@ -171,13 +139,13 @@
     
     overflow-y: auto;
     margin-top: 60px;
-}
+}*/
 
-.image-wrapper {
+/*.image-wrapper {
     margin: 50px;
 }
 
 .actor {
     justify-content: center;
     text-align: center;
-}
+}*/

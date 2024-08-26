@@ -1,31 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { useHistory } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import Display from './Display';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 
 function Dashboard() {
     const [inputValue, setInputValue] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const textareaRef = useRef(null);
     const { currentUser } = useAuth();
     const history = useHistory();
-    const [currentView, setCurrentView] = useState('Dashboard');
     const [responseData, setResponseData] = useState(null);
 
-    const handleViewChange = (view) => {
-        setCurrentView(view);
-    };
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    }, [inputValue]);
+    const [actorImageSrcs, setActorImageSrcs] = useState({});
+    const [errorLoading, setErrorLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,10 +25,8 @@ function Dashboard() {
             });
             if (response.data.error) {
                 setErrorMessage(response.data.error);
-                handleViewChange('Dashboard');
             } else {
-                setResponseData(response.data);  // Correctly set responseData with the entire response.data object
-                handleViewChange('Display');
+                setResponseData(response.data);
             }
             console.log(response.data);
         } catch (error) {
@@ -48,7 +35,6 @@ function Dashboard() {
             } else {
                 setErrorMessage('An error occurred. Please try again.');
             }
-            handleViewChange('Dashboard');
             console.error('Error sending data to server:', error);
         }
     };    
@@ -62,8 +48,40 @@ function Dashboard() {
         }
     };
 
-    const handleBackButtonClick = () => {
-        setCurrentView('Dashboard');
+    useEffect(() => {
+        if (responseData && responseData.success && responseData.actorData) {
+            const actorImageUrls = {};
+            for (const actor in responseData.actorData) {
+                actorImageUrls[actor] = responseData.actorData[actor].map(imagePath => {
+                    console.log(`http://localhost:3001/${imagePath}`);
+                    return `http://localhost:3001/${imagePath}`;
+                });
+            }
+            setActorImageSrcs(actorImageUrls);
+        } else {
+            setErrorLoading(true);
+        }
+    }, [responseData]);
+
+    const handleExportButtonClick = async () => {
+        if (responseData && responseData.imagePaths) {
+            try {
+                const response = await axios.get('http://localhost:3001/export-images', {
+                    params: { images: responseData.imagePaths },
+                    responseType: 'blob', // Important
+                });
+
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'generated_images.zip');
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            } catch (error) {
+                console.error('Error exporting images:', error);
+            }
+        }
     };
 
     return (
@@ -80,24 +98,27 @@ function Dashboard() {
                     <button className='userName' onClick={handleLogout}>Log Out</button>
                 </div>
             </div>
-            <div className='Main'>
-                {currentView === 'Display' ? (
-                    <Display responseData={responseData} onBackButtonClick={handleBackButtonClick} />
-                ) : (
-                    <div>
-                        <h2>How can I help you today?</h2>
-                        <div className='query-input'>
-                            <textarea
-                                ref={textareaRef}
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                placeholder='Enter use case diagram scripts here...'
-                            />
-                            <button onClick={handleSubmit}>Generate</button>
-                            {errorMessage && <p className='error-message'>{errorMessage}</p>}
-                        </div>
+            <div className='Display-Main'>
+                <div className='column1'>
+                    <div className='query-input'>
+                        <textarea
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder='Enter use case diagram scripts here...'
+                            className='content'
+                        />
+                        <button className='generateButton' onClick={handleSubmit}>Generate</button>
+                        {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
-                )}
+                </div>
+                <div className='column2'>
+                    <div className='Image-Container'>
+                        <div className='Images'>
+
+                        </div>
+                        <button className='exportButton' onClick={handleExportButtonClick}>Export</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
