@@ -112,12 +112,27 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className='column2'>
-                    <div className='Image-Container'>
-                        <div className='Images'>
-
+                    {responseData && (
+                        <div className='Image-Container'>
+                            {errorLoading ? (
+                                <p>Error loading images.</p>
+                            ) : (
+                                <>
+                                    {Object.keys(actorImageSrcs).map((actor, index) => (
+                                        <div key={index} className="actor-section">
+                                            <h3 className='actor'>Actor: {actor}</h3>
+                                            {actorImageSrcs[actor].map((src, imgIndex) => (
+                                                <div key={imgIndex} className="image-wrapper">
+                                                    <img src={src} alt={`Generated Wireframe ${actor} ${imgIndex + 1}`} className="image-style" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                            <button className='exportButton' onClick={handleExportButtonClick}>Export</button>
                         </div>
-                        <button className='exportButton' onClick={handleExportButtonClick}>Export</button>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -125,7 +140,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-
-
-
