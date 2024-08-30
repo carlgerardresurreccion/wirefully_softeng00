@@ -46,6 +46,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    overflow-y: auto;
 }
 
 .query-input textarea {
@@ -56,8 +61,6 @@
     border-radius: 10px;
     background-color: white;
     backdrop-filter: blur(5px);
-
-    margin-top: 60px;
 }
 
 .Images {
@@ -113,39 +116,29 @@
     margin-top: 10px;
 }
 
-/*.image-container {
+.image-container {
     text-align: center;
-}*/
+}
 
-/*.image-container img {
+.image-container img {
     max-width: 100%;
     height: auto;
-}*/
+}
 
-/*.image-style {
+.image-style {
     width: 230px;
     height: auto;
     border: 2px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 10px;
-}*/
+}
 
-/*.Image-Container {
-    height: 85vh;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; 
-    
-    overflow-y: auto;
-    margin-top: 60px;
-}*/
-
-/*.image-wrapper {
+.image-wrapper {
     margin: 50px;
 }
 
 .actor {
     justify-content: center;
     text-align: center;
-}*/
+}
