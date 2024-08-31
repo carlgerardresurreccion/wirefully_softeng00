@@ -58,6 +58,7 @@ function Dashboard() {
                 });
             }
             setActorImageSrcs(actorImageUrls);
+            setErrorLoading(false);
         } else {
             setErrorLoading(true);
         }
