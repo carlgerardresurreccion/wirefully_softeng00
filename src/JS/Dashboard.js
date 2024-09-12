@@ -95,8 +95,6 @@ function Dashboard() {
                     <span>WireFully</span>
                 </div>
                 <div className="NavBar-right">
-                    {currentUser && <button className='userName'>{currentUser.email}</button>}
-                    <button className='userName' onClick={handleLogout}>Log Out</button>
                 </div>
             </div>
             <div className='Display-Main'>
