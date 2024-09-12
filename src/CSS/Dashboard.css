@@ -4,21 +4,34 @@
     flex-direction: column;
 }
 
-.User-NavBar {
+.NavBar {
     height: 50px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; 
     align-items: center;
     margin-top: 0;
     padding-left: 30px;
     padding-right: 30px;
     background-color: white;
-    position: fixed;  
-    top: 0;           
-    left: 0;          
-    right: 0;         
-    z-index: 1000;
-}
+  }
+  
+  .NavBar-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .App-logo {
+    height: 40px; 
+    width: auto;
+    margin-right: 10px; 
+  }
+  
+  .App-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+    cursor: pointer;
+  }
 
 .Main {
     margin-top: 50px;
@@ -85,7 +98,6 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-    margin-top: 70px;
 }
 
 .column1, .column2 {
@@ -98,6 +110,11 @@
 
     position: relative;
 }
+
+iframe {
+    border: none;
+    margin-bottom: 20px; 
+  }
 
 .generateButton, .exportButton {
     background-color: black;

@@ -7,12 +7,7 @@ function Navbar() {
       <div className="NavBar">
         <div className="NavBar-left">
             <img src={logo} className="App-logo" alt="logo" />
-        </div>
-        <div className='NavBar-middle'>
-            <span>WireFully</span>
-        </div>
-        <div className="NavBar-right">
-            <button className='username'>Username</button>
+            <span className='App-name'>WireFully</span>
         </div>
       </div>
   );
