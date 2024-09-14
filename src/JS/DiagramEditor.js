@@ -41,8 +41,8 @@ const DiagramEditor = () => {
 
     const addBrokenArrow = () => {
       if (selectedElements.current.length === 2) {
-        const sourceElement = graph.getCell(selectedElements.current[0].id); // Ensure the cell exists in the graph
-        const targetElement = graph.getCell(selectedElements.current[1].id); // Ensure the cell exists in the graph
+        const sourceElement = graph.getCell(selectedElements.current[0].id); 
+        const targetElement = graph.getCell(selectedElements.current[1].id); 
     
         if (sourceElement && targetElement) {
           const link = new joint.shapes.standard.Link();
@@ -52,7 +52,7 @@ const DiagramEditor = () => {
             line: {
               stroke: 'blue',
               strokeWidth: 2,
-              strokeDasharray: '5,5', // Creates the dashed (broken) line
+              strokeDasharray: '5,5', 
               targetMarker: {
                 'type': 'path',
                 'd': 'M 10 -5 0 0 10 5 Z',
@@ -72,7 +72,7 @@ const DiagramEditor = () => {
             selected.element.attr('body/stroke', 'none');
           });
 
-          selectedElements.current = []; // Reset selection after creating the link
+          selectedElements.current = []; 
         } else {
           console.error('Invalid source or target element for the link.');
         }
@@ -83,8 +83,8 @@ const DiagramEditor = () => {
 
     const addSolidLine = () => {
       if (selectedElements.current.length === 2) {
-        const sourceElement = graph.getCell(selectedElements.current[0].id); // Ensure the cell exists in the graph
-        const targetElement = graph.getCell(selectedElements.current[1].id); // Ensure the cell exists in the graph
+        const sourceElement = graph.getCell(selectedElements.current[0].id); 
+        const targetElement = graph.getCell(selectedElements.current[1].id); 
     
         if (sourceElement && targetElement) {
           const link = new joint.shapes.standard.Link();
@@ -92,8 +92,8 @@ const DiagramEditor = () => {
           link.target({ id: targetElement.id });
           link.attr({
             line: {
-              stroke: 'green', // You can change the color if needed
-              strokeWidth: 2,  // Solid line width
+              stroke: 'green', 
+              strokeWidth: 2,  
               targetMarker: {
                 'type': 'none'
               }
@@ -105,7 +105,7 @@ const DiagramEditor = () => {
             selected.element.attr('body/stroke', 'none');
           });
           
-          selectedElements.current = []; // Reset selection after creating the link
+          selectedElements.current = []; 
         } else {
           console.error('Invalid source or target element for the link.');
         }
@@ -114,7 +114,6 @@ const DiagramEditor = () => {
       }
     };
 
-    // Define a custom element for the pure text label with dynamic text
     const TextElement = joint.dia.Element.define('custom.TextElement', {
       size: { width: 100, height: 30 },
       attrs: {
@@ -133,16 +132,15 @@ const DiagramEditor = () => {
       }]
     });
 
-    // Function to add the label with custom text
     const addIncludeLabel = (text) => {
       const label = new TextElement({
         attrs: {
           label: {
-            text: '<<include>>' // Set the custom text here
+            text: '<<include>>' 
           }
         }
       });
-      label.position(200, 200); // Set the position for the label
+      label.position(200, 200); 
       label.addTo(graph);
     };
 
@@ -150,11 +148,11 @@ const DiagramEditor = () => {
       const label = new TextElement({
         attrs: {
           label: {
-            text: '<<exclude>>' // Set the custom text here
+            text: '<<exclude>>' 
           }
         }
       });
-      label.position(200, 200); // Set the position for the label
+      label.position(200, 200); 
       label.addTo(graph);
     };
 
@@ -186,28 +184,24 @@ const DiagramEditor = () => {
       input.focus();
     });
 
-    // Handle element selection
     paper.on('element:pointerclick', (elementView) => {
       const element = elementView.model;
       const selectedIndex = selectedElements.current.findIndex(selected => selected.id === element.id);
     
       if (selectedIndex > -1) {
-        // If the element is already selected, unselect it
         selectedElements.current.splice(selectedIndex, 1);
-        element.attr('body/stroke', 'none'); // Reset the element's stroke color
+        element.attr('body/stroke', 'none');
       } else if (selectedElements.current.length < 2) {
-        // If the element is not selected and less than 2 elements are selected, select it
         selectedElements.current.push({
           id: element.id,
           element
         });
-        element.attr('body/stroke', 'red'); // Highlight selected element
+        element.attr('body/stroke', 'red'); 
       } else {
         alert('You can only select two elements at a time.');
       }
     });
 
-    // Toolbar buttons
     const toolbar = document.getElementById('toolbar');
     toolbar.querySelector('.add-use-case').addEventListener('click', addUseCase);
     toolbar.querySelector('.add-actor').addEventListener('click', addActor);
