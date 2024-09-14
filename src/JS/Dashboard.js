@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
+import DiagramEditor from './DiagramEditor';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
@@ -11,7 +10,7 @@ function Dashboard() {
     const [actorImageSrcs, setActorImageSrcs] = useState({});
     const [errorLoading, setErrorLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
+    /*const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
         try {
@@ -32,7 +31,7 @@ function Dashboard() {
             }
             console.error('Error sending data to server:', error);
         }
-    };
+    };*/
 
     /*useEffect(() => {
         if (responseData && responseData.success && responseData.actorData) {
@@ -50,7 +49,7 @@ function Dashboard() {
         }
     }, [responseData]);*/
 
-    const handleExportButtonClick = async () => {
+    /*const handleExportButtonClick = async () => {
         if (responseData && responseData.imagePaths) {
             try {
                 const response = await axios.get('http://localhost:3001/export-images', {
@@ -69,7 +68,7 @@ function Dashboard() {
                 console.error('Error exporting images:', error);
             }
         }
-    };
+    };*/
 
     return (
         <div className='Whole-Page'>
@@ -82,19 +81,13 @@ function Dashboard() {
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
-                        <iframe
-                            src="http://192.168.1.5:8080/src/main/webapp?embed=1&ui=atlas&spin=1&proto=json"
-                            width="100%"
-                            height="500px"
-                            frameBorder="0"
-                            title="Draw.io Diagram Editor"
-                        />
-                        <button className='generateButton' onClick={handleSubmit}>Generate</button>
+                        <DiagramEditor/>
+                        <button className='generateButton'>Generate</button>
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>
                 <div className='column2'>
-                    {responseData && (
+                    {/*{responseData && (
                         <div className='Image-Container'>
                             {errorLoading ? (
                                 <p>Error loading images.</p>
@@ -112,9 +105,9 @@ function Dashboard() {
                                     ))}
                                 </>
                             )}
-                            <button className='exportButton' onClick={handleExportButtonClick}>Export</button>
+                            <button className='exportButton'>Export</button>
                         </div>
-                    )}
+                    )}*/}
                 </div>
             </div>
         </div>
