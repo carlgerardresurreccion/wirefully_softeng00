@@ -156,6 +156,20 @@ const DiagramEditor = () => {
       label.addTo(graph);
     };
 
+    const deleteSelectedElements = () => {
+      console.log("Deleting selected elements:", selectedElements.current);
+
+      selectedElements.current.forEach(({ id }) => {
+        const element = graph.getCell(id); 
+        if (element) {
+          console.log("Removing element:", element);
+          element.remove(); 
+        } else {
+          console.error("Element not found for deletion:", id);
+        }
+      });
+    };
+
     paper.on('element:pointerdblclick', (elementView) => {
       const element = elementView.model;
       const currentLabel = element.attr('label/text') || '';
@@ -186,19 +200,16 @@ const DiagramEditor = () => {
 
     paper.on('element:pointerclick', (elementView) => {
       const element = elementView.model;
-      const selectedIndex = selectedElements.current.findIndex(selected => selected.id === element.id);
-    
-      if (selectedIndex > -1) {
-        selectedElements.current.splice(selectedIndex, 1);
+      const isSelected = selectedElements.current.some(({ id }) => id === element.id);
+
+      if (isSelected) {
+        selectedElements.current = selectedElements.current.filter(({ id }) => id !== element.id);
         element.attr('body/stroke', 'none');
-      } else if (selectedElements.current.length < 2) {
-        selectedElements.current.push({
-          id: element.id,
-          element
-        });
-        element.attr('body/stroke', 'red'); 
+        console.log("Deselected element:", element);
       } else {
-        alert('You can only select two elements at a time.');
+        selectedElements.current.push({ id: element.id, element });
+        element.attr('body/stroke', 'red'); 
+        console.log("Selected element:", element);
       }
     });
 
@@ -209,6 +220,7 @@ const DiagramEditor = () => {
     toolbar.querySelector('.add-include').addEventListener('click', addIncludeLabel);
     toolbar.querySelector('.add-exclude').addEventListener('click', addExcludeLabel);
     toolbar.querySelector('.add-sline').addEventListener('click', addSolidLine);
+    toolbar.querySelector('.delete').addEventListener('click', deleteSelectedElements); 
 
   }, []);
 
@@ -221,6 +233,7 @@ const DiagramEditor = () => {
         <button className="add-include">Add Include Label</button>
         <button className="add-exclude">Add Exclude Label</button>
         <button className="add-sline">Association Line</button>
+        <button className="delete">Delete</button>
       </div>
       <div ref={diagramRef} style={{ width: '100%', height: '600px', border: '1px solid gray' }}></div>
     </div>
