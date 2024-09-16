@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 import DiagramEditor from './DiagramEditor';
+import PlantUMLComponent from './PlantUMLComponent';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
@@ -9,6 +10,28 @@ function Dashboard() {
 
     const [actorImageSrcs, setActorImageSrcs] = useState({});
     const [errorLoading, setErrorLoading] = useState(false);
+    
+    const handleGenerate = async (diagramText) => {
+        try {
+            const response = await fetch("/convert-to-wireframe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ diagram: diagramText }),
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                setImageUrl(imageUrl); // Set the wireframe image URL
+            } else {
+                setErrorMessage(`Error: ${response.status} ${response.statusText}`);
+            }
+        } catch (error) {
+            setErrorMessage(`Error during API request: ${error.message}`);
+        }
+    };
 
     /*const handleSubmit = async (e) => {
         e.preventDefault();
@@ -81,12 +104,18 @@ function Dashboard() {
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
-                        <DiagramEditor/>
-                        <button className='generateButton'>Generate</button>
+                        <DiagramEditor onGenerate={handleGenerate} />
+                        <button className='generateButton' onClick={() => handleGenerate()}>Generate</button>
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>
                 <div className='column2'>
+                {imageUrl && (
+                    <div>
+                        <h3>Wireframe Output:</h3>
+                        <img src={imageUrl} alt="Wireframe" />
+                    </div>
+                    )}
                     {/*{responseData && (
                         <div className='Image-Container'>
                             {errorLoading ? (

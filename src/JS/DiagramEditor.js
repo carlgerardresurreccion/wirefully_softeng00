@@ -5,6 +5,39 @@ const DiagramEditor = () => {
   const diagramRef = useRef(null);
   const selectedElements = useRef([]);
 
+  const exportDiagramToText = () => {
+    const diagramText = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+    onGenerate(diagramText); // Trigger the generate function passed from Dashboard.js
+};
+
+  useEffect(() => {
+      // Automatically trigger export when the component mounts or when the diagram is updated
+      exportDiagramToText();
+  }, []);
+
+  /*const handleConvertToWireframe = async (diagramText) => {
+    try {
+      const response = await fetch("/convert-to-wireframe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ diagram: diagramText }),
+      });
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setImageUrl(imageUrl);
+      } else {
+        console.error("Error:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+    }
+  };*/
+  
+
   useEffect(() => {
     const graph = new joint.dia.Graph();
     const paper = new joint.dia.Paper({
