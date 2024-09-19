@@ -1,19 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
 
 const DiagramEditor = () => {
   const diagramRef = useRef(null);
   const selectedElements = useRef([]);
+  const graphRef = useRef(new joint.dia.Graph());
+  const paperRef = useRef(null);
 
-  const exportDiagramToText = () => {
-    const diagramText = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
-    onGenerate(diagramText); // Trigger the generate function passed from Dashboard.js
-};
+  //const exportDiagramToText = () => {
+  //  const diagramText = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+  //  onGenerate(diagramText); // Trigger the generate function passed from Dashboard.js
+  //};
 
-  useEffect(() => {
-      // Automatically trigger export when the component mounts or when the diagram is updated
-      exportDiagramToText();
-  }, []);
+  //useEffect(() => {
+  //    // Automatically trigger export when the component mounts or when the diagram is updated
+  //    exportDiagramToText();
+  //}, []);
 
   /*const handleConvertToWireframe = async (diagramText) => {
     try {
@@ -36,10 +38,11 @@ const DiagramEditor = () => {
       console.error("Error during API request:", error);
     }
   };*/
-  
 
   useEffect(() => {
     const graph = new joint.dia.Graph();
+    graphRef.current = graph;
+
     const paper = new joint.dia.Paper({
       el: diagramRef.current,
       model: graph,
@@ -50,26 +53,33 @@ const DiagramEditor = () => {
       interactive: true
     });
 
+    paperRef.current = paper;
+
     const addUseCase = () => {
-      const rect = new joint.shapes.standard.Rectangle();
-      rect.position(100, 100);
-      rect.resize(120, 40);
-      rect.attr({
-        body: { fill: 'lightblue', stroke: 'none' },
-        label: { text: 'New Use Case', fill: 'black' }
+      const rect = new joint.shapes.standard.Rectangle({
+        position: { x: 100, y: 100 },
+        size: { width: 120, height: 40 },
+        attrs: {
+          body: { fill: 'lightblue', stroke: 'none' },
+          label: { text: 'New Use Case', fill: 'black' }
+        },
+        type: 'usecase' 
       });
-      rect.addTo(graph);
+      rect.addTo(graph);  
     };
 
     const addActor = () => {
-      const ellipse = new joint.shapes.standard.Ellipse();
-      ellipse.position(300, 100);
-      ellipse.resize(80, 40);
-      ellipse.attr({
-        body: { fill: 'lightgreen' },
-        label: { text: 'Actor', fill: 'black' }
+      const ellipse = new joint.shapes.standard.Ellipse({
+        position: { x: 300, y: 100 },
+        size: { width: 80, height: 40 },
+        attrs: {
+          body: { fill: 'lightgreen', stroke: 'none' },
+          label: { text: 'Actor', fill: 'black' }
+        },
+        type: 'actor'
       });
-      ellipse.addTo(graph);
+    
+      ellipse.addTo(graph);  
     };
 
     const addBrokenArrow = () => {
@@ -78,39 +88,72 @@ const DiagramEditor = () => {
         const targetElement = graph.getCell(selectedElements.current[1].id); 
     
         if (sourceElement && targetElement) {
-          const link = new joint.shapes.standard.Link();
-          link.source({ id: sourceElement.id });
-          link.target({ id: targetElement.id });
-          link.attr({
-            line: {
-              stroke: 'blue',
-              strokeWidth: 2,
-              strokeDasharray: '5,5', 
-              targetMarker: {
-                'type': 'path',
-                'd': 'M 10 -5 0 0 10 5 Z',
-                'fill': 'blue'
-              }
-            },
-            labels: [{
-              position: 0.5,
-              attrs: {
-                text: { text: '<<Extend>>', fill: 'blue', fontSize: 12 }
-              }
-            }]
-          });
-          link.addTo(graph);
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = 'Enter relationship type';
+          input.style.position = 'absolute';
+          input.style.left = '10px';
+          input.style.top = '10px';
+          document.body.appendChild(input);
+    
+          const removeInput = () => {
+            if (input.parentNode) {
+              document.body.removeChild(input);
+            }
+          };
+    
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              const relationshipType = input.value.trim();
+              if (relationshipType === '<<include>>' || relationshipType === '<<extend>>') {
+                const link = new joint.shapes.standard.Link({
+                  type: 'Relationship', 
+                  attrs: {
+                    line: {
+                      stroke: 'blue',
+                      strokeWidth: 2,
+                      strokeDasharray: '5,5',
+                      targetMarker: {
+                        type: 'path',
+                        d: 'M 10 -5 0 0 10 5 Z',
+                        fill: 'blue',
+                      },
+                    },
+                  },
+                  label: relationshipType
+                });
 
-          selectedElements.current.forEach(selected => {
-            selected.element.attr('body/stroke', 'none');
+                link.source({ id: sourceElement.id });
+                link.target({ id: targetElement.id });
+                link.addTo(graph);
+    
+                const label = new TextElement({
+                  attrs: {
+                    label: {
+                      text: relationshipType 
+                    }
+                  }
+                });
+                label.position(200, 200); 
+                label.addTo(graph);
+        
+                selectedElements.current.forEach(selected => {
+                  selected.element.attr('body/stroke', 'none');
+                });
+                selectedElements.current = []; 
+              } else {
+                alert('Please enter either <<include>> or <<extend>>.');
+              }
+              removeInput();
+            }
           });
-
-          selectedElements.current = []; 
+    
+          input.focus();
         } else {
           console.error('Invalid source or target element for the link.');
         }
       } else {
-        alert('Please select two elements to connect with an Extend arrow.');
+        alert('Please select two elements to connect with a Broken Arrow.');
       }
     };
 
@@ -120,18 +163,22 @@ const DiagramEditor = () => {
         const targetElement = graph.getCell(selectedElements.current[1].id); 
     
         if (sourceElement && targetElement) {
-          const link = new joint.shapes.standard.Link();
+          const link = new joint.shapes.standard.Link({
+            type: 'Relationship', 
+            attrs: {
+              line: {
+                stroke: 'green', 
+                strokeWidth: 2,  
+                targetMarker: {
+                  'type': 'none'
+                }
+              },
+            },
+            label: 'association'
+          });
+
           link.source({ id: sourceElement.id });
           link.target({ id: targetElement.id });
-          link.attr({
-            line: {
-              stroke: 'green', 
-              strokeWidth: 2,  
-              targetMarker: {
-                'type': 'none'
-              }
-            },
-          });
           link.addTo(graph);
 
           selectedElements.current.forEach(selected => {
@@ -147,7 +194,7 @@ const DiagramEditor = () => {
       }
     };
 
-    const TextElement = joint.dia.Element.define('custom.TextElement', {
+    const TextElement = joint.dia.Element.define('Relationship Label', {
       size: { width: 100, height: 30 },
       attrs: {
         label: {
@@ -165,7 +212,7 @@ const DiagramEditor = () => {
       }]
     });
 
-    const addIncludeLabel = (text) => {
+    /*const addIncludeLabel = (text) => {
       const label = new TextElement({
         attrs: {
           label: {
@@ -187,7 +234,7 @@ const DiagramEditor = () => {
       });
       label.position(200, 200); 
       label.addTo(graph);
-    };
+    };*/
 
     const deleteSelectedElements = () => {
       console.log("Deleting selected elements:", selectedElements.current);
@@ -227,7 +274,6 @@ const DiagramEditor = () => {
           removeInput();
         }
       });
-
       input.focus();
     });
 
@@ -238,11 +284,9 @@ const DiagramEditor = () => {
       if (isSelected) {
         selectedElements.current = selectedElements.current.filter(({ id }) => id !== element.id);
         element.attr('body/stroke', 'none');
-        console.log("Deselected element:", element);
       } else {
         selectedElements.current.push({ id: element.id, element });
         element.attr('body/stroke', 'red'); 
-        console.log("Selected element:", element);
       }
     });
 
@@ -250,12 +294,15 @@ const DiagramEditor = () => {
     toolbar.querySelector('.add-use-case').addEventListener('click', addUseCase);
     toolbar.querySelector('.add-actor').addEventListener('click', addActor);
     toolbar.querySelector('.add-barrow').addEventListener('click', addBrokenArrow);
-    toolbar.querySelector('.add-include').addEventListener('click', addIncludeLabel);
-    toolbar.querySelector('.add-exclude').addEventListener('click', addExcludeLabel);
     toolbar.querySelector('.add-sline').addEventListener('click', addSolidLine);
     toolbar.querySelector('.delete').addEventListener('click', deleteSelectedElements); 
 
   }, []);
+
+  const handleGenerateClick = () => {
+    const diagramData = graphRef.current.toJSON(); 
+    console.log("Diagram Data: ", diagramData);
+  };
 
   return (
     <div>
@@ -263,12 +310,11 @@ const DiagramEditor = () => {
         <button className="add-use-case">Add Use Case</button>
         <button className="add-actor">Add Actor</button>
         <button className="add-barrow">Broken Arrow</button>
-        <button className="add-include">Add Include Label</button>
-        <button className="add-exclude">Add Exclude Label</button>
         <button className="add-sline">Association Line</button>
         <button className="delete">Delete</button>
       </div>
       <div ref={diagramRef} style={{ width: '100%', height: '600px', border: '1px solid gray' }}></div>
+      <button onClick={handleGenerateClick}>Generate</button>
     </div>
   );
 };
