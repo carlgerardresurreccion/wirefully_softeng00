@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
+import '../CSS/DiagramEditor.css';
 
 const DiagramEditor = () => {
   const diagramRef = useRef(null);
@@ -7,37 +8,8 @@ const DiagramEditor = () => {
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
 
-  //const exportDiagramToText = () => {
-  //  const diagramText = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
-  //  onGenerate(diagramText); // Trigger the generate function passed from Dashboard.js
-  //};
-
-  //useEffect(() => {
-  //    // Automatically trigger export when the component mounts or when the diagram is updated
-  //    exportDiagramToText();
-  //}, []);
-
-  /*const handleConvertToWireframe = async (diagramText) => {
-    try {
-      const response = await fetch("/convert-to-wireframe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ diagram: diagramText }),
-      });
-  
-      if (response.ok) {
-        const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setImageUrl(imageUrl);
-      } else {
-        console.error("Error:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error during API request:", error);
-    }
-  };*/
+  const toolbarRef = useRef(null);
+  const [isToolbarReady, setIsToolbarReady] = useState(false);
 
   useEffect(() => {
     const graph = new joint.dia.Graph();
@@ -91,9 +63,19 @@ const DiagramEditor = () => {
           const input = document.createElement('input');
           input.type = 'text';
           input.placeholder = 'Enter relationship type';
+          
           input.style.position = 'absolute';
-          input.style.left = '10px';
-          input.style.top = '10px';
+          input.style.width = '200px';
+          input.style.left = `${targetElement.position().x + 98}px`; // Same horizontal logic as label changer
+          input.style.transform = 'translateX(-50%)';
+          input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`; // Same vertical logic
+
+          input.style.backgroundColor = '#ffff'; 
+          input.style.border = '1px solid #001F3F';   
+          input.style.padding = '5px';           
+          input.style.borderRadius = '5px';
+          input.style.fontSize = '12px';
+
           document.body.appendChild(input);
     
           const removeInput = () => {
@@ -212,30 +194,6 @@ const DiagramEditor = () => {
       }]
     });
 
-    /*const addIncludeLabel = (text) => {
-      const label = new TextElement({
-        attrs: {
-          label: {
-            text: '<<include>>' 
-          }
-        }
-      });
-      label.position(200, 200); 
-      label.addTo(graph);
-    };
-
-    const addExcludeLabel = (text) => {
-      const label = new TextElement({
-        attrs: {
-          label: {
-            text: '<<exclude>>' 
-          }
-        }
-      });
-      label.position(200, 200); 
-      label.addTo(graph);
-    };*/
-
     const deleteSelectedElements = () => {
       console.log("Deleting selected elements:", selectedElements.current);
 
@@ -251,30 +209,42 @@ const DiagramEditor = () => {
     };
 
     paper.on('element:pointerdblclick', (elementView) => {
-      const element = elementView.model;
-      const currentLabel = element.attr('label/text') || '';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = currentLabel;
-      input.style.position = 'absolute';
-      input.style.left = `${element.position().x}px`;
-      input.style.top = `${element.position().y}px`;
-      input.style.width = `${element.size().width}px`;
-      document.body.appendChild(input);
+      if (isToolbarReady && toolbarRef.current) {
+        const element = elementView.model;
+        const currentLabel = element.attr('label/text') || '';
 
-      const removeInput = () => {
-        if (input.parentNode) {
-          document.body.removeChild(input);
-        }
-      };
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentLabel;
+        input.style.position = 'absolute';
+        input.style.width = '200px';
+        input.style.left = `${element.position().x + 98}px`;
+        input.style.transform = 'translateX(-50%)';
+        input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`;
 
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          element.attr('label/text', input.value);
-          removeInput();
-        }
-      });
-      input.focus();
+        input.style.backgroundColor = '#ffff'; 
+        input.style.border = '1px solid #001F3F';   
+        input.style.padding = '5px';           
+        input.style.borderRadius = '5px';
+        input.style.fontSize = '12px';
+
+        document.body.appendChild(input);
+
+        const removeInput = () => {
+          if (input.parentNode) {
+            document.body.removeChild(input);
+          }
+        };
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            element.attr('label/text', input.value);
+            removeInput();
+          }
+        });
+
+        input.focus();
+      }
     });
 
     paper.on('element:pointerclick', (elementView) => {
@@ -297,7 +267,9 @@ const DiagramEditor = () => {
     toolbar.querySelector('.add-sline').addEventListener('click', addSolidLine);
     toolbar.querySelector('.delete').addEventListener('click', deleteSelectedElements); 
 
-  }, []);
+
+    setIsToolbarReady(true);
+  }, [isToolbarReady]);
 
   const handleGenerateClick = () => {
     const diagramData = graphRef.current.toJSON(); 
@@ -306,15 +278,15 @@ const DiagramEditor = () => {
 
   return (
     <div>
-      <div id="toolbar">
-        <button className="add-use-case">Add Use Case</button>
-        <button className="add-actor">Add Actor</button>
-        <button className="add-barrow">Broken Arrow</button>
-        <button className="add-sline">Association Line</button>
-        <button className="delete">Delete</button>
+      <div id="toolbar" ref={toolbarRef}>
+        <button className="button add-use-case">Add Use Case</button>
+        <button className="button add-actor">Add Actor</button>
+        <button className="button add-barrow">Broken Arrow</button>
+        <button className="button add-sline">Association Line</button>
+        <button className="button delete">Delete</button>
       </div>
-      <div ref={diagramRef} style={{ width: '100%', height: '600px', border: '1px solid gray' }}></div>
-      <button onClick={handleGenerateClick}>Generate</button>
+      <div className='editor' ref={diagramRef}></div>
+      <button className='button' onClick={handleGenerateClick}>Generate</button>
     </div>
   );
 };
