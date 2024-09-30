@@ -12,8 +12,6 @@ function Dashboard() {
 
     const [imageUrl, setImageUrl] = useState(null);
 
-<<<<<<< HEAD
-=======
     const handleGenerate = async (diagramData) => {
         try {
             const response = await fetch("http://localhost:8000/generate-content", {
@@ -49,7 +47,6 @@ function Dashboard() {
     };
     
 
->>>>>>> ac62664915c1e9263272507808c3a86ab915a94a
     return (
         <div className='Whole-Page'>
             <div className="NavBar">
@@ -61,12 +58,7 @@ function Dashboard() {
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
-<<<<<<< HEAD
-                        <DiagramEditor/>
-=======
                         <DiagramEditor onGenerate={handleGenerate}/>
-                        {/* <button className='generateButton' onClick={() => handleGenerate()}>Generate</button> */}
->>>>>>> ac62664915c1e9263272507808c3a86ab915a94a
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>

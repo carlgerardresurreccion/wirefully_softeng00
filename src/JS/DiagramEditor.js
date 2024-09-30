@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
-import Dashboard from './Dashboard';
 import '../CSS/DiagramEditor.css';
 
 const DiagramEditor = ({onGenerate}) => {
@@ -9,43 +8,8 @@ const DiagramEditor = ({onGenerate}) => {
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
 
-  const exportDiagramToText = () => {
-    const diagramData = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
-    console.log(diagramData);
-    onGenerate(diagramData); // Trigger the generate function passed from Dashboard.js
-  };
-
-
-  const handleGenerateButtonClick = () => {
-    exportDiagramToText();
-  };
-
-  // useEffect(() => {
-  //     // Automatically trigger export when the component mounts or when the diagram is updated
-  //     exportDiagramToText();
-  // }, []);
-
-  /*const handleConvertToWireframe = async (diagramText) => {
-    try {
-      const response = await fetch("/convert-to-wireframe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ diagram: diagramText }),
-      });
-  
-      if (response.ok) {
-        const blob = await response.blob();
-        const imageUrl = URL.createObjectURL(blob);
-        setImageUrl(imageUrl);
-      } else {
-        console.error("Error:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error during API request:", error);
-    }
-  };*/
+  const toolbarRef = useRef(null);
+  const [isToolbarReady, setIsToolbarReady] = useState(false);
 
   useEffect(() => {
     const graph = new joint.dia.Graph();
@@ -102,9 +66,9 @@ const DiagramEditor = ({onGenerate}) => {
           
           input.style.position = 'absolute';
           input.style.width = '200px';
-          input.style.left = `${targetElement.position().x + 98}px`; // Same horizontal logic as label changer
+          input.style.left = `${targetElement.position().x + 98}px`;
           input.style.transform = 'translateX(-50%)';
-          input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`; // Same vertical logic
+          input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`;
 
           input.style.backgroundColor = '#ffff'; 
           input.style.border = '1px solid #001F3F';   
@@ -307,10 +271,10 @@ const DiagramEditor = ({onGenerate}) => {
     setIsToolbarReady(true);
   }, [isToolbarReady]);
 
-  /*const handleGenerateClick = () => {
+  const handleGenerateClick = () => {
     const diagramData = graphRef.current.toJSON(); 
     console.log("Diagram Data: ", diagramData);
-  };*/
+  };
 
   return (
     <div>
