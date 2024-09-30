@@ -12,6 +12,44 @@ function Dashboard() {
 
     const [imageUrl, setImageUrl] = useState(null);
 
+<<<<<<< HEAD
+=======
+    const handleGenerate = async (diagramData) => {
+        try {
+            const response = await fetch("http://localhost:8000/generate-content", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ diagram: diagramData }),
+            });
+    
+            if (response.ok) {
+                const blob = await response.blob();
+    
+                // Create an object URL for the blob (image)
+                const imageUrl = URL.createObjectURL(blob);
+                
+                // Set the wireframe image URL for the UI display
+                setImageUrl(imageUrl);
+    
+                // Log the image to the console as a Base64 data URL
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function() {
+                    const base64data = reader.result;
+                    console.log("Base64 Image URL: ", base64data);
+                };
+            } else {
+                setErrorMessage(`Error: ${response.status} ${response.statusText}`);
+            }
+        } catch (error) {
+            setErrorMessage(`Error during API request: ${error.message}`);
+        }
+    };
+    
+
+>>>>>>> ac62664915c1e9263272507808c3a86ab915a94a
     return (
         <div className='Whole-Page'>
             <div className="NavBar">
@@ -23,7 +61,12 @@ function Dashboard() {
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
+<<<<<<< HEAD
                         <DiagramEditor/>
+=======
+                        <DiagramEditor onGenerate={handleGenerate}/>
+                        {/* <button className='generateButton' onClick={() => handleGenerate()}>Generate</button> */}
+>>>>>>> ac62664915c1e9263272507808c3a86ab915a94a
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>

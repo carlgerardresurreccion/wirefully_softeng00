@@ -1,15 +1,51 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
+import Dashboard from './Dashboard';
 import '../CSS/DiagramEditor.css';
 
-const DiagramEditor = () => {
+const DiagramEditor = ({onGenerate}) => {
   const diagramRef = useRef(null);
   const selectedElements = useRef([]);
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
 
-  const toolbarRef = useRef(null);
-  const [isToolbarReady, setIsToolbarReady] = useState(false);
+  const exportDiagramToText = () => {
+    const diagramData = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+    console.log(diagramData);
+    onGenerate(diagramData); // Trigger the generate function passed from Dashboard.js
+  };
+
+
+  const handleGenerateButtonClick = () => {
+    exportDiagramToText();
+  };
+
+  // useEffect(() => {
+  //     // Automatically trigger export when the component mounts or when the diagram is updated
+  //     exportDiagramToText();
+  // }, []);
+
+  /*const handleConvertToWireframe = async (diagramText) => {
+    try {
+      const response = await fetch("/convert-to-wireframe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ diagram: diagramText }),
+      });
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setImageUrl(imageUrl);
+      } else {
+        console.error("Error:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+    }
+  };*/
 
   useEffect(() => {
     const graph = new joint.dia.Graph();
@@ -271,10 +307,10 @@ const DiagramEditor = () => {
     setIsToolbarReady(true);
   }, [isToolbarReady]);
 
-  const handleGenerateClick = () => {
+  /*const handleGenerateClick = () => {
     const diagramData = graphRef.current.toJSON(); 
     console.log("Diagram Data: ", diagramData);
-  };
+  };*/
 
   return (
     <div>

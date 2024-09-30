@@ -1,8 +1,9 @@
 const express = require('express');
 const admin = require('firebase-admin');
 const cors = require('cors');
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 const axios = require('axios');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const serviceAccount = require('./wirefully-adminsdk.json');
@@ -12,46 +13,48 @@ admin.initializeApp({
 });
 
 const app = express();
-const port = 8000;
-
-app.use(express.json());
-
-app.post('/convert-to-wireframe', async (req, res) => {
-  const { diagram } = req.body;
-  const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
-  const apiKey = "AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
-
-  try {
-    // Make the request to the Gemini API
-    const response = await axios.post(apiUrl, {
-      contents: [
-        {
-          parts: [
-            {
-              text: 'Based on the following diagram:\n\n' + diagram + '\n\nGenerate wireframe images for each use cases based on its relationship with actors'
-            }
-          ]
-        }
-      ]
-    }, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      }
-    });
-
-    // Process and send the response back to the frontend
-    // Assuming the response contains wireframe data
-    res.setHeader('Content-Type', 'application/json');
-    res.send(response.data);
-  } catch (error) {
-    console.error("Error during Gemini API request:", error);
-    res.status(500).send("Error converting diagram to wireframe.");
-  }
-});
+const API_KEY = "AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
+app.use(bodyParser.json());
+
+
+app.post('/generate-content', async (req, res) => {
+  try {
+      // Validate request body
+      const { diagram } = req.body;
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
+      const data = {
+          contents: [
+              {
+                  parts: [
+                      {
+                          text: 'Based on the following diagram:\n\n' + diagram + '\n\nGenerate wireframe html codes for each use cases based on its relationship with actors'
+                      }
+                  ]
+              }
+          ]
+      };
+
+      const headers = {
+          'Content-Type': 'application/json',
+      };
+
+      // Make POST request to Google AI API
+      const response = await axios.post(url, data, { headers });
+
+      // Return the response data from Google AI API
+      res.json(response.data);
+  } catch (error) {
+      console.error('Error calling Google AI API:', error.response ? error.response.data : error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 
 // app.post('/signup', async (req, res) => {
 //   const { email, password } = req.body;
@@ -69,5 +72,5 @@ app.use(express.json());
 // });
 
 app.listen(PORT, () => {
-  console.log(`Backend server is running at http://localhost:${port}`);
+  console.log(`Backend server is running at http://localhost:${PORT}`);
 });
