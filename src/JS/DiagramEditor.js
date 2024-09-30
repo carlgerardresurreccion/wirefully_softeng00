@@ -1,21 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
+import Dashboard from './Dashboard';
 
-const DiagramEditor = () => {
+const DiagramEditor = ({onGenerate}) => {
   const diagramRef = useRef(null);
   const selectedElements = useRef([]);
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
 
-  //const exportDiagramToText = () => {
-  //  const diagramText = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
-  //  onGenerate(diagramText); // Trigger the generate function passed from Dashboard.js
-  //};
+  const exportDiagramToText = () => {
+    const diagramData = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+    console.log(diagramData);
+    onGenerate(diagramData); // Trigger the generate function passed from Dashboard.js
+  };
 
-  //useEffect(() => {
-  //    // Automatically trigger export when the component mounts or when the diagram is updated
-  //    exportDiagramToText();
-  //}, []);
+
+  const handleGenerateButtonClick = () => {
+    exportDiagramToText();
+  };
+
+  // useEffect(() => {
+  //     // Automatically trigger export when the component mounts or when the diagram is updated
+  //     exportDiagramToText();
+  // }, []);
 
   /*const handleConvertToWireframe = async (diagramText) => {
     try {
@@ -299,10 +306,10 @@ const DiagramEditor = () => {
 
   }, []);
 
-  const handleGenerateClick = () => {
+  /*const handleGenerateClick = () => {
     const diagramData = graphRef.current.toJSON(); 
     console.log("Diagram Data: ", diagramData);
-  };
+  };*/
 
   return (
     <div>
@@ -314,7 +321,7 @@ const DiagramEditor = () => {
         <button className="delete">Delete</button>
       </div>
       <div ref={diagramRef} style={{ width: '100%', height: '600px', border: '1px solid gray' }}></div>
-      <button onClick={handleGenerateClick}>Generate</button>
+      <button onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
 };
