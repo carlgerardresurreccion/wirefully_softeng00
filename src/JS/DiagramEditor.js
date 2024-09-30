@@ -11,6 +11,16 @@ const DiagramEditor = ({onGenerate}) => {
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
+  const exportDiagramToText = () => {
+    const diagramData = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+    console.log(diagramData);
+    onGenerate(diagramData); // Trigger the generate function passed from Dashboard.js
+  };
+
+  const handleGenerateButtonClick = () => {
+    exportDiagramToText();
+  };
+
   useEffect(() => {
     const graph = new joint.dia.Graph();
     graphRef.current = graph;
@@ -271,11 +281,6 @@ const DiagramEditor = ({onGenerate}) => {
     setIsToolbarReady(true);
   }, [isToolbarReady]);
 
-  const handleGenerateClick = () => {
-    const diagramData = graphRef.current.toJSON(); 
-    console.log("Diagram Data: ", diagramData);
-  };
-
   return (
     <div>
       <div id="toolbar" ref={toolbarRef}>
@@ -286,7 +291,7 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="button delete">Delete</button>
       </div>
       <div className='editor' ref={diagramRef}></div>
-      <button className='button' onClick={handleGenerateClick}>Generate</button>
+      <button className='button' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
 };
