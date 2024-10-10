@@ -21,6 +21,22 @@ const DiagramEditor = ({onGenerate}) => {
     exportDiagramToText();
   };
 
+  let currentScale = 1;
+  let startPanningPosition = { x: 0, y: 0 };
+
+  const zoomIn = () => {
+    currentScale += 0.1;
+    paperRef.current.scale(currentScale, currentScale);
+  };
+
+  const zoomOut = () => {
+    const minScale = 0.5; 
+    if (currentScale > minScale) {
+      currentScale = Math.max(currentScale - 0.1, minScale);
+      paperRef.current.scale(currentScale, currentScale);
+    }
+  };
+
   useEffect(() => {
     const graph = new joint.dia.Graph();
     graphRef.current = graph;
@@ -29,13 +45,46 @@ const DiagramEditor = ({onGenerate}) => {
       el: diagramRef.current,
       model: graph,
       width: 600,
+      async: true,
       height: 530,
       gridSize: 10,
       drawGrid: true,
-      interactive: true
+      interactive: true,
+
+      restrictTranslate: false
     });
 
     paperRef.current = paper;
+
+    paper.on('blank:mousewheel', (evt, x, y, delta) => {
+      if (delta > 0) zoomIn();
+      else zoomOut();
+    });
+
+    let panning = false;
+
+    paper.on('blank:pointerdown', (evt, x, y) => {
+      panning = true;
+      startPanningPosition = { x, y };
+      paper.$el.css('cursor', 'move');
+    });
+
+    paper.on('cell:pointerup blank:pointerup', () => {
+      panning = false;
+      paper.$el.css('cursor', 'default');
+    });
+
+    paper.on('blank:pointermove', (evt, x, y) => {
+      if (panning) {
+        const dx = x - startPanningPosition.x;
+        const dy = y - startPanningPosition.y;
+
+        const translate = paper.translate();
+        paper.translate(translate.tx + dx, translate.ty + dy);
+
+        startPanningPosition = { x, y };
+      }
+    });
 
     const addUseCase = () => {
       const rect = new joint.shapes.standard.Rectangle({
