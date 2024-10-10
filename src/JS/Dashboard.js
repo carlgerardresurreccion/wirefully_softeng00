@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 import DiagramEditor from './DiagramEditor';
+import parse from 'html-react-parser';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
@@ -11,6 +12,7 @@ function Dashboard() {
     const [errorLoading, setErrorLoading] = useState(false);
 
     const [imageUrl, setImageUrl] = useState(null);
+    const [xmlResponse, setXmlResponse] = useState(null);
 
     const handleGenerate = async (diagramData) => {
         try {
@@ -23,21 +25,20 @@ function Dashboard() {
             });
     
             if (response.ok) {
-                const blob = await response.blob();
-    
-                // Create an object URL for the blob (image)
-                const imageUrl = URL.createObjectURL(blob);
+                const jsonResponse = await response.json();
+
+            // Clean up the XML text: remove unnecessary characters
+            const xmlContent = jsonResponse.candidates[0]?.content?.parts[0]?.text || '';
                 
-                // Set the wireframe image URL for the UI display
-                setImageUrl(imageUrl);
-    
-                // Log the image to the console as a Base64 data URL
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = function() {
-                    const base64data = reader.result;
-                    console.log("Base64 Image URL: ", base64data);
-                };
+                // Clean up the XML text: remove any markdown or unnecessary characters
+                const cleanedXml = xmlContent
+                    .replace(/```xml/g, '') 
+                    .replace(/```/g, '')    
+                    .trim();                
+
+                // Set the cleaned XML text in state
+                setXmlResponse(cleanedXml);
+                console.log("Received XML: ", cleanedXml);
             } else {
                 setErrorMessage(`Error: ${response.status} ${response.statusText}`);
             }
@@ -63,12 +64,12 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className='column2'>
-                {imageUrl && (
-                    <div>
-                        <h3>Wireframe Output:</h3>
-                        <img src={imageUrl} alt="Wireframe" />
+                <div>
+                        <h3>Generated XML Output:</h3>
+                        <div className="xml-output-box">
+                            <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre> 
+                        </div>
                     </div>
-                    )}
                 </div>
             </div>
         </div>

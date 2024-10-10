@@ -159,3 +159,36 @@ iframe {
     justify-content: center;
     text-align: center;
 }
+
+.xml-output-box {
+    width: 600px; /* Fixed width for the box */
+    height: 550px; /* Fixed height for the box */
+    border: 2px solid #001F3F; /* Add a border for visibility */
+    padding: 10px; /* Padding for readability */
+    background-color: #f9f9f9; /* Light background for contrast */
+    overflow: auto; /* Enable scrolling when content overflows */
+    white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
+    font-family: monospace; /* Monospace font for code-like appearance */
+    margin: 0 auto; /* Center the box horizontally */
+    word-wrap: break-word; /* Break long words to avoid horizontal scrolling */
+}
+
+h3 {
+    margin-top: -50px;
+}
+
+.xml-preview-box {
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    min-height: 200px; /* Set a minimum height for the preview box */
+    max-height: 500px; /* Optional: Limit the maximum height */
+    overflow-y: auto;  /* Add scroll if content overflows */
+    margin-top: 20px;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+
