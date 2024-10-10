@@ -1,16 +1,9 @@
 const express = require('express');
-const admin = require('firebase-admin');
 const cors = require('cors');
 const PORT = process.env.PORT || 8000;
 const axios = require('axios');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-
-const serviceAccount = require('./wirefully-adminsdk.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
 const app = express();
 const API_KEY = "AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
@@ -19,58 +12,66 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-
+// Endpoint to generate XML and convert it to HTML using the same API
 app.post('/generate-content', async (req, res) => {
   try {
-      // Validate request body
-      const { diagram } = req.body;
+    const { diagram } = req.body;
 
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
-      const data = {
-          contents: [
-              {
-                  parts: [
-                      {
-                          text: 'Based on the following diagram:\n\n' + diagram + '\n\nGenerate wireframe html codes for each use cases based on its relationship with actors'
-                      }
-                  ]
-              }
+    // Step 1: Generate XML from diagram
+    const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
+    const data = {
+      contents: [
+        {
+          parts: [
+            {
+              text: 'Based on the following diagram:\n\n' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete',
+            }
           ]
-      };
+        }
+      ]
+    };
 
-      const headers = {
-          'Content-Type': 'application/json',
-      };
+    const headers = { 'Content-Type': 'application/json' };
 
-      // Make POST request to Google AI API
-      const response = await axios.post(url, data, { headers });
+    // Generate XML from diagram data
+    const xmlResponse = await axios.post(generateXMLUrl, data, { headers });
+    const xmlContent = xmlResponse.data.candidates[0]?.content?.parts[0]?.text || '';
 
-      // Return the response data from Google AI API
-      res.json(response.data);
+    // Clean the XML content
+    const cleanedXml = xmlContent.replace(/```xml/g, '').replace(/```/g, '').trim();
+    console.log(cleanedXml);
+
+    // Step 2: Convert the cleaned XML to HTML
+    const convertToHtmlData = {
+      contents: [
+        {
+          parts: [
+            {
+              text: 'Convert the following XML to HTML:\n\n' + cleanedXml + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and add other components to make it look complete',
+            }
+          ]
+        }
+      ]
+    };
+
+    // Convert XML to HTML using the same API
+    const htmlResponse = await axios.post(generateXMLUrl, convertToHtmlData, { headers });
+    const htmlContent = htmlResponse.data.candidates[0]?.content?.parts[0]?.text || '';
+
+    // Send back both XML and HTML to frontend
+    res.json({
+      xmlContent: cleanedXml,
+      htmlContent: htmlContent.trim(),
+    });
+
   } catch (error) {
-      console.error('Error calling Google AI API:', error.response ? error.response.data : error.message);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error during API request:', error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-
-
-
-// app.post('/signup', async (req, res) => {
-//   const { email, password } = req.body;
-
-//   try {
-//     const userRecord = await admin.auth().createUser({
-//       email,
-//       password,
-//     });
-//     res.status(201).json({ user: userRecord });
-//   } catch (error) {
-//     console.error('Error creating user:', error);
-//     res.status(500).json({ error: 'Failed to create user' });
-//   }
-// });
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Backend server is running at http://localhost:${PORT}`);
 });
+

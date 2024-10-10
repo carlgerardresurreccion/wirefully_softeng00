@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 import DiagramEditor from './DiagramEditor';
@@ -6,13 +6,9 @@ import parse from 'html-react-parser';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
-    const [responseData, setResponseData] = useState(null);
-
-    const [actorImageSrcs, setActorImageSrcs] = useState({});
-    const [errorLoading, setErrorLoading] = useState(false);
-
-    const [imageUrl, setImageUrl] = useState(null);
     const [xmlResponse, setXmlResponse] = useState(null);
+    const [htmlPreview, setHtmlPreview] = useState(null); 
+    const [isModalOpen, setIsModalOpen] = useState(false);  
 
     const handleGenerate = async (diagramData) => {
         try {
@@ -23,22 +19,11 @@ function Dashboard() {
                 },
                 body: JSON.stringify({ diagram: diagramData }),
             });
-    
+
             if (response.ok) {
                 const jsonResponse = await response.json();
-
-            // Clean up the XML text: remove unnecessary characters
-            const xmlContent = jsonResponse.candidates[0]?.content?.parts[0]?.text || '';
-                
-                // Clean up the XML text: remove any markdown or unnecessary characters
-                const cleanedXml = xmlContent
-                    .replace(/```xml/g, '') 
-                    .replace(/```/g, '')    
-                    .trim();                
-
-                // Set the cleaned XML text in state
-                setXmlResponse(cleanedXml);
-                console.log("Received XML: ", cleanedXml);
+                setXmlResponse(jsonResponse.xmlContent);
+                setHtmlPreview(jsonResponse.htmlContent);  
             } else {
                 setErrorMessage(`Error: ${response.status} ${response.statusText}`);
             }
@@ -46,7 +31,10 @@ function Dashboard() {
             setErrorMessage(`Error during API request: ${error.message}`);
         }
     };
-    
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     return (
         <div className='Whole-Page'>
@@ -59,21 +47,39 @@ function Dashboard() {
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
-                        <DiagramEditor onGenerate={handleGenerate}/>
+                        <DiagramEditor onGenerate={handleGenerate} />
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>
                 <div className='column2'>
-                <div>
+                    <div>
                         <h3>Generated XML Output:</h3>
                         <div className="xml-output-box">
-                            <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre> 
+                            <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre>
                         </div>
+
+                        <h2>HTML Preview:</h2>
+                        <button onClick={toggleModal} className="preview-button">
+                            {htmlPreview ? 'Show HTML Preview' : 'No HTML Preview Available'}
+                        </button>
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && htmlPreview && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <button onClick={toggleModal} className="close-button">Close Preview</button>
+                        <div className="html-preview-content">
+                            {parse(htmlPreview)}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 export default Dashboard;
+
+
