@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as joint from 'jointjs';
 import '../CSS/DiagramEditor.css';
+import html2canvas from 'html2canvas';
 
 const DiagramEditor = ({onGenerate}) => {
   const diagramRef = useRef(null);
@@ -11,10 +12,23 @@ const DiagramEditor = ({onGenerate}) => {
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
-  const exportDiagramToText = () => {
-    const diagramData = JSON.stringify(graphRef.current.toJSON()); // Serialize the diagram
+  const exportDiagramToText = async () => {
+    const diagramData = JSON.stringify(graphRef.current.toJSON());
     console.log(diagramData);
-    onGenerate(diagramData); // Trigger the generate function passed from Dashboard.js
+    onGenerate(diagramData);
+
+    const diagramElement = document.getElementById('maonajudniboss');
+
+    try {
+        const canvas = await html2canvas(diagramElement);
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'diagram.png';
+        link.click();
+    } catch (error) {
+        console.error('Error capturing diagram:', error);
+    }
   };
 
   const handleGenerateButtonClick = () => {
@@ -339,7 +353,7 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="button add-sline">Association Line</button>
         <button className="button delete">Delete</button>
       </div>
-      <div className='editor' ref={diagramRef}></div>
+      <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
       <button className='button' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
