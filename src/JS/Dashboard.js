@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 import DiagramEditor from './DiagramEditor';
 import parse from 'html-react-parser';
+import html2canvas from 'html2canvas';  
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
     const [xmlResponse, setXmlResponse] = useState(null);
-    const [htmlPreview, setHtmlPreview] = useState(null); 
-    const [isModalOpen, setIsModalOpen] = useState(false);  
+    const [htmlPreview, setHtmlPreview] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const htmlPreviewRef = useRef(null);  
 
     const handleGenerate = async (diagramData) => {
         try {
@@ -34,6 +36,20 @@ function Dashboard() {
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+    };
+
+
+    const exportAsImage = async () => {
+        if (htmlPreviewRef.current) {
+            const canvas = await html2canvas(htmlPreviewRef.current);  
+            const image = canvas.toDataURL('image/png');  
+            
+            // Create a temporary download link
+            const link = document.createElement('a');
+            link.href = image;
+            link.download = 'wireframe.png';  
+            link.click();  
+        }
     };
 
     return (
@@ -70,9 +86,12 @@ function Dashboard() {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button onClick={toggleModal} className="close-button">Close Preview</button>
-                        <div className="html-preview-content">
+                        <div className="html-preview-content" ref={htmlPreviewRef}>
                             {parse(htmlPreview)}
                         </div>
+                        <button onClick={exportAsImage} className="export-button">
+                            Export as Image
+                        </button>
                     </div>
                 </div>
             )}
@@ -81,5 +100,6 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
 
 
