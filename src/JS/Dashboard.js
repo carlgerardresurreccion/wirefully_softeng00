@@ -3,16 +3,34 @@ import logo from '../CSS/1.png';
 import '../CSS/Dashboard.css';
 import DiagramEditor from './DiagramEditor';
 import parse from 'html-react-parser';
-import html2canvas from 'html2canvas';  
+import html2canvas from 'html2canvas';
+import HistoryScreen from './HistoryScreen';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
     const [xmlResponse, setXmlResponse] = useState(null);
     const [htmlPreview, setHtmlPreview] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const [history, setHistory] = useState([]);
     const htmlPreviewRef = useRef(null);
 
     const [showXML, setShowXML] = useState(false);
+
+    const fetchHistory = async () => {
+        try {
+            const response = await fetch("http://localhost:8000/get-history");
+            if (response.ok) {
+                const historyData = await response.json();
+                console.log('Fetched History Data:', historyData); // Debug log
+                setHistory(historyData);
+            } else {
+                setErrorMessage(`Error fetching history: ${response.status} ${response.statusText}`);
+            }
+        } catch (error) {
+            setErrorMessage(`Error during API request: ${error.message}`);
+        }
+    };
 
     const handleGenerate = async (diagramData) => {
         try {
@@ -26,6 +44,21 @@ function Dashboard() {
 
             if (response.ok) {
                 const jsonResponse = await response.json();
+                const newHistoryItem = {
+                    diagram: diagramData,
+                    xml: jsonResponse.xmlContent,
+                    html: jsonResponse.htmlContent,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                await fetch("http://localhost:8000/save-history", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(newHistoryItem),
+                });
+
                 setXmlResponse(jsonResponse.xmlContent);
                 setHtmlPreview(jsonResponse.htmlContent);  
             } else {
@@ -40,13 +73,18 @@ function Dashboard() {
         setIsModalOpen(!isModalOpen);
     };
 
+    const toggleHistory = () => {
+        setIsHistoryVisible(!isHistoryVisible);  
+        if (!isHistoryVisible) {
+            fetchHistory(); 
+        }
+    };
+
 
     const exportAsImage = async () => {
         if (htmlPreviewRef.current) {
             const canvas = await html2canvas(htmlPreviewRef.current);  
             const image = canvas.toDataURL('image/png');  
-            
-            // Create a temporary download link
             const link = document.createElement('a');
             link.href = image;
             link.download = 'wireframe.png';  
@@ -64,8 +102,14 @@ function Dashboard() {
                 <div className="NavBar-left">
                     <img src={logo} className="App-logo" alt="logo" />
                     <span className='App-name'>WireFully</span>
+                    <span onClick={toggleHistory} className="history-button">
+                        {isHistoryVisible ? 'Back' : 'History'}
+                    </span>
                 </div>
             </div>
+            {isHistoryVisible ? (
+                <HistoryScreen history={history} /> 
+            ) : (
             <div className='Display-Main'>
                 <div className='column1'>
                     <div className='query-input'>
@@ -111,6 +155,7 @@ function Dashboard() {
                     </div>
                 </div>
             </div>
+        )}
 
             {/*isModalOpen && htmlPreview && (
                 <div className="modal-overlay">

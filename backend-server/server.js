@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const PORT = process.env.PORT || 8000;
 const axios = require('axios');
 const bodyParser = require('body-parser');
@@ -7,17 +8,28 @@ require('dotenv').config();
 
 const app = express();
 const API_KEY = "AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
+const MONGODB_URI = "mongodb+srv://carlgerardresuu:llrTldGAU3JSQm5y@cluster0.l28co.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose.connect(MONGODB_URI, {
+});
+
+const historySchema = new mongoose.Schema({
+    diagram: String,
+    xml: String,
+    html: String,
+    timestamp: String,
+});
+
+const History = mongoose.model('History', historySchema);
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Endpoint to generate XML and convert it to HTML using the same API
 app.post('/generate-content', async (req, res) => {
   try {
     const { diagram } = req.body;
 
-    // Step 1: Generate XML from diagram
     const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
       contents: [
@@ -33,15 +45,11 @@ app.post('/generate-content', async (req, res) => {
 
     const headers = { 'Content-Type': 'application/json' };
 
-    // Generate XML from diagram data
     const xmlResponse = await axios.post(generateXMLUrl, data, { headers });
     const xmlContent = xmlResponse.data.candidates[0]?.content?.parts[0]?.text || '';
 
-    // Clean the XML content
     const cleanedXml = xmlContent.replace(/```xml/g, '').replace(/```/g, '').trim();
-    console.log(cleanedXml);
 
-    // Step 2: Convert the cleaned XML to HTML
     const convertToHtmlData = {
       contents: [
         {
@@ -54,11 +62,9 @@ app.post('/generate-content', async (req, res) => {
       ]
     };
 
-    // Convert XML to HTML using the same API
     const htmlResponse = await axios.post(generateXMLUrl, convertToHtmlData, { headers });
     const htmlContent = htmlResponse.data.candidates[0]?.content?.parts[0]?.text || '';
 
-    // Send back both XML and HTML to frontend
     res.json({
       xmlContent: cleanedXml,
       htmlContent: htmlContent.trim(),
@@ -70,7 +76,26 @@ app.post('/generate-content', async (req, res) => {
   }
 });
 
-// Start the server
+app.post('/save-history', async (req, res) => {
+  try {
+    const historyItem = new History(req.body);
+    await historyItem.save();
+    res.status(201).json({ message: 'History saved successfully' });
+  } catch (error) {
+    console.error('Error saving history:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/get-history', async (req, res) => {
+  try {
+      const history = await History.find();
+      res.json(history);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching history', error });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server is running at http://localhost:${PORT}`);
 });
