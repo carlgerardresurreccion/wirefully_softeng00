@@ -10,7 +10,9 @@ function Dashboard() {
     const [xmlResponse, setXmlResponse] = useState(null);
     const [htmlPreview, setHtmlPreview] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const htmlPreviewRef = useRef(null);  
+    const htmlPreviewRef = useRef(null);
+
+    const [showXML, setShowXML] = useState(false);
 
     const handleGenerate = async (diagramData) => {
         try {
@@ -52,6 +54,10 @@ function Dashboard() {
         }
     };
 
+    const toggleView = () => {
+        setShowXML(!showXML);
+    };
+
     return (
         <div className='Whole-Page'>
             <div className="NavBar">
@@ -67,7 +73,7 @@ function Dashboard() {
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>
-                <div className='column2'>
+                {/*<div className='column2'>
                     <div>
                         <h3>Generated XML Output:</h3>
                         <div className="xml-output-box">
@@ -79,10 +85,34 @@ function Dashboard() {
                             {htmlPreview ? 'Show HTML Preview' : 'No HTML Preview Available'}
                         </button>
                     </div>
+                </div>*/}
+                <div className='column2'>
+                    <div className='inside-column2'>
+                        <h3>Output: </h3>
+                        <div className="output-box">
+                            {showXML ? (
+                                <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre>
+                            ) : (
+                                <div className="html-preview-content" ref={htmlPreviewRef}>
+                                    {htmlPreview ? parse(htmlPreview) : 'Create your own use case diagram'}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className='buttons'>
+                            <button onClick={toggleView} className="xml-button">
+                                {showXML ? 'Wireframe' : 'XML'}
+                            </button>
+
+                            <button onClick={exportAsImage} className="export-button">
+                                Export
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {isModalOpen && htmlPreview && (
+            {/*isModalOpen && htmlPreview && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button onClick={toggleModal} className="close-button">Close Preview</button>
@@ -94,7 +124,7 @@ function Dashboard() {
                         </button>
                     </div>
                 </div>
-            )}
+            )*/}
         </div>
     );
 }

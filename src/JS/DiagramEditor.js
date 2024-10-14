@@ -354,7 +354,7 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="button delete">Delete</button>
       </div>
       <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
-      <button className='button' onClick={handleGenerateButtonClick}>Generate</button>
+      <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
 };

@@ -159,9 +159,17 @@ iframe {
     text-align: center;
 }
 
-.xml-output-box {
+/*.inside-column2 {
+    margin-top: 55px;
+}*/
+
+.inside-column2 h3 {
+    margin-bottom: 10px;
+}
+
+.output-box {
     width: 600px; /* Fixed width for the box */
-    height: 400px; /* Fixed height for the box */
+    height: 520px; /* Fixed height for the box */
     border: 2px solid #001F3F; /* Add a border for visibility */
     padding: 10px; /* Padding for readability */
     background-color: #f9f9f9; /* Light background for contrast */
@@ -170,11 +178,19 @@ iframe {
     font-family: monospace; /* Monospace font for code-like appearance */
     margin: 0 auto; /* Center the box horizontally */
     word-wrap: break-word; /* Break long words to avoid horizontal scrolling */
+
+    margin-bottom: 10px;
 }
 
-h3 {
-    margin-top: -50px;
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* Align items to the right */
+    gap: 10px;
 }
+
+/*h3 {
+    margin-top: -50px;
+}*/
 
 .xml-preview-box {
     padding: 20px;
@@ -214,18 +230,6 @@ h2 {
     position: relative;
 }
 
-/*.close-button {
-    background-color: red;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    position: absolute;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}*/
-
 .close-button {
     margin-top: 10px;
     padding: 10px 20px;
@@ -236,45 +240,23 @@ h2 {
     cursor: pointer;
 }
 
-.close-button:hover {
-    background-color: red;
-}
-
-.preview-button {
-    padding: 10px 20px;
-    background-color: #007bff;
+.export-button, .xml-button {
+    background-color: #001F3F;
+    border: 2px solid #001F3F;
     color: white;
-    border: none;
-    border-radius: 4px;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    border-radius: 5px;
+    width: 95px;
 }
-
-.preview-button:hover {
-    background-color: #0056b3;
+  
+.export-button:hover, .xml-button:hover {
+    background-color: #A0E9FF;
+    border: 2px solid #001F3F;
+    color: #001F3F;
 }
-
-.html-preview-content {
-    padding: 20px;
-    background-color: #f4f4f4;
-    border: 1px solid #ddd;
-}
-
-.export-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.export-button:hover {
-    background-color: #218838;
-}
-
-
-
-
-

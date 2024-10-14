@@ -1,4 +1,4 @@
-.button {
+.button, .gbutton{
     background-color: #001F3F;
     border: 2px solid #001F3F;
     color: white;
@@ -10,6 +10,10 @@
     margin: 5px;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.gbutton {
+    width: 95px;
 }
   
 .button:hover {
