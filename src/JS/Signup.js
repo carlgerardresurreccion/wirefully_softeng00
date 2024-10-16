@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const Signup = ({ toggleForm }) => {
     const [userDetails, setUserDetails] = useState({
-        username: '',
         email: '',
         password: ''
     });
@@ -29,16 +28,6 @@ const Signup = ({ toggleForm }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className='input-group'>
-            <label htmlFor="username">Username</label>
-                <input 
-                    type="text" 
-                    name="username" 
-                    value={userDetails.username} 
-                    onChange={handleChange} 
-                    required 
-                />
-            </div>
             <div className='input-group'>
                 <label htmlFor="email">Email</label>
                 <input 

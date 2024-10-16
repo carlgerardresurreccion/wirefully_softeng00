@@ -18,7 +18,6 @@ mongoose.connect(MONGODB_URI, {
 });
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true},
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
@@ -113,7 +112,7 @@ app.listen(PORT, () => {
 });
 
 app.post('/signup', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
   try {
       let user = await User.findOne({ email });
@@ -122,7 +121,7 @@ app.post('/signup', async (req, res) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      user = new User({ username, email, password: hashedPassword });
+      user = new User({ email, password: hashedPassword });
       await user.save();
 
       res.status(201).json(console.log("User added!"));
@@ -174,7 +173,7 @@ app.post('/logout', auth, (req, res) => {
 
   for (const user in users) {
       if (users[user].token === token) {
-          users[user].token = null; // Example: setting token to null
+          users[user].token = null;
           return res.status(200).json({ message: 'Logged out successfully' });
       }
   }

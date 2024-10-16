@@ -113,7 +113,7 @@ function Dashboard() {
                     <span className='Navbar-text'>WireFully</span>
                 </div>
                 <div className='Navbar-middle'>
-                    <span className='Navbar-text'>Hi, username!</span>
+                    <span className='Navbar-text'>Hi, welcome back!</span>
                 </div>
                 <div className='Navbar-right'>
                     <span onClick={toggleHistory} className='Navbar-text'>
