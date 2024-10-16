@@ -5,33 +5,53 @@
 }
 
 .NavBar {
+    width: 100%;
     height: 50px;
     display: flex;
-    justify-content: flex-start; 
+    justify-content: space-between;
     align-items: center;
-    margin-top: 0;
-    padding-left: 30px;
-    padding-right: 30px;
     background-color: white;
-  }
+}
   
-  .NavBar-left {
+.NavBar-left, .Navbar-middle, .Navbar-right {
     display: flex;
     align-items: center;
-  }
+}
+
+.NavBar-left {
+    margin-left: 30px;
+    justify-content: flex-start;
+}
+
+.Navbar-middle {
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.Navbar-right {
+    margin-right: 30px;
+    justify-content: flex-end;
+}
+
+.Navbar-right {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
   
-  .App-logo {
+.App-logo {
     height: 40px; 
     width: auto;
     margin-right: 10px; 
-  }
+}
   
-  .App-name {
-    font-size: 18px;
-    font-weight: 600;
+.Navbar-text {
+    font-size: 15px;
+    font-weight: 400;
     color: black;
     cursor: pointer;
-  }
+}
 
 .Main {
     margin-top: 50px;
@@ -113,7 +133,7 @@
 iframe {
     border: none;
     margin-bottom: 20px; 
-  }
+}
 
 .generateButton, .exportButton {
     background-color: black;

@@ -147,7 +147,7 @@ app.post('/login', async (req, res) => {
       }
 
       const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
-      res.json(console.log("User logged in!"));
+      res.json({ token, message: 'Login successful' });
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
@@ -168,6 +168,19 @@ const auth = (req, res, next) => {
       res.status(401).json({ message: 'Token is not valid' });
   }
 };
+
+app.post('/logout', auth, (req, res) => {
+  const token = req.headers['authorization'];
+
+  for (const user in users) {
+      if (users[user].token === token) {
+          users[user].token = null; // Example: setting token to null
+          return res.status(200).json({ message: 'Logged out successfully' });
+      }
+  }
+
+  return res.status(404).json({ message: 'User not found' });
+});
 
 app.get('/dashboard', auth, (req, res) => {
   res.json({ message: 'Welcome to the dashboard!', userId: req.user });

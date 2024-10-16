@@ -5,6 +5,8 @@ import DiagramEditor from './DiagramEditor';
 import parse from 'html-react-parser';
 import html2canvas from 'html2canvas';
 import HistoryScreen from './HistoryScreen';
+import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
@@ -16,6 +18,13 @@ function Dashboard() {
     const htmlPreviewRef = useRef(null);
 
     const [showXML, setShowXML] = useState(false);
+    const { logout } = useAuth(); // Access the logout function from context
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout(); // Call the logout function
+        navigate('/'); // Redirect to the home page after logging out
+    };
 
     const fetchHistory = async () => {
         try {
@@ -101,10 +110,16 @@ function Dashboard() {
             <div className="NavBar">
                 <div className="NavBar-left">
                     <img src={logo} className="App-logo" alt="logo" />
-                    <span className='App-name'>WireFully</span>
-                    <span onClick={toggleHistory} className="history-button">
+                    <span className='Navbar-text'>WireFully</span>
+                </div>
+                <div className='Navbar-middle'>
+                    <span className='Navbar-text'>Hi, username!</span>
+                </div>
+                <div className='Navbar-right'>
+                    <span onClick={toggleHistory} className='Navbar-text'>
                         {isHistoryVisible ? 'Back' : 'History'}
                     </span>
+                    <span onClick={handleLogout} className='Navbar-text'>Log Out</span>
                 </div>
             </div>
             {isHistoryVisible ? (
