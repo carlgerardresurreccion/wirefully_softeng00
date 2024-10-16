@@ -1,0 +1,108 @@
+.landing {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+}
+
+.rectangle {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.3);
+    height: 630px;
+    width: 80%; 
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    align-items: center;
+}
+
+.left-column {
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.wire {
+    color: #001F3F;
+    font-weight: bold;
+    font-size: 80px;
+}
+
+.fully {
+    color: white;
+    font-weight: normal;
+    font-size: 80px;
+}
+
+.tag {
+    margin-bottom: 50px;
+}
+
+.tag-bottom {
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+/*LOG IN*/
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 70%;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 50px; 
+    font-weight: bold;
+    color: black;
+    font-size: 10px;
+}
+
+input {
+    width: 100%;
+    height: 12px;
+    padding: 10px;
+    border: 2px solid #001F3F;
+    border-radius: 5px;
+    background-color: rgba(0, 31, 63, 0.1);
+    outline: none;
+    font-size: 12px;
+}
+
+input:focus {
+    border-color: #001F3F; 
+    box-shadow: 0 0 5px rgba(0, 31, 63, 0.5);
+}
+
+button {
+    width: 80px;
+    font-size: 13px;
+    margin-top: 20px; 
+    padding: 10px;
+    background-color: black; 
+    color: white; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+}
+
+button:hover {
+    background-color: #001F3F;
+}

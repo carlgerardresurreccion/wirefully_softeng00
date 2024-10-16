@@ -1,17 +1,22 @@
 import '../CSS/App.css';
-import { BrowserRouter as Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './Dashboard';
-import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
+import PrivateRoute from './PrivateRoute';
+import Landing from './Landing';
+import { AuthProvider } from './AuthContext'; 
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className='MainPage'>
-        <Routes>
-            <Dashboard/>
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <Router>
+        <div className="MainPage">
+          <Routes>
+            <Route path="/home" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path='/' element={<Landing />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
