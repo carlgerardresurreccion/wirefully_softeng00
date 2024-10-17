@@ -25,16 +25,19 @@ export const AuthProvider = ({ children }) => {
                     'Authorization': localStorage.getItem('token'),
                 },
             });
-            setUser(null);
             localStorage.removeItem('token'); 
+            setUser(null); // Consider doing this after removing the token
+            console.log("User state after logout:", user); // Check user state after logout
             window.location.href = '/';
         } catch (error) {
             console.error("Logout error:", error.response ? error.response.data : error.message);
         }
-    };    
+    };
+    
+    const token = localStorage.getItem('token');
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated, token }}>
             {children}
         </AuthContext.Provider>
     );

@@ -18,27 +18,12 @@ function Dashboard() {
     const htmlPreviewRef = useRef(null);
 
     const [showXML, setShowXML] = useState(false);
-    const { logout } = useAuth(); // Access the logout function from context
+    const { token, logout } = useAuth(); // Access the logout function from context
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout(); // Call the logout function
         navigate('/'); // Redirect to the home page after logging out
-    };
-
-    const fetchHistory = async () => {
-        try {
-            const response = await fetch("http://localhost:8000/get-history");
-            if (response.ok) {
-                const historyData = await response.json();
-                console.log('Fetched History Data:', historyData); // Debug log
-                setHistory(historyData);
-            } else {
-                setErrorMessage(`Error fetching history: ${response.status} ${response.statusText}`);
-            }
-        } catch (error) {
-            setErrorMessage(`Error during API request: ${error.message}`);
-        }
     };
 
     const handleGenerate = async (diagramData) => {
@@ -50,24 +35,25 @@ function Dashboard() {
                 },
                 body: JSON.stringify({ diagram: diagramData }),
             });
-
+    
             if (response.ok) {
                 const jsonResponse = await response.json();
                 const newHistoryItem = {
                     diagram: diagramData,
                     xml: jsonResponse.xmlContent,
                     html: jsonResponse.htmlContent,
-                    timestamp: new Date().toLocaleString()
+                    timestamp: new Date().toLocaleString(),  
                 };
-
+    
                 await fetch("http://localhost:8000/save-history", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": token,  
                     },
                     body: JSON.stringify(newHistoryItem),
                 });
-
+    
                 setXmlResponse(jsonResponse.xmlContent);
                 setHtmlPreview(jsonResponse.htmlContent);  
             } else {
@@ -77,7 +63,26 @@ function Dashboard() {
             setErrorMessage(`Error during API request: ${error.message}`);
         }
     };
-
+    
+    const fetchHistory = async () => {
+        try {
+            const response = await fetch("http://localhost:8000/get-history", {
+                headers: {
+                    "Authorization": token,  
+                },
+            });
+            if (response.ok) {
+                const historyData = await response.json();
+                console.log('Fetched History Data:', historyData); 
+                setHistory(historyData);
+            } else {
+                setErrorMessage(`Error fetching history: ${response.status} ${response.statusText}`);
+            }
+        } catch (error) {
+            setErrorMessage(`Error during API request: ${error.message}`);
+        }
+    };
+    
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };

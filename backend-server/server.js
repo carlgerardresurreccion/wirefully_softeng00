@@ -25,13 +25,30 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 const historySchema = new mongoose.Schema({
-    diagram: String,
-    xml: String,
-    html: String,
-    timestamp: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  diagram: String,
+  xml: String,
+  html: String,
+  timestamp: String, 
 });
 
 const History = mongoose.model('History', historySchema);
+
+const auth = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      req.user = decoded.userId;  
+      console.log(req.user);
+      next();
+  } catch (error) {
+      res.status(401).json({ message: 'Token is not valid' });
+  }
+};
 
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
@@ -87,9 +104,9 @@ app.post('/generate-content', async (req, res) => {
   }
 });
 
-app.post('/save-history', async (req, res) => {
+app.post('/save-history', auth, async (req, res) => {
   try {
-    const historyItem = new History(req.body);
+    const historyItem = new History({ ...req.body, userId: req.user }); 
     await historyItem.save();
     res.status(201).json({ message: 'History saved successfully' });
   } catch (error) {
@@ -98,12 +115,13 @@ app.post('/save-history', async (req, res) => {
   }
 });
 
-app.get('/get-history', async (req, res) => {
+
+app.get('/get-history', auth, async (req, res) => {
   try {
-      const history = await History.find();
-      res.json(history);
+    const history = await History.find({ userId: req.user }); 
+    res.json(history);
   } catch (error) {
-      res.status(500).json({ message: 'Error fetching history', error });
+    res.status(500).json({ message: 'Error fetching history', error });
   }
 });
 
@@ -152,21 +170,6 @@ app.post('/login', async (req, res) => {
       res.status(500).json({ message: 'Server error' });
   }
 });
-
-const auth = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-  }
-
-  try {
-      const decoded = jwt.verify(token, SECRET_KEY);
-      req.user = decoded.userId;
-      next();
-  } catch (error) {
-      res.status(401).json({ message: 'Token is not valid' });
-  }
-};
 
 app.post('/logout', auth, (req, res) => {
   const token = req.headers['authorization'];
