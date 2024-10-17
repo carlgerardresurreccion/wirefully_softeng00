@@ -89,8 +89,7 @@ function Dashboard() {
         }
     };
 
-
-    const exportAsImage = async () => {
+    /*const exportAsImage = async () => {
         if (htmlPreviewRef.current) {
             const canvas = await html2canvas(htmlPreviewRef.current);  
             const image = canvas.toDataURL('image/png');  
@@ -113,7 +112,59 @@ function Dashboard() {
                 console.error('Error capturing diagram:', error);
             }
         }
+    };*/
+
+
+    const exportAsImage = async () => {
+        const htmlPreviewCanvas = htmlPreviewRef.current 
+            ? await html2canvas(htmlPreviewRef.current) 
+            : null;
+    
+        const diagramElement = document.getElementById('maonajudniboss'); // Assuming this is the diagram element ID
+        const diagramCanvas = diagramElement 
+            ? await html2canvas(diagramElement) 
+            : null;
+    
+        if (htmlPreviewCanvas && diagramCanvas) {
+            // Determine the maximum height and width between the wireframe and diagram
+            const maxHeight = Math.max(htmlPreviewCanvas.height, diagramCanvas.height);
+            const combinedWidth = htmlPreviewCanvas.width + diagramCanvas.width + 20; // Add padding between the images
+    
+            // Create a new square canvas to fit both images side by side
+            const canvasSize = Math.max(maxHeight, combinedWidth); // Make it a big square
+            const combinedCanvas = document.createElement('canvas');
+            const context = combinedCanvas.getContext('2d');
+    
+            // Set the canvas size to the square size
+            combinedCanvas.width = canvasSize;
+            combinedCanvas.height = canvasSize;
+    
+            // Fill the background with a white color (optional)
+            context.fillStyle = "#ffffff"; // White background
+            context.fillRect(0, 0, combinedCanvas.width, combinedCanvas.height);
+    
+            // Draw the HTML preview (wireframe) on the left side
+            const wireframeX = (canvasSize - combinedWidth) / 2; // Center horizontally
+            const wireframeY = (canvasSize - htmlPreviewCanvas.height) / 2; // Center vertically
+            context.drawImage(htmlPreviewCanvas, wireframeX, wireframeY, htmlPreviewCanvas.width, htmlPreviewCanvas.height);
+    
+            // Draw the diagram on the right side, with padding in between
+            const diagramX = wireframeX + htmlPreviewCanvas.width + 20; // Add 20px padding between the images
+            const diagramY = (canvasSize - diagramCanvas.height) / 2; // Center vertically
+            context.drawImage(diagramCanvas, diagramX, diagramY, diagramCanvas.width, diagramCanvas.height);
+    
+            // Export the combined image
+            const combinedImage = combinedCanvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = combinedImage;
+            link.download = 'UCDiagram&Wireframe.png';
+            link.click();
+        } else {
+            console.error('Error capturing one or both images');
+        }
     };
+    
+    
 
     const toggleView = () => {
         setShowXML(!showXML);
