@@ -14,10 +14,13 @@ const DiagramEditor = ({onGenerate}) => {
 
   const exportDiagramToText = async () => {
     const diagramData = JSON.stringify(graphRef.current.toJSON());
-    console.log(diagramData);
+    //console.log(diagramData);
     onGenerate(diagramData);
 
-    const diagramElement = document.getElementById('maonajudniboss');
+    /*const diagramElement = document.getElementById('maonajudniboss');
+    if (diagramElement) {
+      onGenerate('maonajudniboss');
+    }
 
     try {
         const canvas = await html2canvas(diagramElement);
@@ -28,7 +31,7 @@ const DiagramEditor = ({onGenerate}) => {
         link.click();
     } catch (error) {
         console.error('Error capturing diagram:', error);
-    }
+    }*/
   };
 
   const handleGenerateButtonClick = () => {
@@ -105,8 +108,8 @@ const DiagramEditor = ({onGenerate}) => {
         position: { x: 100, y: 100 },
         size: { width: 120, height: 40 },
         attrs: {
-          body: { fill: 'lightblue', stroke: 'none' },
-          label: { text: 'New Use Case', fill: 'black' }
+          body: { fill: '#3A6D8C', stroke: 'none' },
+          label: { text: 'New Use Case', fill: 'white' }
         },
         type: 'usecase' 
       });
@@ -118,7 +121,7 @@ const DiagramEditor = ({onGenerate}) => {
         position: { x: 300, y: 100 },
         size: { width: 80, height: 40 },
         attrs: {
-          body: { fill: 'lightgreen', stroke: 'none' },
+          body: { fill: '#EAD8B1', stroke: 'none' },
           label: { text: 'Actor', fill: 'black' }
         },
         type: 'actor'
@@ -165,13 +168,13 @@ const DiagramEditor = ({onGenerate}) => {
                   type: 'Relationship', 
                   attrs: {
                     line: {
-                      stroke: 'blue',
+                      stroke: '#001F3F',
                       strokeWidth: 2,
                       strokeDasharray: '5,5',
                       targetMarker: {
                         type: 'path',
                         d: 'M 10 -5 0 0 10 5 Z',
-                        fill: 'blue',
+                        fill: '#001F3F',
                       },
                     },
                   },
@@ -222,7 +225,7 @@ const DiagramEditor = ({onGenerate}) => {
             type: 'Relationship', 
             attrs: {
               line: {
-                stroke: 'green', 
+                stroke: '#001F3F', 
                 strokeWidth: 2,  
                 targetMarker: {
                   'type': 'none'
@@ -268,17 +271,15 @@ const DiagramEditor = ({onGenerate}) => {
     });
 
     const deleteSelectedElements = () => {
-      console.log("Deleting selected elements:", selectedElements.current);
-
-      selectedElements.current.forEach(({ id }) => {
-        const element = graph.getCell(id); 
-        if (element) {
-          console.log("Removing element:", element);
-          element.remove(); 
-        } else {
-          console.error("Element not found for deletion:", id);
-        }
+      const remainingElements = selectedElements.current.filter(({ id }) => {
+        const element = graph.getCell(id);
+          if (element) {
+              element.remove();
+              return false;
+          }
+          return true;
       });
+      selectedElements.current = remainingElements;
     };
 
     paper.on('element:pointerdblclick', (elementView) => {
@@ -329,7 +330,7 @@ const DiagramEditor = ({onGenerate}) => {
         element.attr('body/stroke', 'none');
       } else {
         selectedElements.current.push({ id: element.id, element });
-        element.attr('body/stroke', 'red'); 
+        element.attr('body/stroke', '#001F3F');
       }
     });
 
@@ -347,11 +348,11 @@ const DiagramEditor = ({onGenerate}) => {
   return (
     <div>
       <div id="toolbar" ref={toolbarRef}>
-        <button className="button add-use-case">Add Use Case</button>
-        <button className="button add-actor">Add Actor</button>
-        <button className="button add-barrow">Broken Arrow</button>
-        <button className="button add-sline">Association Line</button>
-        <button className="button delete">Delete</button>
+        <button className="buttona add-use-case">Add Use Case</button>
+        <button className="buttona add-actor">Add Actor</button>
+        <button className="buttona add-barrow">Broken Arrow</button>
+        <button className="buttona add-sline">Association Line</button>
+        <button className="buttona delete">Delete</button>
       </div>
       <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -8,13 +8,40 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await axios.get('http://localhost:8000/verify-token', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setUser(response.data.user);
+                    setIsAuthenticated(true);
+                } catch (error) {
+                    console.error('Token validation failed or session expired:', error);
+                    setIsAuthenticated(false);
+                    localStorage.removeItem('token'); 
+                }
+            }
+            setLoading(false);
+        };
+
+        checkAuth();
+    }, []);
+
     const login = async (credentials) => {
-        console.log(credentials);
         const response = await axios.post('http://localhost:8000/login', credentials);
-        setUser(response.data.user);
-        localStorage.setItem('token', response.data.token);
-        setIsAuthenticated(true);
-        return response;
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            console.log("LOG IN: ", response.data.token);
+            setUser(response.data.user);
+            setIsAuthenticated(true);
+        } else {
+            throw new Error('Authentication failed: No token received');
+        }
     };
 
     const logout = async () => {
@@ -26,8 +53,9 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             localStorage.removeItem('token'); 
-            setUser(null); // Consider doing this after removing the token
-            console.log("User state after logout:", user); // Check user state after logout
+            setUser(null);
+            setIsAuthenticated(false);
+            localStorage.removeItem('token');
             window.location.href = '/';
         } catch (error) {
             console.error("Logout error:", error.response ? error.response.data : error.message);
@@ -38,7 +66,8 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated, token }}>
-            {children}
+            {/*{children}*/}
+            {loading ? <div>Loading...</div> : children}
         </AuthContext.Provider>
     );
 };

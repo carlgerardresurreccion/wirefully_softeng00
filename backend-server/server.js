@@ -34,7 +34,7 @@ const historySchema = new mongoose.Schema({
 
 const History = mongoose.model('History', historySchema);
 
-const auth = (req, res, next) => {
+/*const auth = (req, res, next) => {
   const token = req.header('Authorization');
   if (!token) {
       return res.status(401).json({ message: 'No token, authorization denied' });
@@ -44,6 +44,21 @@ const auth = (req, res, next) => {
       const decoded = jwt.verify(token, SECRET_KEY);
       req.user = decoded.userId;  
       console.log(req.user);
+      next();
+  } catch (error) {
+      res.status(401).json({ message: 'Token is not valid' });
+  }
+};*/
+
+const auth = (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  try {
+      const decoded = jwt.verify(token.split(' ')[1], SECRET_KEY);  // Extract the token part
+      req.user = decoded.userId;  // Extract user ID from token payload
       next();
   } catch (error) {
       res.status(401).json({ message: 'Token is not valid' });
@@ -165,6 +180,19 @@ app.post('/login', async (req, res) => {
 
       const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
       res.json({ token, message: 'Login successful' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/verify-token', auth, async (req, res) => {
+  try {
+      const user = await User.findById(req.user);  // req.user contains the userId from the token
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ user: { id: user._id, email: user.email } });  // Return user data
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });

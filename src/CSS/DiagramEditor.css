@@ -1,24 +1,34 @@
-.button, .gbutton{
+.buttona, .gbutton{
     background-color: #001F3F;
     border: 2px solid #001F3F;
     color: white;
-    padding: 5px 10px;
+    padding: 5px 3px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 14px;
+    font-size: 12px;
     margin: 5px;
     cursor: pointer;
     border-radius: 5px;
+
+    width: 110px;
 }
 
 .gbutton {
     width: 95px;
+    border: none;
+    font-size: 12px;
+}
+
+.gbutton:hover {
+    background-color: white;
+    border: none;
+    color: #001F3F;
 }
   
-.button:hover {
-    background-color: #A0E9FF;
-    border: 2px solid #001F3F;
+.buttona:hover {
+    background-color: white;
+    border: none;
     color: #001F3F;
 }
 

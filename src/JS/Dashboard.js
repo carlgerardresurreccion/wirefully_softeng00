@@ -12,18 +12,17 @@ function Dashboard() {
     const [errorMessage, setErrorMessage] = useState('');
     const [xmlResponse, setXmlResponse] = useState(null);
     const [htmlPreview, setHtmlPreview] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const [history, setHistory] = useState([]);
     const htmlPreviewRef = useRef(null);
 
     const [showXML, setShowXML] = useState(false);
-    const { token, logout } = useAuth(); // Access the logout function from context
+    const { token, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        await logout(); // Call the logout function
-        navigate('/'); // Redirect to the home page after logging out
+        await logout();
+        navigate('/');
     };
 
     const handleGenerate = async (diagramData) => {
@@ -82,10 +81,6 @@ function Dashboard() {
             setErrorMessage(`Error during API request: ${error.message}`);
         }
     };
-    
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
 
     const toggleHistory = () => {
         setIsHistoryVisible(!isHistoryVisible);  
@@ -104,6 +99,20 @@ function Dashboard() {
             link.download = 'wireframe.png';  
             link.click();  
         }
+
+        const diagramElement = document.getElementById('maonajudniboss'); // Assuming this is the diagram element ID
+        if (diagramElement) {
+            try {
+                const diagramCanvas = await html2canvas(diagramElement);
+                const diagramImage = diagramCanvas.toDataURL('image/png');
+                const diagramLink = document.createElement('a');
+                diagramLink.href = diagramImage;
+                diagramLink.download = 'diagram.png';
+                diagramLink.click();
+            } catch (error) {
+                console.error('Error capturing diagram:', error);
+            }
+        }
     };
 
     const toggleView = () => {
@@ -115,10 +124,10 @@ function Dashboard() {
             <div className="NavBar">
                 <div className="NavBar-left">
                     <img src={logo} className="App-logo" alt="logo" />
-                    <span className='Navbar-text'>WireFully</span>
+                    <span className='Navbar-textt'>WireFully</span>
                 </div>
                 <div className='Navbar-middle'>
-                    <span className='Navbar-text'>Hi, welcome back!</span>
+                    <span className='Navbar-textt'>Hi, welcome back!</span>
                 </div>
                 <div className='Navbar-right'>
                     <span onClick={toggleHistory} className='Navbar-text'>
@@ -137,25 +146,12 @@ function Dashboard() {
                         {errorMessage && <p className='error-message'>{errorMessage}</p>}
                     </div>
                 </div>
-                {/*<div className='column2'>
-                    <div>
-                        <h3>Generated XML Output:</h3>
-                        <div className="xml-output-box">
-                            <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre>
-                        </div>
-
-                        <h2>HTML Preview:</h2>
-                        <button onClick={toggleModal} className="preview-button">
-                            {htmlPreview ? 'Show HTML Preview' : 'No HTML Preview Available'}
-                        </button>
-                    </div>
-                </div>*/}
                 <div className='column2'>
                     <div className='inside-column2'>
                         <h3>Output: </h3>
                         <div className="output-box">
                             {showXML ? (
-                                <pre>{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre>
+                                <pre className="xml-content" >{xmlResponse ? xmlResponse : 'No XML generated yet.'}</pre>
                             ) : (
                                 <div className="html-preview-content" ref={htmlPreviewRef}>
                                     {htmlPreview ? parse(htmlPreview) : 'Create your own use case diagram'}
@@ -176,20 +172,6 @@ function Dashboard() {
                 </div>
             </div>
         )}
-
-            {/*isModalOpen && htmlPreview && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <button onClick={toggleModal} className="close-button">Close Preview</button>
-                        <div className="html-preview-content" ref={htmlPreviewRef}>
-                            {parse(htmlPreview)}
-                        </div>
-                        <button onClick={exportAsImage} className="export-button">
-                            Export as Image
-                        </button>
-                    </div>
-                </div>
-            )*/}
         </div>
     );
 }

@@ -3,9 +3,12 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const PrivateRoute = ({ children }) => {
-    const { user } = useAuth();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
     
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     if (!isAuthenticated) {
         return <Navigate to="/" />;
     }

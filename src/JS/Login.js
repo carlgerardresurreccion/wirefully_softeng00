@@ -15,12 +15,12 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login attempt with:', credentials); // Debugging line
+        console.log('Login attempt with:', credentials);
         try {
             await login(credentials);
             navigate('/home');
         } catch (error) {
-            console.error('Login error:', error.response?.data || error.message); // Log the error response
+            console.error('Login error:', error.response?.data || error.message);
         }
     };    
 
