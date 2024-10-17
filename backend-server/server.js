@@ -39,11 +39,9 @@ const auth = (req, res, next) => {
   if (!token) {
       return res.status(401).json({ message: 'No token, authorization denied' });
   }
-
   try {
-      const decoded = jwt.verify(token, SECRET_KEY);
-      req.user = decoded.userId;  
-      console.log(req.user);
+      const decoded = jwt.verify(token.split(' ')[1], SECRET_KEY);  // Extract the token part
+      req.user = decoded.userId;  // Extract user ID from token payload
       next();
   } catch (error) {
       res.status(401).json({ message: 'Token is not valid' });

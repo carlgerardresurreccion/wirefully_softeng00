@@ -48,7 +48,7 @@ function Dashboard() {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": token,  
+                        "Authorization": `Bearer ${token}`,  
                     },
                     body: JSON.stringify(newHistoryItem),
                 });
@@ -67,7 +67,7 @@ function Dashboard() {
         try {
             const response = await fetch("http://localhost:8000/get-history", {
                 headers: {
-                    "Authorization": token,  
+                    "Authorization": `Bearer ${token}`,  
                 },
             });
             if (response.ok) {
