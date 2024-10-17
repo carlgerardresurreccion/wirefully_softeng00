@@ -89,32 +89,6 @@ function Dashboard() {
         }
     };
 
-    /*const exportAsImage = async () => {
-        if (htmlPreviewRef.current) {
-            const canvas = await html2canvas(htmlPreviewRef.current);  
-            const image = canvas.toDataURL('image/png');  
-            const link = document.createElement('a');
-            link.href = image;
-            link.download = 'wireframe.png';  
-            link.click();  
-        }
-
-        const diagramElement = document.getElementById('maonajudniboss'); // Assuming this is the diagram element ID
-        if (diagramElement) {
-            try {
-                const diagramCanvas = await html2canvas(diagramElement);
-                const diagramImage = diagramCanvas.toDataURL('image/png');
-                const diagramLink = document.createElement('a');
-                diagramLink.href = diagramImage;
-                diagramLink.download = 'diagram.png';
-                diagramLink.click();
-            } catch (error) {
-                console.error('Error capturing diagram:', error);
-            }
-        }
-    };*/
-
-
     const exportAsImage = async () => {
         const htmlPreviewCanvas = htmlPreviewRef.current 
             ? await html2canvas(htmlPreviewRef.current) 
@@ -149,11 +123,10 @@ function Dashboard() {
             context.drawImage(htmlPreviewCanvas, wireframeX, wireframeY, htmlPreviewCanvas.width, htmlPreviewCanvas.height);
     
             // Draw the diagram on the right side, with padding in between
-            const diagramX = wireframeX + htmlPreviewCanvas.width + 20; // Add 20px padding between the images
+            const diagramX = wireframeX + htmlPreviewCanvas.width + 50; // Add 20px padding between the images
             const diagramY = (canvasSize - diagramCanvas.height) / 2; // Center vertically
             context.drawImage(diagramCanvas, diagramX, diagramY, diagramCanvas.width, diagramCanvas.height);
     
-            // Export the combined image
             const combinedImage = combinedCanvas.toDataURL('image/png');
             const link = document.createElement('a');
             link.href = combinedImage;
@@ -163,8 +136,6 @@ function Dashboard() {
             console.error('Error capturing one or both images');
         }
     };
-    
-    
 
     const toggleView = () => {
         setShowXML(!showXML);
