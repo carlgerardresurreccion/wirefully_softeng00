@@ -105,14 +105,14 @@ app.post('/generate-content', async (req, res) => {
 });
 
 app.post('/save-history', auth, async (req, res) => {
-  try {
-    const historyItem = new History({ ...req.body, userId: req.user }); 
-    await historyItem.save();
-    res.status(201).json({ message: 'History saved successfully' });
-  } catch (error) {
-    console.error('Error saving history:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    try {
+        const historyItem = new History({ ...req.body, userId: req.user }); 
+        await historyItem.save();
+        res.status(201).json({ message: 'History saved successfully' });
+    } catch (error) {
+        console.error('Error saving history:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 
@@ -172,16 +172,9 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/logout', auth, (req, res) => {
-  const token = req.headers['authorization'];
 
-  for (const user in users) {
-      if (users[user].token === token) {
-          users[user].token = null;
-          return res.status(200).json({ message: 'Logged out successfully' });
-      }
-  }
+  res.status(200).json({ message: 'Logged out successfully' });
 
-  return res.status(404).json({ message: 'User not found' });
 });
 
 app.get('/dashboard', auth, (req, res) => {
