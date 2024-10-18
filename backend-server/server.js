@@ -127,6 +127,10 @@ app.listen(PORT, () => {
   console.log(`Backend server is running at http://localhost:${PORT}`);
 });
 
+app.get('/', (req, res) => {
+  res.send('Backend is running successfully!');
+});
+
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
 
