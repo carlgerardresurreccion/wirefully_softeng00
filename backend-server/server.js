@@ -56,13 +56,13 @@ app.post('/generate-content', async (req, res) => {
   try {
     const { diagram } = req.body;
 
-    const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=${API_KEY}`;
+    const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
       contents: [
         {
           parts: [
             {
-              text: 'Based on the following use case diagram data:' + diagram + '\n,generate XML code for Android Studio to represent each use case\'s relationship with actors. Ensure the generated XML accurately reflects the diagram\'s relationships. The output should resemble a phone screen wireframe, including all necessary components for a complete layout.',
+              text: 'Based on the following use case diagram data:\n\n' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
             }
           ]
         }
@@ -81,7 +81,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Generate black and white phone wireframe by converting the following XML to HTML:\n\n' + cleanedXml + '\n\n Include standard UI elements like header, navigation bar, buttons, and content area. Ensure proper placement and sizing for a mobile screen and no overflow of components outside the mobile screens. No explanation and notes, just generate the HTML code. Please be consistent and accurate about this query.',
+              text: 'Convert the following XML to HTML:\n\n' + cleanedXml + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement and sizing for a mobile screen. Please be consistent and accurate about this query.',
             }
           ]
         }
