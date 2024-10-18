@@ -37,8 +37,13 @@ function Dashboard() {
     
             if (response.ok) {
                 const jsonResponse = await response.json();
+
+                const diagramElement = document.getElementById('maonajudniboss'); 
+                const diagramCanvas = diagramElement ? await html2canvas(diagramElement) : null;
+                const diagramImage = diagramCanvas ? diagramCanvas.toDataURL('image/png') : null;
+
                 const newHistoryItem = {
-                    diagram: diagramData,
+                    diagram: diagramImage,
                     xml: jsonResponse.xmlContent,
                     html: jsonResponse.htmlContent,
                     timestamp: new Date().toLocaleString(),  
@@ -94,17 +99,17 @@ function Dashboard() {
             ? await html2canvas(htmlPreviewRef.current) 
             : null;
     
-        const diagramElement = document.getElementById('maonajudniboss'); // Assuming this is the diagram element ID
+        const diagramElement = document.getElementById('maonajudniboss'); 
         const diagramCanvas = diagramElement 
             ? await html2canvas(diagramElement) 
             : null;
     
         if (htmlPreviewCanvas && diagramCanvas) {
-            // Determine the maximum height and width between the wireframe and diagram
+            
             const maxHeight = Math.max(htmlPreviewCanvas.height, diagramCanvas.height);
             const combinedWidth = htmlPreviewCanvas.width + diagramCanvas.width + 20; // Add padding between the images
     
-            // Create a new square canvas to fit both images side by side
+            
             const canvasSize = Math.max(maxHeight, combinedWidth); // Make it a big square
             const combinedCanvas = document.createElement('canvas');
             const context = combinedCanvas.getContext('2d');

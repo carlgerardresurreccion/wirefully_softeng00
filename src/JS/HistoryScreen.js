@@ -23,19 +23,23 @@ function HistoryScreen({ history }) {
                                 onClick={() => toggleDetails(index)}
                                 className="query-button"
                             >
-                                Query No. {index + 1}
+                                Use Case Diagram & Wireframe {index + 1}
                             </button>
                             {expandedIndex === index && (
                                 <div className="history-details">
-                                    <div>
-                                        <strong>Diagram:</strong> {item.diagram}
+                                    <div className="use-case-diagram-container diagram-container">
+                                        <strong>USE CASE DIAGRAM</strong>
+                                        {item.diagram ? ( <img src={item.diagram}/>
+                                            ) : (
+                                                <p>No diagram available.</p>
+                                            )}
                                     </div>
-                                    <div>
-                                        <strong>Generated XML:</strong>
+                                    <div className="bord xml-container">
+                                        <strong>XML CODE</strong>
                                         <pre>{item.xml}</pre>
                                     </div>
-                                    <div>
-                                        <strong>HTML Preview:</strong>
+                                    <div className="bord html-container">
+                                        <strong>HTML PREVIEW</strong>
                                         <div className="html-preview">
                                             {item.html ? parse(item.html) : <p>No HTML content available.</p>}
                                         </div>
