@@ -19,7 +19,7 @@ const Signup = ({ toggleForm }) => {
         e.preventDefault();
         console.log(userDetails);
         try {
-            await axios.post('http://localhost:8000/signup', userDetails);
+            await axios.post('http://localhost:10000/signup', userDetails);
             toggleForm();
         } catch (error) {
             console.error(error.response.data);

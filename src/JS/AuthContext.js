@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (credentials) => {
-        const response = await axios.post('http://localhost:8000/login', credentials);
+        const response = await axios.post('http://localhost:10000/login', credentials);
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             console.log("LOG IN: ", response.data.token);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             console.log("Token before logout:", localStorage.getItem('token'));
-            await axios.post('http://localhost:8000/logout', null, {
+            await axios.post('http://localhost:10000/logout', null, {
                 headers: {
                     'Authorization': localStorage.getItem('token'),
                 },
