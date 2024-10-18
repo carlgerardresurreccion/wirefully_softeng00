@@ -27,7 +27,7 @@ function Dashboard() {
 
     const handleGenerate = async (diagramData) => {
         try {
-            const response = await fetch("http://localhost:10000/generate-content", {
+            const response = await fetch("https://your-backend-app.onrender.com/generate-content", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function Dashboard() {
                     timestamp: new Date().toLocaleString(),  
                 };
     
-                await fetch("http://localhost:10000/save-history", {
+                await fetch("https://your-backend-app.onrender.com/save-history", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -70,7 +70,7 @@ function Dashboard() {
     
     const fetchHistory = async () => {
         try {
-            const response = await fetch("http://localhost:10000/get-history", {
+            const response = await fetch("https://your-backend-app.onrender.com/get-history", {
                 headers: {
                     "Authorization": `Bearer ${token}`,  
                 },
