@@ -48,7 +48,8 @@ const auth = (req, res, next) => {
   }
 };
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+// app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
 app.use(express.json());
 app.use(bodyParser.json());
 
