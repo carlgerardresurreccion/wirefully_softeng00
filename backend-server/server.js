@@ -82,7 +82,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert the following XML to HTML:\n\n' + cleanedXml + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement and sizing for a mobile screen. Please be consistent and accurate about this query.',
+              text: 'Convert the following XML to HTML:\n\n' + cleanedXml + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement, sizing and consistent screen size for a mobile screen. Put appropriate spaces between each wireframe screens. Please be consistent and accurate about this query.',
             }
           ]
         }
