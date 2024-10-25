@@ -82,7 +82,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert this use case diagram data into phone wireframe HTML:\n' + diagram + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement, sizing and consistent screen size for a mobile screen.Put appropriate spaces between each wireframe screens.',
+              text: 'Make a phone screen wireframe for each use case by converting this use case diagram data into phone wireframe HTML:\n' + diagram + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement, sizing and consistent screen size for a mobile screen.Put appropriate spaces between each wireframe screens.',
             }
           ]
         }
