@@ -82,7 +82,12 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Make a phone screen wireframe for each use case by converting this use case diagram data into phone wireframe HTML:\n' + diagram + '\n\nNo explanation and notes, just the HTML code. Make sure it looks a phone screen wireframe and Include standard UI elements like header, navigation bar, buttons, and content area  to make it look complete. Ensure proper placement, sizing and consistent screen size for a mobile screen.Put appropriate spaces between each wireframe screens.',
+              text: "Convert the following XML to HTML phone wireframes:" + cleanedXml + 
+                   "Generate only the HTML code. Ensure the output resembles a mobile phone wireframe." +
+                    "Including standard UI elements such as a header, navigation bar, buttons, and a content area." +
+                    "Ensure all components are properly placed, sized for a mobile screen, and visually consistent." +
+                    "Maintain uniform screen size, and place appropriate spaces between each wireframe screen." +
+                    "Please prioritize accuracy and consistency in the generated HTML.",
             }
           ]
         }
