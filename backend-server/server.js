@@ -87,6 +87,7 @@ app.post('/generate-content', async (req, res) => {
                     "Including standard UI elements such as a header, navigation bar, buttons, and a content area." +
                     "Ensure all components are properly placed, sized for a mobile screen, and visually consistent." +
                     "Maintain uniform screen size, and place appropriate spaces between each wireframe screen." +
+                    "Ensure unique CSS classes to avoid conflict." +
                     "Please prioritize accuracy and consistency in the generated HTML.",
             }
           ]
