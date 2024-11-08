@@ -161,7 +161,7 @@ const DiagramEditor = ({onGenerate}) => {
           </g>
         `,
         attrs: {
-          '.head': { cx: 25, cy: 15, r: 15, fill: '#EAD8B1' },
+          '.head': { cx: 25, cy: 15, r: 15, fill: '#000000' },
           '.body': { x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 },
           '.arm-left': { x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 2 },
           '.arm-right': { x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 },
@@ -178,6 +178,14 @@ const DiagramEditor = ({onGenerate}) => {
           }
         },
         type: 'actor'
+      });
+
+      stickman.on('pointerdblclick', function(elementView) {
+        const currentText = stickman.attr('.label/text');
+        const newText = prompt("Enter new label:", currentText);
+        if (newText !== null && newText.trim() !== '') {
+          stickman.attr('.label/text', newText); 
+        }
       });
     
       stickman.addTo(graph);  
