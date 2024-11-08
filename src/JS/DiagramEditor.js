@@ -103,7 +103,7 @@ const DiagramEditor = ({onGenerate}) => {
       }
     });
 
-    const addUseCase = () => {
+    /*const addUseCase = () => {
       const rect = new joint.shapes.standard.Rectangle({
         position: { x: 100, y: 100 },
         size: { width: 120, height: 40 },
@@ -128,7 +128,58 @@ const DiagramEditor = ({onGenerate}) => {
       });
     
       ellipse.addTo(graph);  
+    };*/
+
+    const addUseCase = () => {
+      // Change to Ellipse to represent the use case with an oval shape
+      const ellipse = new joint.shapes.standard.Ellipse({
+        position: { x: 100, y: 100 },
+        size: { width: 120, height: 60 },  // Adjust size to fit an ellipse shape
+        attrs: {
+          body: { fill: '#3A6D8C', stroke: 'none' },
+          label: { text: 'New Use Case', fill: 'white' }
+        },
+        type: 'usecase'
+      });
+      ellipse.addTo(graph);  
     };
+    
+    const addActor = () => {
+      // Create a custom actor (stickman) with SVG paths
+      const stickman = new joint.dia.Element({
+        position: { x: 300, y: 100 },
+        size: { width: 50, height: 100 },
+        attrs: {
+          // Circle for the head
+          body: {
+            type: 'circle',
+            cx: 25,
+            cy: 15,
+            r: 15,
+            fill: '#EAD8B1'
+          },
+          // Line elements for the body, arms, and legs
+          bodyLine: [
+            { type: 'line', x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 },
+            { type: 'line', x1: 10, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 }, // Arms
+            { type: 'line', x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 }, // Left Leg
+            { type: 'line', x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 }  // Right Leg
+          ],
+          label: {
+            text: 'Actor',
+            refX: '50%',
+            refY: '100%',
+            refY2: 10,
+            textAnchor: 'middle',
+            fill: 'black'
+          }
+        },
+        type: 'actor'
+      });
+      
+      stickman.addTo(graph);  
+    };
+    
 
     const addBrokenArrow = () => {
       if (selectedElements.current.length === 2) {
