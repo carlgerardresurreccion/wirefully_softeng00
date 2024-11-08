@@ -167,7 +167,8 @@ const DiagramEditor = ({onGenerate}) => {
           '.arm-right': { x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 },
           '.leg-left': { x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 },
           '.leg-right': { x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 },
-          '.label': {  // Correctly target the text label
+          label: { text: 'Actor', fill: 'white'},
+          '.label': {
             text: 'Actor',
             refX: '50%',
             refY: '100%',
@@ -180,13 +181,7 @@ const DiagramEditor = ({onGenerate}) => {
         type: 'actor'
       });
 
-      stickman.on('pointerdblclick', function(elementView) {
-        const currentText = stickman.attr('.label/text');
-        const newText = prompt("Enter new label:", currentText);
-        if (newText !== null && newText.trim() !== '') {
-          stickman.attr('.label/text', newText); 
-        }
-      });
+      stickman.attr('.label/text', stickman.attr('label/text'));
     
       stickman.addTo(graph);  
     };
