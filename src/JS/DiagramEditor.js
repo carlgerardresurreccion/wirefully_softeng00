@@ -145,33 +145,36 @@ const DiagramEditor = ({onGenerate}) => {
     };
     
     const addActor = () => {
-      // Create a custom actor (stickman) with SVG paths
+      // Create a custom stickman actor using markup
       const stickman = new joint.dia.Element({
         position: { x: 300, y: 100 },
         size: { width: 50, height: 100 },
+        markup: `
+          <g class="scalable">
+            <circle class="head"/>
+            <line class="body"/>
+            <line class="arm-left"/>
+            <line class="arm-right"/>
+            <line class="leg-left"/>
+            <line class="leg-right"/>
+            <text class="label"/>
+          </g>
+        `,
         attrs: {
-          // Circle for the head
-          body: {
-            type: 'circle',
-            cx: 25,
-            cy: 15,
-            r: 15,
-            fill: '#EAD8B1'
-          },
-          // Line elements for the body, arms, and legs
-          bodyLine: [
-            { type: 'line', x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 },
-            { type: 'line', x1: 10, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 }, // Arms
-            { type: 'line', x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 }, // Left Leg
-            { type: 'line', x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 }  // Right Leg
-          ],
-          label: {
+          '.head': { cx: 25, cy: 15, r: 15, fill: '#EAD8B1' },
+          '.body': { x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 },
+          '.arm-left': { x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 2 },
+          '.arm-right': { x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 },
+          '.leg-left': { x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 },
+          '.leg-right': { x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 },
+          '.label': {
             text: 'Actor',
             refX: '50%',
             refY: '100%',
             refY2: 10,
             textAnchor: 'middle',
-            fill: 'black'
+            fill: 'black',
+            fontSize: 12
           }
         },
         type: 'actor'
