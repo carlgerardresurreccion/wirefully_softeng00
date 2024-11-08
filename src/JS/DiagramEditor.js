@@ -167,7 +167,7 @@ const DiagramEditor = ({onGenerate}) => {
           '.arm-right': { x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 },
           '.leg-left': { x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 },
           '.leg-right': { x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 },
-            label: {
+          '.label': {  // Correctly target the text label
             text: 'Actor',
             refX: '50%',
             refY: '100%',
@@ -179,9 +179,10 @@ const DiagramEditor = ({onGenerate}) => {
         },
         type: 'actor'
       });
-      
+    
       stickman.addTo(graph);  
     };
+    
     
 
     const addBrokenArrow = () => {
