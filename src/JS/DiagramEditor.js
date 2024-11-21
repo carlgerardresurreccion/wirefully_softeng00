@@ -409,7 +409,6 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="buttona add-sline">Association Line</button>
         <button className="buttona delete">Delete</button>
       </div>
-      <div id="maonajudniboss" className='editor' ref={diagramRef}>
       <div className="system-name-container">
         <input
           id="systemName"
@@ -420,7 +419,7 @@ const DiagramEditor = ({onGenerate}) => {
           className="system-name-input"
         />
       </div>
-      </div>
+      <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
