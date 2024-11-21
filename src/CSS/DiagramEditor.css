@@ -42,6 +42,7 @@
 
 .system-name-container {
     margin-bottom: 10px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
   }
@@ -49,6 +50,6 @@
   .system-name-input {
     padding: 5px;
     font-size: 14px;
-    border: 1px solid #ccc;
+    border: 1px solid #001F3F;
     border-radius: 4px;
   }
