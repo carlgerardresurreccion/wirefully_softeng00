@@ -403,7 +403,6 @@ const DiagramEditor = ({onGenerate}) => {
   return (
     <div>
       <div className="system-name-container">
-        <label htmlFor="systemName">System Name:</label>
         <input
           id="systemName"
           type="text"
