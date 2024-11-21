@@ -8,30 +8,26 @@ const DiagramEditor = ({onGenerate}) => {
   const selectedElements = useRef([]);
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
-
+  const [systemName, setSystemName] = useState('');
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
-  const exportDiagramToText = async () => {
+  const handleSystemNameChange = (event) => {
+    setSystemName(event.target.value); // Update system name
+  };
+
+  /*const exportDiagramToText = async () => {
     const diagramData = JSON.stringify(graphRef.current.toJSON());
-    //console.log(diagramData);
+   
     onGenerate(diagramData);
+  };*/
 
-    /*const diagramElement = document.getElementById('maonajudniboss');
-    if (diagramElement) {
-      onGenerate('maonajudniboss');
-    }
-
-    try {
-        const canvas = await html2canvas(diagramElement);
-        const dataURL = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = dataURL;
-        link.download = 'diagram.png';
-        link.click();
-    } catch (error) {
-        console.error('Error capturing diagram:', error);
-    }*/
+  const exportDiagramToText = async () => {
+    const diagramData = {
+      systemName,
+      graph: graphRef.current.toJSON(), // Diagram data
+    };
+    onGenerate(JSON.stringify(diagramData));
   };
 
   const handleGenerateButtonClick = () => {
@@ -417,7 +413,14 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="buttona add-sline">Association Line</button>
         <button className="buttona delete">Delete</button>
       </div>
-      <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
+      <div id="maonajudniboss" className='editor' ref={diagramRef}>
+      <input
+        type="text"
+        id="system-name"
+        placeholder="Enter System Name"
+        className="system-name-input"
+      />
+    </div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );

@@ -39,3 +39,12 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.system-name-input {
+    width: 300px;
+    padding: 5px;
+    margin-right: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
