@@ -12,10 +12,6 @@ const DiagramEditor = ({onGenerate}) => {
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
-  const handleSystemNameChange = (event) => {
-    setSystemName(event.target.value); // Update system name
-  };
-
   /*const exportDiagramToText = async () => {
     const diagramData = JSON.stringify(graphRef.current.toJSON());
    
@@ -23,9 +19,9 @@ const DiagramEditor = ({onGenerate}) => {
   };*/
 
   const exportDiagramToText = async () => {
+    const dd = JSON.stringify(graphRef.current.toJSON());
     const diagramData = {
-      systemName,
-      graph: graphRef.current.toJSON(), // Diagram data
+      systemName, dd // Diagram data
     };
     onGenerate(JSON.stringify(diagramData));
   };
@@ -406,6 +402,17 @@ const DiagramEditor = ({onGenerate}) => {
 
   return (
     <div>
+      <div className="system-name-container">
+        <label htmlFor="systemName">System Name:</label>
+        <input
+          id="systemName"
+          type="text"
+          value={systemName}
+          onChange={(e) => setSystemName(e.target.value)}
+          placeholder="Enter system name"
+          className="system-name-input"
+        />
+      </div>
       <div id="toolbar" ref={toolbarRef}>
         <button className="buttona add-use-case">Add Use Case</button>
         <button className="buttona add-actor">Add Actor</button>
@@ -413,14 +420,7 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="buttona add-sline">Association Line</button>
         <button className="buttona delete">Delete</button>
       </div>
-      <div id="maonajudniboss" className='editor' ref={diagramRef}>
-      <input
-        type="text"
-        id="system-name"
-        placeholder="Enter System Name"
-        className="system-name-input"
-      />
-    </div>
+      <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );

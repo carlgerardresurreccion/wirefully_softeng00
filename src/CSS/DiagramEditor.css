@@ -38,17 +38,17 @@
     border: 2px solid #001F3F;
     margin-top: 10px;
     margin-bottom: 10px;
-    position: relative;
 }
 
-.system-name-input {
-  position: absolute;
-  top: 10px; /* Adjust the position as needed */
-  left: 10px; /* Adjust the position as needed */
-  z-index: 10;
-  padding: 5px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-}
+.system-name-container {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .system-name-input {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
