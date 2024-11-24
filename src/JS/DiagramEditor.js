@@ -123,18 +123,36 @@ const DiagramEditor = ({onGenerate}) => {
     };*/
 
     const addUseCase = () => {
-      // Change to Ellipse to represent the use case with an oval shape
+      // Function to estimate text width using a canvas
+      const getTextWidth = (text, font = '14px Arial') => {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          context.font = font;
+          return context.measureText(text).width;
+      };
+  
+      // Define the label text
+      const labelText = 'New Use Case';
+      const textWidth = getTextWidth(labelText); // Measure the width of the text
+      const padding = 20; // Add some padding for better aesthetics
+  
+      // Create the Ellipse shape with dynamic width
       const ellipse = new joint.shapes.standard.Ellipse({
-        position: { x: 100, y: 100 },
-        size: { width: 120, height: 60 },  // Adjust size to fit an ellipse shape
-        attrs: {
-          body: { fill: '#3A6D8C', stroke: 'none' },
-          label: { text: 'New Use Case', fill: 'white' }
-        },
-        type: 'usecase'
+          position: { x: 100, y: 100 },
+          size: { 
+              width: Math.max(textWidth + padding, 120), // Minimum width of 120
+              height: 60 
+          },
+          attrs: {
+              body: { fill: '#3A6D8C', stroke: 'none' },
+              label: { text: labelText, fill: 'white' }
+          },
+          type: 'usecase'
       });
-      ellipse.addTo(graph);  
-    };
+  
+      ellipse.addTo(graph);
+  };
+  
     
     const addActor = () => {
       // Create a custom stickman actor using markup
