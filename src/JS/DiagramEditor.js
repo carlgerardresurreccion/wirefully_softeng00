@@ -123,42 +123,40 @@ const DiagramEditor = ({onGenerate}) => {
     };*/
 
     const addUseCase = () => {
-      // Function to estimate text width using a canvas
-      const getTextWidth = (text, font = '14px Arial') => {
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          context.font = font;
-          return context.measureText(text).width;
-      };
+      const text = 'New Use Case'; // Label text
+      const fontSize = 14; // Font size for the label
+      const padding = 20; // Extra space around the text for padding
   
-      // Define the label text
-      const labelText = 'New Use Case';
-      const textWidth = getTextWidth(labelText); // Measure the width of the text
-      const padding = 20; // Add some padding for better aesthetics
+      // Create a temporary element to measure the text width
+      const tempElement = document.createElement('canvas');
+      const context = tempElement.getContext('2d');
+      context.font = `${fontSize}px Arial`; // Use the same font style as in your ellipse
+      const textWidth = context.measureText(text).width;
   
-      // Create the Ellipse shape with dynamic width
+      // Dynamically adjust ellipse width based on text width
+      const ellipseWidth = Math.max(textWidth + padding, 120); // Ensure minimum width is 120
+      const ellipseHeight = 60; // Fixed height for the ellipse
+  
+      // Create the ellipse
       const ellipse = new joint.shapes.standard.Ellipse({
           position: { x: 100, y: 100 },
-          size: { 
-              width: Math.max(textWidth + padding, 120), // Minimum width of 120
-              height: 60 
-          },
+          size: { width: ellipseWidth, height: ellipseHeight },
           attrs: {
               body: { fill: '#3A6D8C', stroke: 'none' },
-              label: { text: labelText, fill: 'white' }
+              label: { text: text, fill: 'white', fontSize: fontSize }
           },
           type: 'usecase'
       });
   
+      // Add the ellipse to the graph
       ellipse.addTo(graph);
   };
-  
     
-    const addActor = () => {
-      // Create a custom stickman actor using markup
-      const stickman = new joint.dia.Element({
-        position: { x: 300, y: 100 },
-        size: { width: 50, height: 100 },
+  const addActor = () => {
+    // Create a custom stickman actor
+    const stickman = new joint.dia.Element({
+        position: { x: 300, y: 100 }, // Initial position
+        size: { width: 50, height: 100 }, // Size of the stickman
         markup: `
           <g class="scalable">
             <circle class="head"/>
@@ -171,36 +169,40 @@ const DiagramEditor = ({onGenerate}) => {
           </g>
         `,
         attrs: {
-          '.head': { cx: 25, cy: 15, r: 15, fill: '#000000' },
-          '.body': { x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 },
-          '.arm-left': { x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 2 },
-          '.arm-right': { x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 },
-          '.leg-left': { x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 },
-          '.leg-right': { x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 },
-          '.label': {
-            text: 'Actor',
-            refX: '50%',
-            refY: '100%',
-            refY2: 10,
-            textAnchor: 'middle',
-            fill: 'black',
-            fontSize: 12
-          }
+            '.head': { 
+                cx: 25, cy: 15, r: 15, fill: '#EAD8B1' // Circle for the head
+            },
+            '.body': { 
+                x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 // Vertical line for the body
+            },
+            '.arm-left': { 
+                x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 2 // Left arm
+            },
+            '.arm-right': { 
+                x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 // Right arm
+            },
+            '.leg-left': { 
+                x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 // Left leg
+            },
+            '.leg-right': { 
+                x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 // Right leg
+            },
+            '.label': { 
+                text: 'Actor', // Label text
+                refX: '50%',
+                refY: '100%',
+                refY2: 10,
+                textAnchor: 'middle',
+                fill: 'black',
+                fontSize: 12
+            }
         },
-        type: 'actor'
-      });
-       
-      stickman.on('pointerdblclick', function () {
-        const currentText = stickman.attr('.label/text');
-        const newText = prompt("Enter new label:", currentText);
-        if (newText !== null && newText.trim() !== '') {
-          stickman.attr('.label/text', newText); // Update the label text
-        }
-      });
-    
-      stickman.addTo(graph);  
-    };
-    
+        type: 'actor' // Custom type for the element
+    });
+
+    // Add the stickman actor to the graph
+    stickman.addTo(graph);
+};    
     
 
     const addBrokenArrow = () => {
