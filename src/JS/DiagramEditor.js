@@ -134,8 +134,8 @@ const DiagramEditor = ({onGenerate}) => {
       const textWidth = context.measureText(text).width;
   
       // Dynamically adjust ellipse width based on text width
-      const ellipseWidth = Math.max(textWidth + padding, 120); // Ensure minimum width is 120
-      const ellipseHeight = 60; // Fixed height for the ellipse
+      const ellipseWidth = Math.max(textWidth + padding, 150); // Ensure minimum width is 120
+      const ellipseHeight = 80; // Fixed height for the ellipse
   
       // Create the ellipse
       const ellipse = new joint.shapes.standard.Ellipse({
@@ -156,7 +156,7 @@ const DiagramEditor = ({onGenerate}) => {
     // Create a custom stickman actor
     const stickman = new joint.dia.Element({
         position: { x: 300, y: 100 }, // Initial position
-        size: { width: 50, height: 100 }, // Size of the stickman
+        size: { width: 30, height: 100 }, // Size of the stickman
         markup: `
           <g class="scalable">
             <circle class="head"/>
@@ -170,7 +170,7 @@ const DiagramEditor = ({onGenerate}) => {
         `,
         attrs: {
             '.head': { 
-                cx: 25, cy: 15, r: 15, fill: '#EAD8B1' // Circle for the head
+                cx: 25, cy: 15, r: 15, fill: 'black' // Circle for the head
             },
             '.body': { 
                 x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 // Vertical line for the body
