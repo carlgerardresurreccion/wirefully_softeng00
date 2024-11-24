@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const API_KEY = "AIzaSyDgDzrlIwIILh6M-2_bl0HrxNGXeAdMoS8";
+const API_KEY = "AIzaSyBvYkhHmx91JcEb7z5adavz_7bH5FHiuos";
 const SECRET_KEY = 'superSecretKey';
 const MONGODB_URI = "mongodb+srv://carlgerardresuu:llrTldGAU3JSQm5y@cluster0.l28co.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
