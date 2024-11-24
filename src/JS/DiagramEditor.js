@@ -359,42 +359,49 @@ const DiagramEditor = ({onGenerate}) => {
 
     paper.on('element:pointerdblclick', (elementView) => {
       if (isToolbarReady && toolbarRef.current) {
-        const element = elementView.model;
-        const currentLabel = element.attr('label/text') || '';
-
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentLabel;
-        input.style.position = 'absolute';
-        input.style.width = '200px';
-        input.style.left = `${element.position().x + 98}px`;
-        input.style.transform = 'translateX(-50%)';
-        input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`;
-
-        input.style.backgroundColor = '#ffff'; 
-        input.style.border = '1px solid #001F3F';   
-        input.style.padding = '5px';           
-        input.style.borderRadius = '5px';
-        input.style.fontSize = '12px';
-
-        document.body.appendChild(input);
-
-        const removeInput = () => {
-          if (input.parentNode) {
-            document.body.removeChild(input);
-          }
-        };
-
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            element.attr('label/text', input.value);
-            removeInput();
-          }
-        });
-
-        input.focus();
+          const element = elementView.model;
+  
+          // Check for the label attribute depending on the element type
+          const currentLabel = element.attr('label/text') || element.attr('.label/text') || '';
+  
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = currentLabel;
+          input.style.position = 'absolute';
+          input.style.width = '200px';
+          input.style.left = `${element.position().x + 98}px`;
+          input.style.transform = 'translateX(-50%)';
+          input.style.bottom = `${window.innerHeight - toolbarRef.current.offsetTop - 55}px`;
+  
+          input.style.backgroundColor = '#ffff';
+          input.style.border = '1px solid #001F3F';
+          input.style.padding = '5px';
+          input.style.borderRadius = '5px';
+          input.style.fontSize = '12px';
+  
+          document.body.appendChild(input);
+  
+          const removeInput = () => {
+              if (input.parentNode) {
+                  document.body.removeChild(input);
+              }
+          };
+  
+          input.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                  // Update the appropriate label attribute
+                  if (element.attr('label/text') !== undefined) {
+                      element.attr('label/text', input.value);
+                  } else if (element.attr('.label/text') !== undefined) {
+                      element.attr('.label/text', input.value);
+                  }
+                  removeInput();
+              }
+          });
+  
+          input.focus();
       }
-    });
+  });
 
     paper.on('element:pointerclick', (elementView) => {
       const element = elementView.model;
