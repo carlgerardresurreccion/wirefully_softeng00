@@ -62,6 +62,8 @@ app.post('/generate-content', async (req, res) => {
     const templatePath = path.join(__dirname, '..', 'src', 'JS', 'temp.html');
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
 
+    console.log(templateContent);
+
     const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
       contents: [
