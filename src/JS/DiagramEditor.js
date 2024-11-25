@@ -12,16 +12,10 @@ const DiagramEditor = ({onGenerate}) => {
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
-  /*const exportDiagramToText = async () => {
-    const diagramData = JSON.stringify(graphRef.current.toJSON());
-   
-    onGenerate(diagramData);
-  };*/
-
   const exportDiagramToText = async () => {
     try {
 
-      const dd = JSON.stringify(graphRef.current?.toJSON());
+      const dd = graphRef.current?.toJSON();
 
       if (!dd || dd === '{"cells":[]}') {
         console.error('Error: Diagram data is empty or invalid.');
