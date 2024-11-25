@@ -23,8 +23,6 @@ const DiagramEditor = ({onGenerate}) => {
 
       const dd = JSON.stringify(graphRef.current?.toJSON());
 
-      console.log(dd);
-  
       if (!dd || dd === '{"cells":[]}') {
         console.error('Error: Diagram data is empty or invalid.');
         alert('The diagram is empty. Please create a valid diagram before generating.');
