@@ -87,7 +87,7 @@ h2 {
 }
 
 .xml-container {
-    max-height: 200px; 
+    max-height: 300px; 
     overflow-y: auto; 
     background-color: #f9f9f9; 
     white-space: pre-wrap; 
@@ -117,4 +117,11 @@ pre {
 
 .diagram-container p {
     color: #888; 
+}
+
+.html-container {
+    max-height: 650px; 
+    overflow-y: auto; 
+    background-color: #f9f9f9; 
+    white-space: pre-wrap; 
 }
