@@ -21,7 +21,7 @@ const Login = () => {
             await login(credentials);
             navigate('/home');
         } catch (error) {
-            setError(err.response?.data?.message || 'An error occurred. Please try again.');
+            setError(error.response?.data?.message || 'An error occurred. Please try again.');
         }
     };    
 

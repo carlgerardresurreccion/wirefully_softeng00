@@ -23,7 +23,7 @@ const Signup = ({ toggleForm }) => {
             await axios.post('https://wirefully-backend0.onrender.com/signup', userDetails);
             toggleForm();
         } catch (error) {
-            setError(err.response?.data?.message || 'An error occurred. Please try again.');
+            setError(error.response?.data?.message || 'An error occurred. Please try again.');
         }
     };
 
