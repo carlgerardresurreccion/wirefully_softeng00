@@ -38,15 +38,18 @@
     border: 2px solid #001F3F;
     margin-top: 10px;
     margin-bottom: 10px;
+    box-sizing: border-box; 
 }
 
 .system-name-container {
+    width: 100%; 
+    border: 2px solid #001F3F; 
+    box-sizing: border-box; 
     margin-bottom: 10px;
     margin-top: 10px;
     display: flex;
     flex-direction: column;
-    width: 100%;
-  }
+}
   
   .system-name-input {
     padding: 5px;
