@@ -22,12 +22,13 @@ const Signup = ({ toggleForm }) => {
             await axios.post('https://wirefully-backend0.onrender.com/signup', userDetails);
             toggleForm();
         } catch (error) {
-            console.error(error.response.data);
+            setError(err.response?.data?.message || 'An error occurred. Please try again.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
+            {error && <p style={{ color: 'red', fontSize: '12px', marginBottom: '10px' }}>{error}</p>}
             <div className='input-group'>
                 <label htmlFor="email">Email</label>
                 <input 

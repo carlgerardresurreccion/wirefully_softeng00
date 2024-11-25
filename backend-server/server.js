@@ -164,12 +164,12 @@ app.post('/login', async (req, res) => {
   try {
       let user = await User.findOne({ email });
       if (!user) {
-          return res.status(400).json({ message: 'Invalid credentials' });
+          return res.status(400).json({ message: 'Invalid email or password. Please try again.' });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-          return res.status(400).json({ message: 'Invalid credentials' });
+          return res.status(400).json({ message: 'Invalid email or password. Please try again.' });
       }
 
       const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });

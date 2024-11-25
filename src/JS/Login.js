@@ -20,12 +20,13 @@ const Login = () => {
             await login(credentials);
             navigate('/home');
         } catch (error) {
-            console.error('Login error:', error.response?.data || error.message);
+            setError(err.response?.data?.message || 'An error occurred. Please try again.');
         }
     };    
 
     return (
         <form onSubmit={handleSubmit}>
+            {error && <p style={{ color: 'red', fontSize: '12px', marginBottom: '10px' }}>{error}</p>}
             <div className='input-group'>
                 <label htmlFor="email">Email</label>
                 <input 
