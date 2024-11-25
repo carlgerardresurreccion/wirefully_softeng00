@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phone Screen Container</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    .phone-container {
+      width: 360px;
+      height: 720px;
+      background: #fff;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    .phone-container::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+    }
+    .phone-container::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+    }
+    .screen {
+      width: 90%;
+      height: 90%;
+      background: #eaeaea;
+      margin: 20px auto;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <div class="screen">
+      <!-- Your screen content goes here -->
+    </div>
+  </div>
+</body>
+</html>
