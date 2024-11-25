@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const PORT = process.env.PORT || 8000;
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -57,6 +59,9 @@ app.post('/generate-content', async (req, res) => {
   try {
     const { diagram } = req.body;
 
+    const templatePath = path.join(__dirname, '..', 'src', 'JS', 'temp.html');
+    const templateContent = fs.readFileSync(templatePath, 'utf-8');
+
     const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
       contents: [
@@ -82,13 +87,13 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: "Convert the following XML to HTML phone wireframes:" + cleanedXml + 
-                   "Generate only the HTML code. Ensure the output resembles a mobile phone wireframe." +
-                    "Including standard UI elements such as a header, navigation bar, buttons, and a content area." +
-                    "Ensure all components are properly placed, sized for a mobile screen, and visually consistent." +
-                    "Maintain uniform screen size, and place appropriate spaces between each wireframe screen." +
-                    "Ensure unique CSS classes to avoid conflict." +
-                    "Please prioritize accuracy and consistency in the generated HTML.",
+              text: 'Convert the following XML to HTML wireframes. Use the structure provided in the HTML template below ' +
+                    'to ensure consistency in styling and layout. Generate only the HTML code.\n\nXML:\n' +
+                    cleanedXml + "Use the following template to be the base/container of the wireframe" +
+                    '\n\nTemplate:\n\n' +
+                    templateContent +
+                    '\n\nEnsure the output resembles a mobile phone wireframe, including headers, navigation bars, buttons, and content areas. ' +
+                    'Use unique CSS classes to avoid conflicts and ensure all components are sized and spaced appropriately for mobile screens.',
             }
           ]
         }

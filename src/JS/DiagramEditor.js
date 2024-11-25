@@ -19,12 +19,31 @@ const DiagramEditor = ({onGenerate}) => {
   };*/
 
   const exportDiagramToText = async () => {
-    const dd = JSON.stringify(graphRef.current.toJSON());
-    const diagramData = {
-      systemName, dd // Diagram data
-    };
-    onGenerate(JSON.stringify(diagramData));
+    try {
+      // Serialize the graph data to JSON
+      const dd = JSON.stringify(graphRef.current?.toJSON());
+  
+      // Check if dd is valid and has content
+      if (!dd || dd === '{}') {
+        console.error('Error: Diagram data is empty or invalid.');
+        alert('The diagram is empty. Please create a valid diagram before generating.');
+        return; // Stop the function if dd is invalid
+      }
+  
+      // Prepare the data to be sent
+      const diagramData = {
+        systemName,
+        dd,
+      };
+  
+      // Trigger the generation process
+      onGenerate(JSON.stringify(diagramData));
+    } catch (error) {
+      console.error('An error occurred during export:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
   };
+  
 
   const handleGenerateButtonClick = () => {
     exportDiagramToText();
