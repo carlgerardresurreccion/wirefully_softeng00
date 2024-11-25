@@ -59,22 +59,76 @@ app.post('/generate-content', async (req, res) => {
   try {
     const { diagram } = req.body;
 
-    const templatePath = path.join(__dirname, '..', 'src', 'JS', 'temp.html');
-
-    // Log the resolved path to check if it’s correct
-    console.log('Resolved template path:', templatePath);
-    
-    if (!fs.existsSync(templatePath)) {
-      return res.status(500).json({ error: 'Template file not found at the specified path.' });
-    }
-
-    if (fs.existsSync(templatePath)) {
-      return res.status(500).json({ error: 'There is but not followed' });
-    }
-    
-    const templateContent = fs.readFileSync(templatePath, 'utf-8');
-
-    console.log(templateContent);
+    const templateContent = `
+        <html>
+          <head>
+            <style>
+              /* CSS for the mobile wireframe */
+              body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+              }
+              .phone-container {
+                width: 375px;
+                height: 667px;
+                margin: 0 auto;
+                background-color: white;
+                border-radius: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+              }
+              .header {
+                height: 60px;
+                background-color: #4CAF50;
+                color: white;
+                text-align: center;
+                line-height: 60px;
+                font-size: 20px;
+              }
+              .content {
+                flex-grow: 1;
+                padding: 20px;
+                background-color: #e9e9e9;
+                overflow-y: auto;
+              }
+              .footer {
+                height: 50px;
+                background-color: #4CAF50;
+                color: white;
+                text-align: center;
+                line-height: 50px;
+              }
+              .button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 20px;
+              }
+              .button:hover {
+                background-color: #45a049;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="phone-container">
+              <div class="header">App Header</div>
+              <div class="content">
+                <p>This is a placeholder for the content generated from XML.</p>
+              </div>
+              <div class="footer">
+                <button class="button">Click Me</button>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
 
     const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
