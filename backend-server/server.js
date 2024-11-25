@@ -67,6 +67,10 @@ app.post('/generate-content', async (req, res) => {
     if (!fs.existsSync(templatePath)) {
       return res.status(500).json({ error: 'Template file not found at the specified path.' });
     }
+
+    if (fs.existsSync(templatePath)) {
+      return res.status(500).json({ error: 'There is but not followed' });
+    }
     
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
 
