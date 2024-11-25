@@ -25,7 +25,7 @@ const DiagramEditor = ({onGenerate}) => {
 
       console.log(dd);
   
-      if (!dd || dd === '{}') {
+      if (!dd || dd === '{"cells":[]}') {
         console.error('Error: Diagram data is empty or invalid.');
         alert('The diagram is empty. Please create a valid diagram before generating.');
         return;

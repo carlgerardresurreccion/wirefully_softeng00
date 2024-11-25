@@ -60,6 +60,14 @@ app.post('/generate-content', async (req, res) => {
     const { diagram } = req.body;
 
     const templatePath = path.join(__dirname, '..', 'src', 'JS', 'temp.html');
+
+    // Log the resolved path to check if it’s correct
+    console.log('Resolved template path:', templatePath);
+    
+    if (!fs.existsSync(templatePath)) {
+      return res.status(500).json({ error: 'Template file not found at the specified path.' });
+    }
+    
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
 
     console.log(templateContent);
