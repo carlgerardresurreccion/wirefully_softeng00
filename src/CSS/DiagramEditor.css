@@ -44,6 +44,8 @@
     margin-bottom: 10px;
     margin-top: 10px;
     display: flex;
+    border: 1px solid #001F3F;
+    border-radius: 4px;
     flex-direction: column;
     width: 100%;
   }
@@ -51,7 +53,5 @@
   .system-name-input {
     padding: 5px;
     font-size: 14px;
-    border: 1px solid #001F3F;
-    border-radius: 4px;
     width: 100%;
   }
