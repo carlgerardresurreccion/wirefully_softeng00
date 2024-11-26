@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
             if (token) {
@@ -30,7 +30,37 @@ export const AuthProvider = ({ children }) => {
         };
 
         checkAuth();
+    }, []);*/
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            setLoading(true);  // Ensure loading is true before checking authentication
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await axios.get('https://wirefully-backend0.onrender.com/verify-token', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setUser(response.data.user);
+                    setIsAuthenticated(true);
+                } catch (error) {
+                    console.error('Token validation failed or session expired:', error);
+                    setIsAuthenticated(false);
+                    setUser(null);
+                    localStorage.removeItem('token');
+                }
+            } else {
+                setIsAuthenticated(false);
+                setUser(null);
+            }
+            setLoading(false);  // Set loading to false after authentication check
+        };
+    
+        checkAuth();
     }, []);
+    
 
     const login = async (credentials) => {
         const response = await axios.post('https://wirefully-backend0.onrender.com/login', credentials);
@@ -69,6 +99,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('token');
             setUser(null);
             setIsAuthenticated(false);
+            setLoading(true);
             window.location.href = '/';  // Optionally use React Router's history.push() for SPA
         } catch (error) {
             console.error("Logout error:", error.response ? error.response.data : error.message);
