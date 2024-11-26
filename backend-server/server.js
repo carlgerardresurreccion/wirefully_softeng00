@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const PORT = process.env.PORT || 8000;
 const axios = require('axios');
 const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -51,7 +49,8 @@ const auth = (req, res, next) => {
 };
 
 // app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
+//app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
+app.use(cors({ origin: ['https://wirefullysofteng-0.onrender.com', 'https://my-softeng.vercel.app'] }));
 app.use(express.json());
 app.use(bodyParser.json());
 

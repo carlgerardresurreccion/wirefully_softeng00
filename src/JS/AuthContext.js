@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const response = await axios.get('http://localhost:8000/verify-token', {
+                    const response = await axios.get('https://my-softeng.vercel.app/verify-token', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (credentials) => {
-        const response = await axios.post('https://wirefully-backend0.onrender.com/login', credentials);
+        const response = await axios.post('https://my-softeng.vercel.app/login', credentials);
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             console.log("LOG IN: ", response.data.token);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             console.log("Token before logout:", localStorage.getItem('token'));
-            await axios.post('https://wirefully-backend0.onrender.com/logout', null, {
+            await axios.post('https://my-softeng.vercel.app/logout', null, {
                 headers: {
                     'Authorization': localStorage.getItem('token'),
                 },

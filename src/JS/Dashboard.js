@@ -27,7 +27,7 @@ function Dashboard() {
 
     const handleGenerate = async (diagramData) => {
         try {
-            const response = await fetch("https://wirefully-backend0.onrender.com/generate-content", {
+            const response = await fetch("https://my-softeng.vercel.app/generate-content", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function Dashboard() {
                     timestamp: new Date().toLocaleString(),  
                 };
     
-                await fetch("https://wirefully-backend0.onrender.com/save-history", {
+                await fetch("https://my-softeng.vercel.app/save-history", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -70,7 +70,7 @@ function Dashboard() {
     
     const fetchHistory = async () => {
         try {
-            const response = await fetch("https://wirefully-backend0.onrender.com/get-history", {
+            const response = await fetch("https://my-softeng.vercel.app/get-history", {
                 headers: {
                     "Authorization": `Bearer ${token}`,  
                 },
