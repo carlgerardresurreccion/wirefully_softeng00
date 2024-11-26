@@ -97,6 +97,8 @@ export const AuthProvider = ({ children }) => {
             console.log("Token before logout:", localStorage.getItem('token'));
             await axios.post('https://wirefully-backend0.onrender.com/logout');  // No need for Authorization header
             localStorage.removeItem('token');
+            localStorage.clear()
+            sessionStorage.clear()
             setUser(null);
             setIsAuthenticated(false);
             setLoading(true);
