@@ -120,9 +120,6 @@ app.post('/generate-content', async (req, res) => {
               <div class="content">
                 <p>This is a placeholder for the content generated from XML.</p>
               </div>
-              <div class="footer">
-                <button class="button">Click Me</button>
-              </div>
             </div>
           </body>
         </html>
@@ -153,7 +150,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert the following use case diagram data to HTML wireframes:' + diagram + 'Use HTML template as the base structure:' + templateContent +
+              text: 'Convert the following XML code to HTML wireframes:' + cleanedXml + 'Use HTML template as the base structure for each wireframe screen:' + templateContent +
                     'Do not put explanation and notes please, just the HTML code.\n' +
                     '\n\nEnsure the output resembles a mobile phone wireframe, including headers, navigation bars, buttons, and content areas. ' +
                     'Use unique CSS classes to avoid conflicts and ensure all components are sized and spaced appropriately for mobile screens.',
