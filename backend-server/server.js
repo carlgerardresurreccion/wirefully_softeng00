@@ -55,7 +55,7 @@ app.use(bodyParser.json());
 
 app.post('/generate-content', async (req, res) => {
   try {
-    const { diagram } = req.body;
+    const { UCdiagramdata } = req.body;
 
     const templateContent = `
         <html>
@@ -134,7 +134,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Based on the following use case diagram data which also contains the system name:\n\n' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
+              text: 'Based on the following use case diagram data which also contains the system name:' + UCdiagramdata + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
             }
           ]
         }
@@ -153,8 +153,8 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert the following diagram data to HTML wireframes:' + diagram + 'Use HTML template as the base structure:' + templateContent +
-                    'No explanation and notes, just the HTML code.\n' +
+              text: 'Convert the following use case diagram data to HTML wireframes:' + UCdiagramdata + 'Use HTML template as the base structure:' + templateContent +
+                    'Do not put explanation and notes please, just the HTML code.\n' +
                     '\n\nEnsure the output resembles a mobile phone wireframe, including headers, navigation bars, buttons, and content areas. ' +
                     'Use unique CSS classes to avoid conflicts and ensure all components are sized and spaced appropriately for mobile screens.',
             }

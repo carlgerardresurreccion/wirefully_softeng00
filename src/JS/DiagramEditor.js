@@ -28,7 +28,7 @@ const DiagramEditor = ({onGenerate}) => {
         dd,
       };
   
-      onGenerate(diagramData);
+      onGenerate(JSON.stringify(diagramData));
     } catch (error) {
       console.error('An error occurred during export:', error);
       alert('An unexpected error occurred. Please try again.');
