@@ -53,4 +53,6 @@
     border: 1px solid #001F3F;
     border-radius: 4px;
     width: 590px;   
+    width: 100%; /* Automatically adjusts to parent container width */
+    max-width: 590px;
   }
