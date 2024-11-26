@@ -57,6 +57,8 @@ app.post('/generate-content', async (req, res) => {
   try {
     const { UCdiagramdata } = req.body;
 
+    console.log(UCdiagramdata);
+
     const templateContent = `
         <html>
           <head>
