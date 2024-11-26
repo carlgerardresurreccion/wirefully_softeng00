@@ -435,6 +435,7 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="buttona delete">Delete</button>
       </div>
       <div id="maonajudniboss" className='editor' ref={diagramRef}>
+        <div className='system-name-container'>
           <input
             id="systemName"
             type="text"
@@ -443,6 +444,7 @@ const DiagramEditor = ({onGenerate}) => {
             placeholder="Enter system name"
             className="system-name-input"
           />
+          </div>
       </div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>

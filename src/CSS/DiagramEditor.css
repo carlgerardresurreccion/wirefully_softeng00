@@ -38,13 +38,15 @@
     border: 2px solid #001F3F;
     margin-top: 10px;
     margin-bottom: 10px;
+    position: relative;
 }
 
 .system-name-container {
+    position: absolute; 
+    transform: translateX(-50%);
     margin-bottom: 10px;
     margin-top: 10px;
-    display: flex;
-    flex-direction: column;
+    z-index: 10;
   }
   
   .system-name-input {
@@ -52,7 +54,9 @@
     font-size: 14px;
     border: 1px solid #001F3F;
     border-radius: 4px;
-    width: 590px;   
-    width: 100%; /* Automatically adjusts to parent container width */
+    display: block; 
+    visibility: visible;
+    opacity: 1;
+    width: 100%; 
     max-width: 590px;
   }
