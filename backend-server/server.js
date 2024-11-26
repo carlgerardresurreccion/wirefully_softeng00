@@ -153,11 +153,8 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert the following XML to HTML wireframes. Use the structure provided in the HTML template below ' +
-                    'to ensure consistency in styling and layout. Generate only the HTML code.\n\nXML:\n' +
-                    cleanedXml + "Use the following template to be the base/container of the wireframe" +
-                    '\n\nTemplate:\n\n' +
-                    templateContent +
+              text: 'Convert the following XML to HTML wireframes:' + cleanedXml + 'Use HTML template as the base structure:' + templateContent +
+                    'No explanation and notes, just the HTML code.\n' +
                     '\n\nEnsure the output resembles a mobile phone wireframe, including headers, navigation bars, buttons, and content areas. ' +
                     'Use unique CSS classes to avoid conflicts and ensure all components are sized and spaced appropriately for mobile screens.',
             }
