@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const response = await axios.get('https://wirefully-backend0.onrender/verify-token', {
+                    const response = await axios.get('https://wirefully-backend0.onrender.com/verify-token', {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (credentials) => {
-        const response = await axios.post('https://wirefully-backend0.onrender/login', credentials);
+        const response = await axios.post('https://wirefully-backend0.onrender.com/login', credentials);
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
             console.log("LOG IN: ", response.data.token);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             console.log("Token before logout:", localStorage.getItem('token'));
-            await axios.post('https://wirefully-backend0.onrender/logout', null, {
+            await axios.post('https://wirefully-backend0.onrender.com/logout', null, {
                 headers: {
                     'Authorization': localStorage.getItem('token'),
                 },
