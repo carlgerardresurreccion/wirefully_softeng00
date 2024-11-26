@@ -8,9 +8,10 @@ const DiagramEditor = ({onGenerate}) => {
   const selectedElements = useRef([]);
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
-  const [SystemName, setSystemName] = useState('');
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
+  const systemNameElementRef = useRef(null);
+  const [SystemName, setSystemName] = useState('');
 
   /*const exportDiagramToText = async () => {
     try {
@@ -49,7 +50,6 @@ const DiagramEditor = ({onGenerate}) => {
   
       onGenerate(diagramData);
   };
-  
 
   const handleGenerateButtonClick = () => {
     exportDiagramToText();
@@ -90,6 +90,25 @@ const DiagramEditor = ({onGenerate}) => {
 
     paperRef.current = paper;
 
+    const systemNameElement = new joint.shapes.standard.TextBlock({
+      interactive: false,
+    });
+    systemNameElement.position(200, 10);
+    systemNameElement.resize(400, 40);
+    systemNameElement.attr({
+      body: { fill: 'transparent', stroke: 'none' },
+      label: {
+        text: '',
+        fontSize: 18,
+        textAnchor: 'middle',
+        refX: '50%',
+        refY: '50%',
+        fill: '#001F3F',
+      },
+    });
+    systemNameElement.addTo(graph);
+    systemNameElementRef.current = systemNameElement;
+
     paper.on('blank:mousewheel', (evt, x, y, delta) => {
       if (delta > 0) zoomIn();
       else zoomOut();
@@ -121,21 +140,18 @@ const DiagramEditor = ({onGenerate}) => {
     });
 
     const addUseCase = () => {
-      const text = 'New Use Case'; // Label text
-      const fontSize = 14; // Font size for the label
-      const padding = 20; // Extra space around the text for padding
+      const text = 'New Use Case';
+      const fontSize = 14;
+      const padding = 15;
   
-      // Create a temporary element to measure the text width
       const tempElement = document.createElement('canvas');
       const context = tempElement.getContext('2d');
-      context.font = `${fontSize}px Arial`; // Use the same font style as in your ellipse
+      context.font = `${fontSize}px Arial`; 
       const textWidth = context.measureText(text).width;
   
-      // Dynamically adjust ellipse width based on text width
-      const ellipseWidth = Math.max(textWidth + padding, 150); // Ensure minimum width is 120
-      const ellipseHeight = 80; // Fixed height for the ellipse
+      const ellipseWidth = Math.max(textWidth + padding, 150);
+      const ellipseHeight = 80;
   
-      // Create the ellipse
       const ellipse = new joint.shapes.standard.Ellipse({
           position: { x: 100, y: 100 },
           size: { width: ellipseWidth, height: ellipseHeight },
@@ -145,63 +161,57 @@ const DiagramEditor = ({onGenerate}) => {
           },
           type: 'usecase'
       });
-  
-      // Add the ellipse to the graph
-      ellipse.addTo(graph);
-  };
+        ellipse.addTo(graph);
+    };
     
-  const addActor = () => {
-    // Create a custom stickman actor
-    const stickman = new joint.dia.Element({
-        position: { x: 300, y: 100 }, // Initial position
-        size: { width: 30, height: 100 }, // Size of the stickman
-        markup: `
-          <g class="scalable">
-            <circle class="head"/>
-            <line class="body"/>
-            <line class="arm-left"/>
-            <line class="arm-right"/>
-            <line class="leg-left"/>
-            <line class="leg-right"/>
-            <text class="label"/>
-          </g>
-        `,
-        attrs: {
-            '.head': { 
-                cx: 25, cy: 15, r: 15, fill: 'black' // Circle for the head
-            },
-            '.body': { 
-                x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 2 // Vertical line for the body
-            },
-            '.arm-left': { 
-                x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 2 // Left arm
-            },
-            '.arm-right': { 
-                x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 2 // Right arm
-            },
-            '.leg-left': { 
-                x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 2 // Left leg
-            },
-            '.leg-right': { 
-                x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 2 // Right leg
-            },
-            '.label': { 
-                text: 'Actor', // Label text
-                refX: '50%',
-                refY: '100%',
-                refY2: 10,
-                textAnchor: 'middle',
-                fill: 'black',
-                fontSize: 12
-            }
-        },
-        type: 'actor' // Custom type for the element
-    });
-
-    // Add the stickman actor to the graph
-    stickman.addTo(graph);
-};    
-    
+    const addActor = () => {
+      const stickman = new joint.dia.Element({
+          position: { x: 300, y: 100 },
+          size: { width: 30, height: 100 },
+          markup: `
+            <g class="scalable">
+              <circle class="head"/>
+              <line class="body"/>
+              <line class="arm-left"/>
+              <line class="arm-right"/>
+              <line class="leg-left"/>
+              <line class="leg-right"/>
+              <text class="label"/>
+            </g>
+          `,
+          attrs: {
+              '.head': { 
+                  cx: 25, cy: 15, r: 15, fill: 'black'
+              },
+              '.body': { 
+                  x1: 25, y1: 30, x2: 25, y2: 60, stroke: 'black', strokeWidth: 3
+              },
+              '.arm-left': { 
+                  x1: 10, y1: 40, x2: 25, y2: 40, stroke: 'black', strokeWidth: 3
+              },
+              '.arm-right': { 
+                  x1: 25, y1: 40, x2: 40, y2: 40, stroke: 'black', strokeWidth: 3
+              },
+              '.leg-left': { 
+                  x1: 25, y1: 60, x2: 15, y2: 90, stroke: 'black', strokeWidth: 3
+              },
+              '.leg-right': { 
+                  x1: 25, y1: 60, x2: 35, y2: 90, stroke: 'black', strokeWidth: 3
+              },
+              '.label': { 
+                  text: 'Actor',
+                  refX: '50%',
+                  refY: '90%',
+                  refY2: 10,
+                  textAnchor: 'middle',
+                  fill: 'black',
+                  fontSize: 14
+              }
+          },
+          type: 'actor'
+      });
+      stickman.addTo(graph);
+    };    
 
     const addBrokenArrow = () => {
       if (selectedElements.current.length === 2) {
@@ -399,19 +409,48 @@ const DiagramEditor = ({onGenerate}) => {
   
           input.focus();
       }
-  });
+    });
 
     paper.on('element:pointerclick', (elementView) => {
       const element = elementView.model;
       const isSelected = selectedElements.current.some(({ id }) => id === element.id);
 
-      if (isSelected) {
+      if (element.get('type') === 'actor') {
+        if (isSelected) {
+          selectedElements.current = selectedElements.current.filter(({ id }) => id !== element.id);
+          element.attr('.head/fill', 'black');
+          element.attr('.body/stroke', 'black');
+          element.attr('.arm-left/stroke', 'black');
+          element.attr('.arm-right/stroke', 'black');
+          element.attr('.leg-left/stroke', 'black');
+          element.attr('.leg-right/stroke', 'black');
+        } else {
+          selectedElements.current.push({ id: element.id, element });
+          element.attr('.head/fill', 'red');
+          element.attr('.body/stroke', 'red');
+          element.attr('.arm-left/stroke', 'red');
+          element.attr('.arm-right/stroke', 'red');
+          element.attr('.leg-left/stroke', 'red');
+          element.attr('.leg-right/stroke', 'red');
+        }
+      } else {
+        // Handle selection logic for non-actor elements
+        if (isSelected) {
+          selectedElements.current = selectedElements.current.filter(({ id }) => id !== element.id);
+          element.attr('body/stroke', 'none'); // Remove outline
+        } else {
+          selectedElements.current.push({ id: element.id, element });
+          element.attr('body/stroke', '#001F3F'); // Add outline
+        }
+      }
+
+      /*if (isSelected) {
         selectedElements.current = selectedElements.current.filter(({ id }) => id !== element.id);
         element.attr('body/stroke', 'none');
       } else {
         selectedElements.current.push({ id: element.id, element });
         element.attr('body/stroke', '#001F3F');
-      }
+      }*/
     });
 
     const toolbar = document.getElementById('toolbar');
@@ -425,18 +464,33 @@ const DiagramEditor = ({onGenerate}) => {
     setIsToolbarReady(true);
   }, [isToolbarReady]);
 
+  const handleInputKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      const systemNameElement = systemNameElementRef.current;
+
+      if (systemNameElement) {
+        systemNameElement.attr('label/text', SystemName);
+        systemNameElement.position(
+          (paperRef.current.options.width - systemNameElement.size().width) / 2,
+          10 // Always at the top
+        );
+      }
+    }
+  };
+
   return (
-    <div>
-      <div id="toolbar" ref={toolbarRef}>
-        <button className="buttona add-use-case">Add Use Case</button>
-        <button className="buttona add-actor">Add Actor</button>
-        <button className="buttona add-barrow">Broken Arrow</button>
-        <button className="buttona add-sline">Association Line</button>
-        <button className="buttona delete">Delete</button>
-      </div>
-      <div id="maonajudniboss" className='editor' ref={diagramRef}>
-        <div className='system-name-container'>
+    <div className='diagram'>
+      <div className='toolbar' id="toolbar" ref={toolbarRef}>
+        <div className='toolbar-buttons'>
+          <button className="buttona add-use-case">Add Use Case</button>
+          <button className="buttona add-actor">Add Actor</button>
+          <button className="buttona add-barrow">Broken Arrow</button>
+          <button className="buttona add-sline">Association Line</button>
+          <button className="buttona delete">Delete</button>
+        </div>
+        <div className='toolbar-input'>
           <input
+            onKeyDown={handleInputKeyDown}
             id="systemName"
             type="text"
             value={SystemName}
@@ -444,9 +498,13 @@ const DiagramEditor = ({onGenerate}) => {
             placeholder="Enter system name"
             className="system-name-input"
           />
-          </div>
+        </div>
       </div>
-      <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
+      <div id="maonajudniboss" className='editorr' ref={diagramRef}>
+      </div>
+      <div className='generate-button'>
+        <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
+      </div>
     </div>
   );
 };

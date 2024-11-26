@@ -7,9 +7,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const API_KEY = process.env.APP_API_KEY;
-const SECRET_KEY = process.env.APP_SS_KEY;
-const MONGODB_URI = process.env.DB_KEY;
+const API_KEY = "AIzaSyBvYkhHmx91JcEb7z5adavz_7bH5FHiuos";
+const SECRET_KEY = 'superSecretKey';
+const MONGODB_URI = "mongodb+srv://carlgerardresuu:llrTldGAU3JSQm5y@cluster0.l28co.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -48,8 +48,8 @@ const auth = (req, res, next) => {
   }
 };
 
-// app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
+app.use(cors({ origin: 'http://localhost:8000' }));
+//app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
 app.use(express.json());
 app.use(bodyParser.json());
 
@@ -57,81 +57,13 @@ app.post('/generate-content', async (req, res) => {
   try {
     const { diagram } = req.body;
 
-    const templateContent = `
-        <html>
-          <head>
-            <style>
-              /* CSS for the mobile wireframe */
-              body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f4;
-              }
-              .phone-container {
-                width: 375px;
-                height: 667px;
-                margin: 0 auto;
-                background-color: white;
-                border-radius: 20px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-              }
-              .header {
-                height: 60px;
-                background-color: #4CAF50;
-                color: white;
-                text-align: center;
-                line-height: 60px;
-                font-size: 20px;
-              }
-              .content {
-                flex-grow: 1;
-                padding: 20px;
-                background-color: #e9e9e9;
-                overflow-y: auto;
-              }
-              .footer {
-                height: 50px;
-                background-color: #4CAF50;
-                color: white;
-                text-align: center;
-                line-height: 50px;
-              }
-              .button {
-                background-color: #4CAF50;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                margin-top: 20px;
-              }
-              .button:hover {
-                background-color: #45a049;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="phone-container">
-              <div class="header">App Header</div>
-              <div class="content">
-                <p>This is a placeholder for the content generated from XML.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `;
-
     const generateXMLUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${API_KEY}`;
     const data = {
       contents: [
         {
           parts: [
             {
-              text: 'Based on the following use case diagram data:' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
+              text: 'Based on the following use case diagram data which also contains the system name:\n\n' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
             }
           ]
         }
@@ -150,10 +82,13 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Convert the following XML code to HTML wireframes:' + cleanedXml + 'Use HTML template as the base structure for each wireframe screen:' + templateContent +
-                    'Do not put explanation and notes please, just the HTML code.\n' +
-                    '\n\nEnsure the output resembles a mobile phone wireframe, including headers, navigation bars, buttons, and content areas. ' +
-                    'Use unique CSS classes to avoid conflicts and ensure all components are sized and spaced appropriately for mobile screens.',
+              text: "Convert the following XML to HTML phone wireframes:" + cleanedXml + 
+                   "Generate only the HTML code. Ensure the output resembles a mobile phone wireframe." +
+                    "Including standard UI elements such as a header, navigation bar, buttons, and a content area." +
+                    "Ensure all components are properly placed, sized for a mobile screen, and visually consistent." +
+                    "Maintain uniform screen size, and place appropriate spaces between each wireframe screen." +
+                    "Ensure unique CSS classes to avoid conflict." +
+                    "Please prioritize accuracy and consistency in the generated HTML.",
             }
           ]
         }
