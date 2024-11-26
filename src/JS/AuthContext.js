@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = async () => {
+    /*const logout = async () => {
         try {
             console.log("Token before logout:", localStorage.getItem('token'));
             await axios.post('https://wirefully-backend0.onrender.com/logout', null, {
@@ -60,7 +60,21 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Logout error:", error.response ? error.response.data : error.message);
         }
+    };*/
+
+    const logout = async () => {
+        try {
+            console.log("Token before logout:", localStorage.getItem('token'));
+            await axios.post('https://wirefully-backend0.onrender.com/logout');  // No need for Authorization header
+            localStorage.removeItem('token');
+            setUser(null);
+            setIsAuthenticated(false);
+            window.location.href = '/';  // Optionally use React Router's history.push() for SPA
+        } catch (error) {
+            console.error("Logout error:", error.response ? error.response.data : error.message);
+        }
     };
+    
     
     const token = localStorage.getItem('token');
 
