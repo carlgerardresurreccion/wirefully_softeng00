@@ -40,6 +40,12 @@ const DiagramEditor = ({onGenerate}) => {
 
   const exportDiagramToText = async () => {
 
+      if (!SystemName || SystemName.trim() === "") {
+        alert("System Name is required. Please provide a valid System Name.");
+        console.error("Error: System Name is empty or null.");
+        return;
+      }
+
       const diagramData = JSON.stringify(graphRef.current.toJSON());
 
       if (!diagramData || diagramData === '{"cells":[]}') {
@@ -47,6 +53,7 @@ const DiagramEditor = ({onGenerate}) => {
         alert('The diagram is empty. Please create a valid diagram before generating.');
         return;
       }
+
   
       onGenerate(diagramData);
   };
