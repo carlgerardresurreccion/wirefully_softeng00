@@ -7,9 +7,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const API_KEY = "AIzaSyBvYkhHmx91JcEb7z5adavz_7bH5FHiuos";
-const SECRET_KEY = 'superSecretKey';
-const MONGODB_URI = "mongodb+srv://carlgerardresuu:llrTldGAU3JSQm5y@cluster0.l28co.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const API_KEY = process.env.APP_API_KEY;
+const SECRET_KEY = process.env.APP_SS_KEY;
+const MONGODB_URI = process.env.DB_KEY;
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -49,8 +49,7 @@ const auth = (req, res, next) => {
 };
 
 // app.use(cors({ origin: 'http://localhost:3000' }));
-//app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
-app.use(cors({ origin: ['https://wirefullysofteng-0.onrender.com', 'https://my-softeng.vercel.app'] }));
+app.use(cors({ origin: 'https://wirefullysofteng-0.onrender.com' }));
 app.use(express.json());
 app.use(bodyParser.json());
 
