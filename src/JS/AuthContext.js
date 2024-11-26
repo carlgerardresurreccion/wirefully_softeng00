@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             setIsAuthenticated(false);
             setLoading(true);
-            window.location.href = '/';  // Optionally use React Router's history.push() for SPA
+            window.location.href = '/'; 
         } catch (error) {
             console.error("Logout error:", error.response ? error.response.data : error.message);
         }

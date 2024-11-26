@@ -12,7 +12,7 @@ const DiagramEditor = ({onGenerate}) => {
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
-  const exportDiagramToText = async () => {
+  /*const exportDiagramToText = async () => {
     try {
 
       const UseCaseDiagramData = JSON.stringify(graphRef.current.toJSON());
@@ -35,6 +35,19 @@ const DiagramEditor = ({onGenerate}) => {
       console.error('An error occurred during export:', error);
       alert('An unexpected error occurred. Please try again.');
     }
+  };*/
+
+  const exportDiagramToText = async () => {
+
+      const diagramData = JSON.stringify(graphRef.current.toJSON());
+
+      if (!diagramData || diagramData === '{"cells":[]}') {
+        console.error('Error: Diagram data is empty or invalid.');
+        alert('The diagram is empty. Please create a valid diagram before generating.');
+        return;
+      }
+  
+      onGenerate(diagramData);
   };
   
 

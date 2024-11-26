@@ -134,7 +134,7 @@ app.post('/generate-content', async (req, res) => {
         {
           parts: [
             {
-              text: 'Based on the following use case diagram data which also contains the system name:' + diagram+ '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
+              text: 'Based on the following use case diagram data:' + diagram + '\n\nGenerate XML codes/layout (for Android Studio) for each use case based on its relationship with actors (no further explanations, just the xml code). Make sure it looks a phone screen wireframe and add other components to make it look complete. Please be consistent and accurate about this query.',
             }
           ]
         }

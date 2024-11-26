@@ -34,6 +34,8 @@ function Dashboard() {
                 },
                 body: JSON.stringify({ diagram: diagramData }),
             });
+
+            console.log(diagramData);
     
             if (response.ok) {
                 const jsonResponse = await response.json();
@@ -63,8 +65,6 @@ function Dashboard() {
             } else {
                 setErrorMessage(`Error: ${response.status} ${response.statusText}`);
             }
-
-            console.log(diagramData);
         } catch (error) {
             setErrorMessage(`Error during API request: ${error.message}`);
         }
