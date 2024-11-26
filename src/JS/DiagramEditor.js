@@ -27,6 +27,8 @@ const DiagramEditor = ({onGenerate}) => {
         systemName,
         dd,
       };
+
+      console.log(diagramData);
   
       onGenerate(JSON.stringify(diagramData));
     } catch (error) {

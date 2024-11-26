@@ -63,6 +63,8 @@ function Dashboard() {
             } else {
                 setErrorMessage(`Error: ${response.status} ${response.statusText}`);
             }
+
+            console.log(diagramData);
         } catch (error) {
             setErrorMessage(`Error during API request: ${error.message}`);
         }
