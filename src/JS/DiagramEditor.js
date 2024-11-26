@@ -120,33 +120,6 @@ const DiagramEditor = ({onGenerate}) => {
       }
     });
 
-    /*const addUseCase = () => {
-      const rect = new joint.shapes.standard.Rectangle({
-        position: { x: 100, y: 100 },
-        size: { width: 120, height: 40 },
-        attrs: {
-          body: { fill: '#3A6D8C', stroke: 'none' },
-          label: { text: 'New Use Case', fill: 'white' }
-        },
-        type: 'usecase' 
-      });
-      rect.addTo(graph);  
-    };
-
-    const addActor = () => {
-      const ellipse = new joint.shapes.standard.Ellipse({
-        position: { x: 300, y: 100 },
-        size: { width: 80, height: 40 },
-        attrs: {
-          body: { fill: '#EAD8B1', stroke: 'none' },
-          label: { text: 'Actor', fill: 'black' }
-        },
-        type: 'actor'
-      });
-    
-      ellipse.addTo(graph);  
-    };*/
-
     const addUseCase = () => {
       const text = 'New Use Case'; // Label text
       const fontSize = 14; // Font size for the label
@@ -461,17 +434,18 @@ const DiagramEditor = ({onGenerate}) => {
         <button className="buttona add-sline">Association Line</button>
         <button className="buttona delete">Delete</button>
       </div>
-      <div className="system-name-container">
-        <input
-          id="systemName"
-          type="text"
-          value={SystemName}
-          onChange={(e) => setSystemName(e.target.value)}
-          placeholder="Enter system name"
-          className="system-name-input"
-        />
+      <div id="maonajudniboss" className='editor' ref={diagramRef}>
+        <div className="system-name-container">
+          <input
+            id="systemName"
+            type="text"
+            value={SystemName}
+            onChange={(e) => setSystemName(e.target.value)}
+            placeholder="Enter system name"
+            className="system-name-input"
+          />
+        </div>
       </div>
-      <div id="maonajudniboss" className='editor' ref={diagramRef}></div>
       <button className='gbutton' onClick={handleGenerateButtonClick}>Generate</button>
     </div>
   );
