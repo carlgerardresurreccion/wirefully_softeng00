@@ -15,7 +15,7 @@ const DiagramEditor = ({onGenerate}) => {
   const exportDiagramToText = async () => {
     try {
 
-      const dd = graphRef.current?.toJSON();
+      const dd = JSON.stringify(graphRef.current?.toJSON());
 
       if (!dd || dd === '{"cells":[]}') {
         console.error('Error: Diagram data is empty or invalid.');
