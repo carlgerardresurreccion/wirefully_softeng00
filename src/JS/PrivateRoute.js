@@ -9,9 +9,9 @@ const PrivateRoute = ({ children }) => {
         return <div>Loading...</div>;
     }
 
-    /*if (!isAuthenticated) {
+    if (!isAuthenticated) {
         return <Navigate to="/" />;
-    }*/
+    }
 
     return children;
 };
