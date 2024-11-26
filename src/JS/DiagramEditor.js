@@ -8,29 +8,29 @@ const DiagramEditor = ({onGenerate}) => {
   const selectedElements = useRef([]);
   const graphRef = useRef(new joint.dia.Graph());
   const paperRef = useRef(null);
-  const [systemName, setSystemName] = useState('');
+  const [SystemName, setSystemName] = useState('');
   const toolbarRef = useRef(null);
   const [isToolbarReady, setIsToolbarReady] = useState(false);
 
   const exportDiagramToText = async () => {
     try {
 
-      const dd = JSON.stringify(graphRef.current.toJSON());
+      const UseCaseDiagramData = JSON.stringify(graphRef.current.toJSON());
 
-      if (!dd || dd === '{"cells":[]}') {
+      if (!UseCaseDiagramData || UseCaseDiagramData === '{"cells":[]}') {
         console.error('Error: Diagram data is empty or invalid.');
         alert('The diagram is empty. Please create a valid diagram before generating.');
         return;
       }
   
       const diagramData = {
-        systemName,
-        dd,
+        SystemName,
+        UseCaseDiagramData,
       };
 
       console.log(diagramData);
   
-      onGenerate(JSON.stringify(diagramData));
+      onGenerate(diagramData);
     } catch (error) {
       console.error('An error occurred during export:', error);
       alert('An unexpected error occurred. Please try again.');
@@ -452,7 +452,7 @@ const DiagramEditor = ({onGenerate}) => {
         <input
           id="systemName"
           type="text"
-          value={systemName}
+          value={SystemName}
           onChange={(e) => setSystemName(e.target.value)}
           placeholder="Enter system name"
           className="system-name-input"
